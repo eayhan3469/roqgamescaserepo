@@ -652,10 +652,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78a60f70c2a114749a84df87ddca76c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6294290721221432291}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 78a60f70c2a114749a84df87ddca76c4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7755527038225424770}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78a60f70c2a114749a84df87ddca76c4, type: 3}
 --- !u!23 &5197700333042483868 stripped
 MeshRenderer:
