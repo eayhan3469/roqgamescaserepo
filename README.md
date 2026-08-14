@@ -14,8 +14,8 @@ Her case kendi klasöründe self-contained'dır; bir case'e ait scene, script,
 material, prefab vb. her şeyi kendi klasörü altında tutmanızı bekliyoruz:
 
     Assets/
-      Case1_FitTheShape/   → Models, Materials, Textures, Prefabs, VFX, Scenes
-      Case2_BlockHole/
+      Case1_FitTheShape/   → Models, Materials, Textures, Prefabs, VFX, Scenes (staged sahne hazır)
+      Case2_BlockHole/     → Models, Materials, Textures, Prefabs (Blocks/Holes/Walls/Fractured), VFX, Scenes (staged sahne hazır)
       Case3_Stickerdom/
       Case4_Buca/
 
@@ -33,3 +33,6 @@ düşmeniz yeterli.
 
 Her case klasöründe basit particle prefab'ları verilmiştir; kullanmak zorunda
 değilsiniz. SFX verilmemiştir — eklemek isterseniz kaynak belirtin.
+
+Case 2'de blokların önceden kırılmış (pre-fractured) mesh parçaları
+`Prefabs/Fractured/` altındadır — kırılma efektinizi bunlarla kurabilirsiniz.
