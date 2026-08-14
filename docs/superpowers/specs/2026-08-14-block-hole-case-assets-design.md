@@ -22,7 +22,9 @@ Starter repo modeli; sadece görsel asset + basit in-house VFX (SFX yok); paid s
 
 ## Kapsam Dışı
 
-Ice/Lock/Arrow/key özel blok elemanları, BombMMF, Curtain sistemi, LevelGen içerikleri, PowerUp/Timer/Reward sistemleri, ses (3D Match SFX paketi dahil — paid), UI/marketing sprite'ları (bg_blockhole.png, blockhole_splash.jpg dahil — kapsam dışı; yürüyüşte bir prefab bunlara bağımlı çıkarsa referans prefab temizliğinde sökülür, sprite kopyalanmaz).
+Ice/Lock/Arrow/key özel blok MEKANİK prefab'ları, BombMMF, Curtain sistemi, LevelGen içerikleri, PowerUp/Timer/Reward sistemleri, ses (3D Match SFX paketi dahil — paid), UI/marketing sprite'ları (bg_blockhole.png, blockhole_splash.jpg dahil — kapsam dışı; yürüyüşte bir prefab bunlara bağımlı çıkarsa referans prefab temizliğinde sökülür, sprite kopyalanmaz).
+
+**Not:** Oyunun kendi VFX prefab'ları (`BlockBreakage`, `BlockConsumed`, `IceExplosion`, `ShinePieceTile`) blok/hole prefab'ları tarafından referanslandığı için dahil edilir — Epic Toon FX materyal referansları in-house muadillerle (URP Particles Unlit + _BlockSort sprite'ları) remap edilir. Bu, referans bütünlüğünü YAML cerrahisi olmadan korur; ice MEKANİĞİ yine kapsam dışıdır.
 
 ## Shader / Script Temizliği
 
