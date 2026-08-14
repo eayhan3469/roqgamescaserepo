@@ -85,8 +85,6 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Smoothness: 0.15
-    - _Metallic: 0
     - _Activate_Dissolve: 1
     - _Activate_Effects: 0
     - _Activate_FX_Rim_Emission: 0
@@ -106,6 +104,7 @@ Material:
     - _IsAttaacked: 0
     - _IsWindy: 0
     - _Is_Attaacked: 0
+    - _Metallic: 0
     - _NormalStrength: 0
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -119,6 +118,7 @@ Material:
     - _ShadowThreshold: 0.12
     - _Shadow_Smoothness: 0
     - _Shadow_Threshold: 0
+    - _Smoothness: 0.15
     - _Specular: 0.142
     - _SpecularSmoothness: 0.63
     - _SpecularThreshold: 1.03

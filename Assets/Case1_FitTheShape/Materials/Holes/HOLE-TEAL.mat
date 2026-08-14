@@ -43,13 +43,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Surface: 1
-    - _Blend: 0
-    - _SrcBlend: 5
-    - _DstBlend: 10
-    - _ZWrite: 0
     - _AlphaClip: 0
+    - _Blend: 0
     - _Cull: 2
+    - _DstBlend: 10
     - _HSV_H: 0
     - _HSV_S: 0
     - _HSV_V: 0.156
@@ -60,11 +57,14 @@ Material:
     - _RimMax: 1
     - _RimMin: 0.5
     - _SpecularRoughnessPBR: 0.544
+    - _SrcBlend: 5
+    - _Surface: 1
     - _UseRim: 0
     - _UseSpecular: 0
     - _UseVerticalFog: 1
     - _VerticalFogSmoothness: 0.3
     - _VerticalFogThreshold: 1
+    - _ZWrite: 0
     - __BeginGroup_AlbedoHSV: 0
     - __EndGroup: 0
     - __dummy__: 0
