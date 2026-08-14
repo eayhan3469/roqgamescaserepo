@@ -656,7 +656,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3448270662833555793}
-  - component: {fileID: 8115876116110156907}
   m_Layer: 0
   m_Name: WallEdge
   m_TagString: Untagged
@@ -692,42 +691,6 @@ Transform:
   - {fileID: 4458728579914071927}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8115876116110156907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3910739545026360842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b90fece4a6734c9db46fcded026f510d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_CarMatchMania.Scripts.Contexts._GameplayContext.Models.MapCellEdge
-  _root: {fileID: 3448270662833555793}
-  _start: {fileID: 5744311445945784696}
-  _end: {fileID: 4234540095660015921}
-  _middleLeft: {fileID: 4234540095660015921}
-  _middleRight: {fileID: 5744311445945784696}
-  _leftPartLeft: {fileID: 2039112199476510236}
-  _leftPartRight: {fileID: 1405541337689982893}
-  _leftPart: {fileID: 7504462557926496751}
-  _rightPartLeft: {fileID: 5436300866210103960}
-  _rightPartRight: {fileID: 4952977788271328041}
-  _rightPart: {fileID: 4546607606776587627}
-  _directionVisualPairs:
-  - _direction: 0
-    _visual:
-    - {fileID: 3440147976994004501}
-  - _direction: 1
-    _visual:
-    - {fileID: 936008374976537843}
-  - _direction: 2
-    _visual:
-    - {fileID: 6857011057920746725}
-  - _direction: 3
-    _visual:
-    - {fileID: 4633476651674553250}
 --- !u!1 &4046208916083048227
 GameObject:
   m_ObjectHideFlags: 0

@@ -4512,8 +4512,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5441378307020608438}
-  - component: {fileID: 3137847467119413545}
-  - component: {fileID: 1836271378658278110}
   m_Layer: 0
   m_Name: Block-Square
   m_TagString: Untagged
@@ -4538,38 +4536,6 @@ Transform:
   - {fileID: 7517064595033150251}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 179.989, z: 0}
---- !u!114 &3137847467119413545
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5770396336423625102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6943801a6f064b87bcf9d2982348c87e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisual
-  _centerTransform: {fileID: 7836298311887068933}
-  _onBlockCenterTransform: {fileID: 5815568753893989468}
-  _blockMeshRenderer: {fileID: 395765506765903102}
-  _iceElements: []
-  _iceBreakText: {fileID: 0}
-  _chain: {fileID: 4355709471307579324}
-  _chainMeshRenderer: {fileID: 2804281713968798707}
---- !u!114 &1836271378658278110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5770396336423625102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5911cbd62641d2b50f29021e761ce2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlockGame.Scripts.Contexts.Gameplay.Contexts.BlockContext.Controllers.BlockAnimationRayFireShatterController
-  _parentTransform: {fileID: 1313904959156525775}
 --- !u!1 &5883217266302781860
 GameObject:
   m_ObjectHideFlags: 0
@@ -8037,795 +8003,396 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8665420015307906948}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4942614129375021323, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9154634618103789981}
-    - targetCorrespondingSourceObject: {fileID: 4942614129375021323, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8964402163864537536}
-    - targetCorrespondingSourceObject: {fileID: 4942614129375021323, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1313904959156525775}
     - targetCorrespondingSourceObject: {fileID: 1390849300239739042, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4212562131940701266}
-    - targetCorrespondingSourceObject: {fileID: 1390849300239739042, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4458997756706410981}
     - targetCorrespondingSourceObject: {fileID: 542104935643720909, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8918437241673939201}
-    - targetCorrespondingSourceObject: {fileID: 542104935643720909, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4178683999371747549}
     - targetCorrespondingSourceObject: {fileID: 5634264674599177393, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2638513032435051421}
-    - targetCorrespondingSourceObject: {fileID: 5634264674599177393, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3733429178624009118}
     - targetCorrespondingSourceObject: {fileID: 612047648665868842, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7597007161618642731}
-    - targetCorrespondingSourceObject: {fileID: 612047648665868842, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3459461616684400743}
     - targetCorrespondingSourceObject: {fileID: 7532904156886546487, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 269264885144688690}
-    - targetCorrespondingSourceObject: {fileID: 7532904156886546487, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4006275884562502265}
     - targetCorrespondingSourceObject: {fileID: 5101960651418135835, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7472660721717397592}
-    - targetCorrespondingSourceObject: {fileID: 5101960651418135835, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7431837504620642968}
     - targetCorrespondingSourceObject: {fileID: 7510299190417057881, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6312360938014988735}
-    - targetCorrespondingSourceObject: {fileID: 7510299190417057881, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4786646813528769536}
     - targetCorrespondingSourceObject: {fileID: 769242197663632309, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7411815987550164735}
-    - targetCorrespondingSourceObject: {fileID: 769242197663632309, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6340625976989674120}
     - targetCorrespondingSourceObject: {fileID: 4179867325172812807, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3602221545751453479}
-    - targetCorrespondingSourceObject: {fileID: 4179867325172812807, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7203461550162099498}
     - targetCorrespondingSourceObject: {fileID: 4363545670286729687, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7425993479860783223}
-    - targetCorrespondingSourceObject: {fileID: 4363545670286729687, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 762180876050471277}
     - targetCorrespondingSourceObject: {fileID: 3231391951019308663, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5055425236906714165}
-    - targetCorrespondingSourceObject: {fileID: 3231391951019308663, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5360019102615081825}
     - targetCorrespondingSourceObject: {fileID: 2789818260676703617, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2945593796576763244}
-    - targetCorrespondingSourceObject: {fileID: 2789818260676703617, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1483126526577952940}
     - targetCorrespondingSourceObject: {fileID: 3422789843266141275, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1430180605761898418}
-    - targetCorrespondingSourceObject: {fileID: 3422789843266141275, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 870900960006173328}
     - targetCorrespondingSourceObject: {fileID: 3730930118627232276, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1049281105214341972}
-    - targetCorrespondingSourceObject: {fileID: 3730930118627232276, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1538979259993745938}
     - targetCorrespondingSourceObject: {fileID: 2628266854519343633, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4963335942458603683}
-    - targetCorrespondingSourceObject: {fileID: 2628266854519343633, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8089941716680620388}
     - targetCorrespondingSourceObject: {fileID: 5353638008344418293, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9048183541266275368}
-    - targetCorrespondingSourceObject: {fileID: 5353638008344418293, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8817873103853621234}
     - targetCorrespondingSourceObject: {fileID: 219956049149934738, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8065320587503301128}
-    - targetCorrespondingSourceObject: {fileID: 219956049149934738, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5197297089593875457}
     - targetCorrespondingSourceObject: {fileID: 765350230870270401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2989776913307416275}
-    - targetCorrespondingSourceObject: {fileID: 765350230870270401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7433598355491838916}
     - targetCorrespondingSourceObject: {fileID: 137949700520735773, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8619499567635686345}
-    - targetCorrespondingSourceObject: {fileID: 137949700520735773, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7297376533404196846}
     - targetCorrespondingSourceObject: {fileID: 1446884803075991082, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6316118084852270478}
-    - targetCorrespondingSourceObject: {fileID: 1446884803075991082, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7032911306837292219}
     - targetCorrespondingSourceObject: {fileID: 826016605971037908, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7353063492094106483}
-    - targetCorrespondingSourceObject: {fileID: 826016605971037908, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7488886685480914868}
     - targetCorrespondingSourceObject: {fileID: 8343050282313144373, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9024334848015770791}
-    - targetCorrespondingSourceObject: {fileID: 8343050282313144373, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5582671302023989210}
     - targetCorrespondingSourceObject: {fileID: 7841983234941962614, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6196337651513325154}
-    - targetCorrespondingSourceObject: {fileID: 7841983234941962614, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6011773798813845671}
     - targetCorrespondingSourceObject: {fileID: 8497891631136134654, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6246068657749360740}
-    - targetCorrespondingSourceObject: {fileID: 8497891631136134654, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8352502097115750554}
     - targetCorrespondingSourceObject: {fileID: 6301471331056096351, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5554987870625525593}
-    - targetCorrespondingSourceObject: {fileID: 6301471331056096351, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5420103596958363959}
     - targetCorrespondingSourceObject: {fileID: 5647417642641085846, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6265368862791817336}
-    - targetCorrespondingSourceObject: {fileID: 5647417642641085846, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7627297349802574620}
     - targetCorrespondingSourceObject: {fileID: 3066584301445487903, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7182634077524934813}
-    - targetCorrespondingSourceObject: {fileID: 3066584301445487903, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3769095179012667643}
     - targetCorrespondingSourceObject: {fileID: 4092959478384711467, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1594366558150710061}
-    - targetCorrespondingSourceObject: {fileID: 4092959478384711467, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1936820589170438900}
     - targetCorrespondingSourceObject: {fileID: 4011734834614347128, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 551756571998342453}
-    - targetCorrespondingSourceObject: {fileID: 4011734834614347128, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2260137502115960355}
     - targetCorrespondingSourceObject: {fileID: 6437902545307335897, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3047447556403391907}
-    - targetCorrespondingSourceObject: {fileID: 6437902545307335897, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4442219414433235144}
     - targetCorrespondingSourceObject: {fileID: 1229171176657471675, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8586201285662795517}
-    - targetCorrespondingSourceObject: {fileID: 1229171176657471675, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2593066188679670286}
     - targetCorrespondingSourceObject: {fileID: 1353599287920726187, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8771302063630492971}
-    - targetCorrespondingSourceObject: {fileID: 1353599287920726187, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7836172033138099600}
     - targetCorrespondingSourceObject: {fileID: 6662587441695241892, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2996483541134520222}
-    - targetCorrespondingSourceObject: {fileID: 6662587441695241892, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 734180217144801967}
     - targetCorrespondingSourceObject: {fileID: 3445163734532218902, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7204117914915748132}
-    - targetCorrespondingSourceObject: {fileID: 3445163734532218902, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9164274783697216}
     - targetCorrespondingSourceObject: {fileID: 492333639807965799, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6691135458179838687}
-    - targetCorrespondingSourceObject: {fileID: 492333639807965799, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8388401521337884271}
     - targetCorrespondingSourceObject: {fileID: 2324002234435539055, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3364758710941171674}
-    - targetCorrespondingSourceObject: {fileID: 2324002234435539055, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2827954604105290636}
     - targetCorrespondingSourceObject: {fileID: 8457044017334539343, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5695265414634175346}
-    - targetCorrespondingSourceObject: {fileID: 8457044017334539343, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7698206147428831814}
     - targetCorrespondingSourceObject: {fileID: 210971375587148898, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8814820559713498175}
-    - targetCorrespondingSourceObject: {fileID: 210971375587148898, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 48529509447476986}
     - targetCorrespondingSourceObject: {fileID: 6041516334995946100, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8004793304992993869}
-    - targetCorrespondingSourceObject: {fileID: 6041516334995946100, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6843700697946163233}
     - targetCorrespondingSourceObject: {fileID: 7357540755381797337, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3381221163363724405}
-    - targetCorrespondingSourceObject: {fileID: 7357540755381797337, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1120453053153297635}
     - targetCorrespondingSourceObject: {fileID: 4240395661232733367, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8379239880973414062}
-    - targetCorrespondingSourceObject: {fileID: 4240395661232733367, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6798128445533258692}
     - targetCorrespondingSourceObject: {fileID: 3979804887473963423, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2180091766859149891}
-    - targetCorrespondingSourceObject: {fileID: 3979804887473963423, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8690690282829527739}
     - targetCorrespondingSourceObject: {fileID: 7351236759074376175, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3845669266334058613}
-    - targetCorrespondingSourceObject: {fileID: 7351236759074376175, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8373227211941528054}
     - targetCorrespondingSourceObject: {fileID: 5262381697099214298, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4623980829381209582}
-    - targetCorrespondingSourceObject: {fileID: 5262381697099214298, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5322664821467644591}
     - targetCorrespondingSourceObject: {fileID: 4544739153588391307, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 191504826973035930}
-    - targetCorrespondingSourceObject: {fileID: 4544739153588391307, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6636694588024921390}
     - targetCorrespondingSourceObject: {fileID: 3867304741615513221, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7402576517378820102}
-    - targetCorrespondingSourceObject: {fileID: 3867304741615513221, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2150019591325265904}
     - targetCorrespondingSourceObject: {fileID: 2979771541220569017, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5596004382089508470}
-    - targetCorrespondingSourceObject: {fileID: 2979771541220569017, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6683647410437907768}
     - targetCorrespondingSourceObject: {fileID: 4790111306005488327, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5089430508203477262}
-    - targetCorrespondingSourceObject: {fileID: 4790111306005488327, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5012252415093033838}
     - targetCorrespondingSourceObject: {fileID: 8395437221171721802, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5356765275849677206}
-    - targetCorrespondingSourceObject: {fileID: 8395437221171721802, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5115146519559876127}
     - targetCorrespondingSourceObject: {fileID: 954807722127372471, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6495185928914650693}
-    - targetCorrespondingSourceObject: {fileID: 954807722127372471, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2041734648488505445}
     - targetCorrespondingSourceObject: {fileID: 3894491931132097784, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8912755539937818110}
-    - targetCorrespondingSourceObject: {fileID: 3894491931132097784, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5196239141024730575}
     - targetCorrespondingSourceObject: {fileID: 92099380326495173, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 922218958072618660}
-    - targetCorrespondingSourceObject: {fileID: 92099380326495173, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5957149548725334182}
     - targetCorrespondingSourceObject: {fileID: 8463250486234955364, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9138179022826518634}
-    - targetCorrespondingSourceObject: {fileID: 8463250486234955364, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2002099626851795725}
     - targetCorrespondingSourceObject: {fileID: 4006342328762629027, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7122559703632483216}
-    - targetCorrespondingSourceObject: {fileID: 4006342328762629027, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1660665411651332764}
     - targetCorrespondingSourceObject: {fileID: 8354363841499119563, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1580834414760899925}
-    - targetCorrespondingSourceObject: {fileID: 8354363841499119563, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 253278780400252518}
     - targetCorrespondingSourceObject: {fileID: 8962984059747473484, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8419049158370026177}
-    - targetCorrespondingSourceObject: {fileID: 8962984059747473484, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5020010264161010549}
     - targetCorrespondingSourceObject: {fileID: 3842871330264047466, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5200483325073707682}
-    - targetCorrespondingSourceObject: {fileID: 3842871330264047466, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 949204703365268241}
     - targetCorrespondingSourceObject: {fileID: 5375752917687720014, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6033022311514154300}
-    - targetCorrespondingSourceObject: {fileID: 5375752917687720014, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9044181022880190079}
     - targetCorrespondingSourceObject: {fileID: 762469689833140446, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2436226095448662250}
-    - targetCorrespondingSourceObject: {fileID: 762469689833140446, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 499415751364855856}
     - targetCorrespondingSourceObject: {fileID: 7982235579132077432, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 273324539830109583}
-    - targetCorrespondingSourceObject: {fileID: 7982235579132077432, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7044054280856912721}
     - targetCorrespondingSourceObject: {fileID: 52800207397938446, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4812655479608087318}
-    - targetCorrespondingSourceObject: {fileID: 52800207397938446, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7871795685396888768}
     - targetCorrespondingSourceObject: {fileID: 7255288411296419106, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2676628694130740091}
-    - targetCorrespondingSourceObject: {fileID: 7255288411296419106, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2187905094940880191}
     - targetCorrespondingSourceObject: {fileID: 7375379349433437485, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8667376368203416205}
-    - targetCorrespondingSourceObject: {fileID: 7375379349433437485, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 558197871124852910}
     - targetCorrespondingSourceObject: {fileID: 1835191591479430882, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2111656680803545333}
-    - targetCorrespondingSourceObject: {fileID: 1835191591479430882, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1483967350152482361}
     - targetCorrespondingSourceObject: {fileID: 1120939239881886823, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2388903866574677006}
-    - targetCorrespondingSourceObject: {fileID: 1120939239881886823, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6895912919041038261}
     - targetCorrespondingSourceObject: {fileID: 2458636988255868467, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2200429122319001296}
-    - targetCorrespondingSourceObject: {fileID: 2458636988255868467, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8066736676240316646}
     - targetCorrespondingSourceObject: {fileID: 1061901014547324159, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2340470492825382694}
-    - targetCorrespondingSourceObject: {fileID: 1061901014547324159, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4867190337366560316}
     - targetCorrespondingSourceObject: {fileID: 4608028223690340736, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8823812261666793989}
-    - targetCorrespondingSourceObject: {fileID: 4608028223690340736, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1655921971122446108}
     - targetCorrespondingSourceObject: {fileID: 3633308242642126397, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6392027896460514527}
-    - targetCorrespondingSourceObject: {fileID: 3633308242642126397, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 85104555640124376}
     - targetCorrespondingSourceObject: {fileID: 6201382612880068188, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7663144603227988812}
-    - targetCorrespondingSourceObject: {fileID: 6201382612880068188, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6777258001952699830}
     - targetCorrespondingSourceObject: {fileID: 5061359722869755720, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9186559805602169046}
-    - targetCorrespondingSourceObject: {fileID: 5061359722869755720, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2403337868163932048}
     - targetCorrespondingSourceObject: {fileID: 8298090754090073376, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3059670261685730868}
-    - targetCorrespondingSourceObject: {fileID: 8298090754090073376, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4010603165977006443}
     - targetCorrespondingSourceObject: {fileID: 5500218876057151453, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9079183707512627130}
-    - targetCorrespondingSourceObject: {fileID: 5500218876057151453, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2873123474087934052}
     - targetCorrespondingSourceObject: {fileID: 6939796911182695346, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5219066972311111187}
-    - targetCorrespondingSourceObject: {fileID: 6939796911182695346, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8262012961442030273}
     - targetCorrespondingSourceObject: {fileID: 361434192351228686, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6916263096148165761}
-    - targetCorrespondingSourceObject: {fileID: 361434192351228686, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3170597608910014629}
     - targetCorrespondingSourceObject: {fileID: 2114982071318553700, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5509821608675416140}
-    - targetCorrespondingSourceObject: {fileID: 2114982071318553700, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1269107090199666426}
     - targetCorrespondingSourceObject: {fileID: 4257963534067426907, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1998369023417495414}
-    - targetCorrespondingSourceObject: {fileID: 4257963534067426907, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 717165334820743418}
     - targetCorrespondingSourceObject: {fileID: 4540559818949686356, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3668277066889905892}
-    - targetCorrespondingSourceObject: {fileID: 4540559818949686356, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7829473221280658553}
     - targetCorrespondingSourceObject: {fileID: 1842821329080359556, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2377471216620209680}
-    - targetCorrespondingSourceObject: {fileID: 1842821329080359556, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1615761882085566612}
     - targetCorrespondingSourceObject: {fileID: 7669817784563495358, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8271002485284030822}
-    - targetCorrespondingSourceObject: {fileID: 7669817784563495358, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2206981689347841942}
     - targetCorrespondingSourceObject: {fileID: 3274366594999345282, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6607655811556851413}
-    - targetCorrespondingSourceObject: {fileID: 3274366594999345282, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5975350409136889754}
     - targetCorrespondingSourceObject: {fileID: 5383307357126481218, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1720902039376721036}
-    - targetCorrespondingSourceObject: {fileID: 5383307357126481218, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7548403345629873047}
     - targetCorrespondingSourceObject: {fileID: 8129129633955536090, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1875981849984355060}
-    - targetCorrespondingSourceObject: {fileID: 8129129633955536090, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6885170668513402770}
     - targetCorrespondingSourceObject: {fileID: 3856563525841724455, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4718662028590317587}
-    - targetCorrespondingSourceObject: {fileID: 3856563525841724455, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3695786369960866415}
     - targetCorrespondingSourceObject: {fileID: 7692163979971494876, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4065292091714741368}
-    - targetCorrespondingSourceObject: {fileID: 7692163979971494876, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4789820492518785922}
     - targetCorrespondingSourceObject: {fileID: 3820981631744860277, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5674103014919223543}
-    - targetCorrespondingSourceObject: {fileID: 3820981631744860277, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3317988487759497231}
     - targetCorrespondingSourceObject: {fileID: 5325226235371293281, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2957903483386828301}
-    - targetCorrespondingSourceObject: {fileID: 5325226235371293281, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5645846748115295452}
     - targetCorrespondingSourceObject: {fileID: 7920544698772119616, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6834621154867403279}
-    - targetCorrespondingSourceObject: {fileID: 7920544698772119616, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2735593636622343254}
     - targetCorrespondingSourceObject: {fileID: 8542465897328892098, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2132897359896663330}
-    - targetCorrespondingSourceObject: {fileID: 8542465897328892098, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6554888822021491356}
     - targetCorrespondingSourceObject: {fileID: 250469278668097080, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8037834800128062321}
-    - targetCorrespondingSourceObject: {fileID: 250469278668097080, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2789776688100027679}
     - targetCorrespondingSourceObject: {fileID: 1325695164385086098, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5861266498635875250}
-    - targetCorrespondingSourceObject: {fileID: 1325695164385086098, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4416805923339217437}
     - targetCorrespondingSourceObject: {fileID: 1959388768114505802, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6203742797002084654}
-    - targetCorrespondingSourceObject: {fileID: 1959388768114505802, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3436507378117447836}
     - targetCorrespondingSourceObject: {fileID: 7551428320916729738, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 487067730573513647}
-    - targetCorrespondingSourceObject: {fileID: 7551428320916729738, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8613699334671127388}
     - targetCorrespondingSourceObject: {fileID: 6906160605569153811, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3845365303791486645}
-    - targetCorrespondingSourceObject: {fileID: 6906160605569153811, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6543730321248282784}
     - targetCorrespondingSourceObject: {fileID: 92885874644302912, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1943795643822201815}
-    - targetCorrespondingSourceObject: {fileID: 92885874644302912, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4977485160834257794}
     - targetCorrespondingSourceObject: {fileID: 6370096147809922137, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2619839376931688327}
-    - targetCorrespondingSourceObject: {fileID: 6370096147809922137, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3310553312816267891}
     - targetCorrespondingSourceObject: {fileID: 3154711324674612620, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 44106897592697116}
-    - targetCorrespondingSourceObject: {fileID: 3154711324674612620, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 787710212262227377}
     - targetCorrespondingSourceObject: {fileID: 6685400423348291203, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4851049759771041890}
-    - targetCorrespondingSourceObject: {fileID: 6685400423348291203, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4153542183919189289}
     - targetCorrespondingSourceObject: {fileID: 6125560030224303780, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3898982806918897492}
-    - targetCorrespondingSourceObject: {fileID: 6125560030224303780, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 873805645465822987}
     - targetCorrespondingSourceObject: {fileID: 6044641171357487401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6338423668303572486}
-    - targetCorrespondingSourceObject: {fileID: 6044641171357487401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4446745105086833231}
     - targetCorrespondingSourceObject: {fileID: 2818471070009054950, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6883151478718823852}
-    - targetCorrespondingSourceObject: {fileID: 2818471070009054950, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3922774212474997302}
     - targetCorrespondingSourceObject: {fileID: 1260516937189823267, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7006508035980392328}
-    - targetCorrespondingSourceObject: {fileID: 1260516937189823267, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5795474838094123410}
     - targetCorrespondingSourceObject: {fileID: 3626253120147604147, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6436629536266538731}
-    - targetCorrespondingSourceObject: {fileID: 3626253120147604147, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5670324049633409943}
     - targetCorrespondingSourceObject: {fileID: 6768300290889813693, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 943134915381858834}
-    - targetCorrespondingSourceObject: {fileID: 6768300290889813693, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4923958925972026978}
     - targetCorrespondingSourceObject: {fileID: 6066022159469722613, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3558134575268024688}
-    - targetCorrespondingSourceObject: {fileID: 6066022159469722613, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4213399245458376997}
     - targetCorrespondingSourceObject: {fileID: 3137549838266724188, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3149580212409712181}
-    - targetCorrespondingSourceObject: {fileID: 3137549838266724188, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3947780588979216077}
     - targetCorrespondingSourceObject: {fileID: 6493649378013763205, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6288975169700105265}
-    - targetCorrespondingSourceObject: {fileID: 6493649378013763205, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8558391068378864819}
     - targetCorrespondingSourceObject: {fileID: 503494742294412392, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1691592076972967827}
-    - targetCorrespondingSourceObject: {fileID: 503494742294412392, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7286796501114055898}
     - targetCorrespondingSourceObject: {fileID: 4333603478951719686, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2523559040313036509}
-    - targetCorrespondingSourceObject: {fileID: 4333603478951719686, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2691578891030129660}
     - targetCorrespondingSourceObject: {fileID: 6094878447152638848, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7651796022627735959}
-    - targetCorrespondingSourceObject: {fileID: 6094878447152638848, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3638003863523480773}
     - targetCorrespondingSourceObject: {fileID: 2871572243004194209, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7367819348811411483}
-    - targetCorrespondingSourceObject: {fileID: 2871572243004194209, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7861502416758457299}
     - targetCorrespondingSourceObject: {fileID: 4001952640958673640, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6617092504349502875}
-    - targetCorrespondingSourceObject: {fileID: 4001952640958673640, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4892814919477774970}
     - targetCorrespondingSourceObject: {fileID: 4325974719938384415, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 823634571050225900}
-    - targetCorrespondingSourceObject: {fileID: 4325974719938384415, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7248708808651434591}
     - targetCorrespondingSourceObject: {fileID: 3546930001907658747, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1556618549183928718}
-    - targetCorrespondingSourceObject: {fileID: 3546930001907658747, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 676293046676312253}
     - targetCorrespondingSourceObject: {fileID: 5960441335864499378, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7901219880997225241}
-    - targetCorrespondingSourceObject: {fileID: 5960441335864499378, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2969582569364893062}
     - targetCorrespondingSourceObject: {fileID: 201234331612235105, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6797903895436556345}
-    - targetCorrespondingSourceObject: {fileID: 201234331612235105, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5949823738591851260}
     - targetCorrespondingSourceObject: {fileID: 2239512995721545037, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2020076649643219938}
-    - targetCorrespondingSourceObject: {fileID: 2239512995721545037, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2696691794332719821}
     - targetCorrespondingSourceObject: {fileID: 626147066994176031, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8952050280461976504}
-    - targetCorrespondingSourceObject: {fileID: 626147066994176031, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6159659045172558513}
     - targetCorrespondingSourceObject: {fileID: 2711378755033164490, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6194133030610365755}
-    - targetCorrespondingSourceObject: {fileID: 2711378755033164490, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1875360304163358521}
     - targetCorrespondingSourceObject: {fileID: 1577970560218839060, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7730209840634351000}
-    - targetCorrespondingSourceObject: {fileID: 1577970560218839060, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6812494039613538688}
     - targetCorrespondingSourceObject: {fileID: 5593161592090313829, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4707303342379022833}
-    - targetCorrespondingSourceObject: {fileID: 5593161592090313829, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4036019496980751983}
     - targetCorrespondingSourceObject: {fileID: 4449527047768431699, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1940757808034098090}
-    - targetCorrespondingSourceObject: {fileID: 4449527047768431699, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3483893618880284646}
     - targetCorrespondingSourceObject: {fileID: 5487797319596079087, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2406034075870152219}
-    - targetCorrespondingSourceObject: {fileID: 5487797319596079087, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 213709096569354605}
     - targetCorrespondingSourceObject: {fileID: 7207340658880550200, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5852330856694169802}
-    - targetCorrespondingSourceObject: {fileID: 7207340658880550200, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8926665142960453305}
     - targetCorrespondingSourceObject: {fileID: 3032095388514300986, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8235706437694959865}
-    - targetCorrespondingSourceObject: {fileID: 3032095388514300986, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 9085395831320400693}
     - targetCorrespondingSourceObject: {fileID: 2129007607359283918, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1224660822363188138}
-    - targetCorrespondingSourceObject: {fileID: 2129007607359283918, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2757295757901208028}
     - targetCorrespondingSourceObject: {fileID: 4475044266617955079, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2164807435908844073}
-    - targetCorrespondingSourceObject: {fileID: 4475044266617955079, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 3727559485380991626}
     - targetCorrespondingSourceObject: {fileID: 8087090966431060915, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8934840725193806008}
-    - targetCorrespondingSourceObject: {fileID: 8087090966431060915, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6799921530152306511}
     - targetCorrespondingSourceObject: {fileID: 2565017167668690229, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 918117882666009484}
-    - targetCorrespondingSourceObject: {fileID: 2565017167668690229, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4520462341708822337}
     - targetCorrespondingSourceObject: {fileID: 6293034961401273159, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 230248724834168143}
-    - targetCorrespondingSourceObject: {fileID: 6293034961401273159, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 939535951013582206}
   m_SourcePrefab: {fileID: 100100000, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
 --- !u!4 &86641892140234132 stripped
 Transform:
@@ -8904,21 +8471,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8262012961442030273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 229206454392916953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7078862238029492332}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &261177187521191966 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6989219175610065013, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -8986,21 +8538,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &558197871124852910
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377122571122871622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1533592246809531115}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &388862532067576196 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7351236759074376175, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9033,21 +8570,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8373227211941528054
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388862532067576196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8193305075082815776}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &394749817895059890 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7357540755381797337, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9080,21 +8602,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1120453053153297635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 394749817895059890}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6161954396440486498}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &396111572245570662 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7358345142294193165, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9162,21 +8669,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8926665142960453305
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 532775709101970771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7186903391373453612}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &557700557783668222 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7267696234680243605, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9214,21 +8706,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2187905094940880191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562568239618461001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3334071226433302473}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &589539681739965816 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7732440576367215891, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9286,21 +8763,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2206981689347841942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 653576274225508821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8458715316261573334}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &675121940686436886 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7656068067853286013, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9348,21 +8810,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4789820492518785922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 693937975174972343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8170169984136037613}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &694014276918743738 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7692412893169341137, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9405,21 +8852,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4786646813528769536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 817583486641809458}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7525945748319445732}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &841401855411236833 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7551428320916729738, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9452,21 +8884,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8613699334671127388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 841401855411236833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1566813235185143001}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &845210690727565756 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7555800126453258711, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9504,21 +8921,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4006275884562502265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 858800909516142684}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 222446358774385238}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &983977678762812691 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7982235579132077432, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9551,21 +8953,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7044054280856912721
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 983977678762812691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6939042018828569894}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1040837101673850530 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 7858949986089035465, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9608,21 +8995,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2735593636622343254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1047720213469896747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1153436857875366272}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &1058502046576380900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7913348510731291535, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9670,21 +9042,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6011773798813845671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1131811705911511325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 396111572245570662}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1153436857875366272 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8313792512681951723, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9722,21 +9079,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4010603165977006443
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173732067373563211}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1068006257346610551}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1177087935225981373 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8301411430054111702, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9774,21 +9116,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &253278780400252518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1194011548781707168}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3516685654187697771}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &1200537559177599070 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8343050282313144373, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9821,21 +9148,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5582671302023989210
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1200537559177599070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 9025695425234646394}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1201339107777482062 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8344414772206783781, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9903,21 +9215,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6799921530152306511
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1394511597804721112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7935805850621397144}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &1418962494381202609 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8129129633955536090, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -9950,21 +9247,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6885170668513402770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1418962494381202609}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3124152865984917110}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1429018983785104050 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8121599513329255129, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10037,21 +9319,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6554888822021491356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1580127894076233897}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5127590230373009721}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &1590566654668668431 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8463250486234955364, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10084,21 +9351,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2002099626851795725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1590566654668668431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3760699084764470700}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &1598709511810634425 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8452855587937850066, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10136,21 +9388,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7698206147428831814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602197563914949668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5563331683670941518}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &1625731166031484309 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8497891631136134654, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10183,21 +9420,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8352502097115750554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1625731166031484309}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1201339107777482062}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &1721438423110956577 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8395437221171721802, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10230,21 +9452,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5115146519559876127
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721438423110956577}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8151995243802232757}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &1775490432194290901 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 8917863590434661566, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10332,21 +9539,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5020010264161010549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2234832186056923175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6044518065080075931}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &2374478367709473624 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4869101435865328435, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10389,21 +9581,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5012252415093033838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2384856463500567212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 694014276918743738}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &2405396576998219281 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4756080459469790842, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10496,21 +9673,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2403337868163932048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2692270021185097507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8242699774515086935}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &2705012789851549737 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5110301652792488002, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10548,21 +9710,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7431837504620642968
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2714716911034740080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 282947362390697991}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &2851656663571584450 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4968117088988927401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10578,51 +9725,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 4942614129375021323, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
   m_PrefabInstance: {fileID: 7161095643311947883}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &9154634618103789981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2879739524123806048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a207c497e123412184a9ab447f33c6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Controllers.MeshColliderSmaller
-  _scaleFactor: 0.55
---- !u!114 &8964402163864537536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2879739524123806048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b421a40245834fb698722e6a66cffe47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlockGame.Scripts.Contexts.Gameplay.Contexts.BlockContext.Helpers.BlockFractureParentUtilities
-  _scaleFactor: 0.55
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 0
---- !u!114 &1313904959156525775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2879739524123806048}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab20c22047fc4dadb1513318d4e4897b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockAnimationModelParent
-  _scaleFactor: 0.55
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!4 &2914032638722801632 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5409363790083112843, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10675,21 +9777,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8817873103853621234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2966363541693716382}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6722045739809037749}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3014046210013107497 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5383307357126481218, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10722,21 +9809,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7548403345629873047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3014046210013107497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4272108558882783486}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3025240548362360869 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5375752917687720014, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10769,21 +9841,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9044181022880190079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3025240548362360869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7329524877078174369}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3055391967193689521 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5262381697099214298, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10816,21 +9873,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5322664821467644591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3055391967193689521}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2570153847418571845}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &3056321088694236332 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5263416440569164999, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10873,21 +9915,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5645846748115295452
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3064228406193375754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 740439792429537990}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3124152865984917110 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5204589904028790301, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10940,21 +9967,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7627297349802574620
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3260319051679897085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 290149115870053799}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &3261106711647816745 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5629664243329387586, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -10992,21 +10004,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3733429178624009118
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3265601577992375514}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1775490432194290901}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3334071226433302473 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 5558658645444308898, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11044,21 +10041,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4036019496980751983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3386623762468307982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8324372275422806700}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3401872924980553654 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5500218876057151453, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11091,21 +10073,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2873123474087934052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3401872924980553654}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8819343477971822432}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3407465827357276036 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5487797319596079087, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11138,21 +10105,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &213709096569354605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3407465827357276036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3144955049840539568}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &3419744446449357124 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5482022037416202543, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11200,21 +10152,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4446745105086833231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3495835190234845506}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8578632160074205305}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3510157418343692831 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6041516334995946100, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11247,21 +10184,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6843700697946163233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3510157418343692831}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 9172868048739272715}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3516685654187697771 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6029357224976262656, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11314,21 +10236,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2969582569364893062
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3591320928454630617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4415357344836512721}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3752061723555451956 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6301471331056096351, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11361,21 +10268,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5420103596958363959
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3752061723555451956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2851656663571584450}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3760699084764470700 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6292088810158235079, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11413,21 +10305,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &939535951013582206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3761644230986636076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5049901263031018932}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3788408197269473593 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6337254778578930002, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11465,21 +10342,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6777258001952699830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3850276598476754487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 296439855514829760}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &3872311420073776194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6258987755483386921, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11522,21 +10384,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &873805645465822987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3918992522380904143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4897985633478543874}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &3985551015094254494 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6066022159469722613, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11569,21 +10416,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4213399245458376997
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3985551015094254494}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5195936803018460146}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &3998349010020076514 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6061193871482473353, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11621,21 +10453,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3638003863523480773
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4031857651817343979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 845210690727565756}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &4039867246905453903 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6589099753579752740, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11683,21 +10500,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8558391068378864819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4143101924235187950}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 487834345442428931}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &4170319273323697970 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6538841568958764889, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11740,21 +10542,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4442219414433235144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4195477756606463154}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8097972037049607270}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4202079572952344268 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6427089187111642791, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11797,21 +10584,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3310553312816267891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4253212490952846386}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3998349010020076514}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4272108558882783486 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6352545606386942101, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11864,21 +10636,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6543730321248282784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4374911623031831416}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4243431774488911366}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &4385358897470232757 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6898034846040004830, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11931,21 +10688,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4923958925972026978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4507126632193838806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2374478367709473624}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4511494805368475968 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6772672856879190315, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -11993,21 +10735,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &734180217144801967
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4546121528383502031}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2154463988386335565}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4555661760181426435 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 6654531000275900776, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12045,21 +10772,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4153542183919189289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4586356329628501736}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5195317659765927567}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &4614441863452740121 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2551457305971264114, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12097,21 +10809,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4520462341708822337
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4681939373067828574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6628269138991820856}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4694868694009762915 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2469895332460827656, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12149,21 +10846,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8066736676240316646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4719640311768569432}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4511494805368475968}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4729054338280059103 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2504471256108576948, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12206,21 +10888,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2827954604105290636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4837377496016637956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8821561488724251863}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4897985633478543874 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2348751932601944681, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12258,21 +10925,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3922774212474997302
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4934935886089295501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 261177187521191966}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &4951863054520696266 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2871572243004194209, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12305,21 +10957,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7861502416758457299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4951863054520696266}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6135124064404156727}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &4986078348266035435 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2761631659292694656, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12357,21 +10994,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1483126526577952940
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5032278244288411114}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4555661760181426435}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5049901263031018932 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2699214161484080607, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12409,21 +11031,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1875360304163358521
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5098516882244119201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7624638470351852659}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5122295639379864428 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2627672490762054407, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12461,21 +11068,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8089941716680620388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5122888885310573178}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4694868694009762915}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5127590230373009721 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2614777938202151250, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12533,21 +11125,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &787710212262227377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5235042829865393639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8628504919572110171}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5242114989469114039 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3161220470976175836, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12590,21 +11167,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3947780588979216077
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5254436875196444471}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5122295639379864428}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5261544891715584242 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3055008142343422105, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12657,21 +11219,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9085395831320400693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5293269132031718481}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2521248342195798297}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &5327723893665193332 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3066584301445487903, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12704,21 +11251,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3769095179012667643
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5327723893665193332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 197941005534629346}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5328223560188150037 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3067221357593166206, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12756,21 +11288,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6683647410437907768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5348891960582205394}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5219027071244552635}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5355226093768684964 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2968091273816765903, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12828,21 +11345,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9164274783697216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5525631566282039421}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6187826964789858596}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &5539818631363673136 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3422789843266141275, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12875,21 +11377,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &870900960006173328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5539818631363673136}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4729054338280059103}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5563331683670941518 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3338783859961831205, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12927,21 +11414,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5975350409136889754
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5625472685508370665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1429018983785104050}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5647614661348635787 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3242883202478372064, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -12989,21 +11461,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5360019102615081825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5744736394001724956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8379786720339051784}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5790729873634287510 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3692279516257984509, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13046,21 +11503,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1538979259993745938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5811824568471505535}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1913267167806809673}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5829771952997352210 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3712883915267343225, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13098,21 +11540,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &85104555640124376
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5840403539756189270}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3788408197269473593}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &5850836223726715608 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3626253120147604147, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13145,21 +11572,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5670324049633409943
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5850836223726715608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6642457183425047052}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &5861849806558979196 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3618690526910817303, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13202,21 +11614,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &676293046676312253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5933607410992508816}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4986078348266035435}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &5965725295383539447 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3579184159099268764, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13264,21 +11661,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8690690282829527739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6078252004357636596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1207552329735369446}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6110778967856997651 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4011734834614347128, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13311,21 +11693,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2260137502115960355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6110778967856997651}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8545818561370804961}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6118307437024113283 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4001952640958673640, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13358,21 +11725,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4892814919477774970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6118307437024113283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 589539681739965816}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &6122285181231891611 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4005929210559579376, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13410,21 +11762,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1660665411651332764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6122698209374845896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 323729218072288443}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6135124064404156727 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3910536658213564764, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13462,21 +11799,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5196239141024730575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6155665656335578259}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1513415980525548479}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6161954396440486498 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3954998763202355721, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13524,21 +11846,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &949204703365268241
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6212097308039782145}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6219762950344692573}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6219762950344692573 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 3832664407836103478, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13576,21 +11883,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3317988487759497231
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6226094574906187806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2462640000475551420}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6253881022607912686 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3867304741615513221, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13623,21 +11915,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2150019591325265904
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6253881022607912686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4795217570078790153}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6261154206421541964 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3856563525841724455, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13670,21 +11947,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3695786369960866415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6261154206421541964}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5137934234877255996}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &6287138376121245358 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3756342393383296709, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13742,21 +12004,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &717165334820743418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6374284305464763952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4202079572952344268}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &6431180560993102889 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4188759071027948610, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13799,21 +12046,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7203461550162099498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6440303204046785644}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 675121940686436886}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6465405348409162972 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4240395661232733367, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13846,21 +12078,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6798128445533258692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6465405348409162972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6543560469194329177}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6467763310165848461 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4225307725674426854, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13908,21 +12125,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1936820589170438900
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6605741057240241984}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5829771952997352210}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &6622689910017534508 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4074024736313338439, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -13975,21 +12177,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7829473221280658553
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6656915715731010623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2947318895008968970}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6661803125990936032 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4544739153588391307, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14022,21 +12209,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6636694588024921390
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6661803125990936032}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1177087935225981373}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6670486127993797099 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4608028223690340736, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14069,21 +12241,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1655921971122446108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6670486127993797099}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 92081016361726252}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &6691357777610499582 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4592872247612515733, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14131,21 +12288,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3727559485380991626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6736223439110906732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4452406740874247811}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6783123643845739818 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4414422122375300417, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14188,21 +12330,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3483893618880284646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6836103378084174904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6299551523543011292}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6864998677407380333 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4333603478951719686, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14235,21 +12362,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2691578891030129660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6864998677407380333}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3524020526622468445}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6875204004508045940 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4325974719938384415, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14282,21 +12394,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7248708808651434591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6875204004508045940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8643631786367410265}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6876102793723942524 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4327257223807391255, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14334,21 +12431,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &762180876050471277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6912813363476472252}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7411667866416093344}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &6924437193567880787 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 250469278668097080, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14381,21 +12463,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2789776688100027679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6924437193567880787}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 121953513036183490}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &6939042018828569894 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 228908942640385357, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14433,21 +12500,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5197297089593875457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6947966084766203129}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1856458031755656805}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7029230418810438665 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 210971375587148898, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14480,21 +12532,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &48529509447476986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7029230418810438665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1319344151880714061}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7037928871201113354 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 201234331612235105, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14527,21 +12564,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5949823738591851260
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7037928871201113354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3488773620957448071}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7072447389475287982 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 92099380326495173, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14574,21 +12596,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5957149548725334182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7072447389475287982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2921117996042868952}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7073094246825720875 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 92885874644302912, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14621,21 +12628,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4977485160834257794
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7073094246825720875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 213826197454764372}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &7078862238029492332 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 98086576836866055, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14673,21 +12665,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7297376533404196846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7100850663455470710}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6786408556012431821}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7125797735658774331 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 108853586855567184, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14730,21 +12707,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7871795685396888768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7195282198834029925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 515318535134863463}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7211311016367982660 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 536750388260194351, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14787,21 +12749,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4178683999371747549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7270115034812083366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1040837101673850530}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7270271034809891807 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 541666120387754932, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14844,21 +12791,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7286796501114055898
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7322174900549516291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 3230951060943926727}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7328566459604294156 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 492333639807965799, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14891,21 +12823,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8388401521337884271
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7328566459604294156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 120778195571910936}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &7329524877078174369 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 492834651649792714, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -14948,21 +12865,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3170597608910014629
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7378374965175956325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5261544891715584242}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7403124466195532919 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 422349841300081692, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15020,21 +12922,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7488886685480914868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7500687119737618111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 598653861307526187}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7517064595033150251 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 806330047327179584, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15097,21 +12984,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6340625976989674120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7623951229308079070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5965725295383539447}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &7624638470351852659 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 770531981815272472, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15149,21 +13021,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &499415751364855856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7635154631516319925}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8060198176884171421}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7637616171650245034 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 765350230870270401, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15196,21 +13053,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7433598355491838916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7637616171650245034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 448343872593842904}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7662433015867369270 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 664066200695416669, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15258,21 +13100,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3459461616684400743
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7718954927491603009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6783123643845739818}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7769228306425311348 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 626147066994176031, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15305,21 +13132,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6159659045172558513
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7769228306425311348}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8512247203142034593}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &7773960262217892102 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 613603493947949421, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15362,21 +13174,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6895912919041038261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7849548507181485068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4126085568654679643}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &7892724692446108865 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1074607421860650154, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15419,21 +13216,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4867190337366560316
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7916751808902241428}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6467763310165848461}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &7935758276464439516 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 954807722127372471, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15466,21 +13248,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2041734648488505445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7935758276464439516}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2070249779559954420}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &7935805850621397144 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 955035713902315763, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15538,21 +13305,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4458997756706410981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8082862481645971657}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 4305754825893878632}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8097972037049607270 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1369257161734464525, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15600,21 +13352,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4416805923339217437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8143777175566584569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 2592264931269594683}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8151995243802232757 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1315305010928895966, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15657,21 +13394,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7836172033138099600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8190255426202783936}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6876102793723942524}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8193305075082815776 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1357031569055000907, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15714,21 +13436,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5795474838094123410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8223313375588045640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 408396690901880952}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8242699774515086935 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1225719405315278396, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15766,21 +13473,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2593066188679670286
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8246009725098232016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 8849509011057416052}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8324372275422806700 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1218029021231252167, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15853,21 +13545,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6812494039613538688
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8540867059543373951}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7485779075045883283}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8545818561370804961 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1583448750796739210, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15920,21 +13597,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7032911306837292219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8607800024274150977}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 5254039386706445176}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &8628504919572110171 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 1504141844680448816, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -15982,21 +13644,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3436507378117447836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8669560399087941665}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7892724692446108865}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &8711725524989427736 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1983579169258602611, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -16039,21 +13686,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1483967350152482361
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8797425134750043785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 361181206436515290}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &8801842388903263740 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1821494459212840343, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -16111,21 +13743,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1615761882085566612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8859238764567714543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1340453210600261674}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &8880594119321388965 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1756236484943792078, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -16168,21 +13785,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2696691794332719821
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8968087150728725798}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 6304983351294929678}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!4 &9003553636915906034 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2274985076107789721, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -16225,21 +13827,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1269107090199666426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9095228866279498767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 7716709549775314827}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!1 &9145284345088828069 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2129007607359283918, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}
@@ -16272,21 +13859,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2757295757901208028
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9145284345088828069}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 152d61a4d6d84c439fa816894c5b64d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.MovableBlockContext.Models.BlockVisualFracture
-  _meshRenderer: {fileID: 1509431359340249008}
-  _rigidbody: {fileID: 0}
-  _meshCollider: {fileID: 0}
 --- !u!23 &9172868048739272715 stripped
 MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 2030490560302041184, guid: 270d3d3c4b31048b1a41857f9d353d2f, type: 3}

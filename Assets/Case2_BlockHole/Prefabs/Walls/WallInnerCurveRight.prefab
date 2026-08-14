@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 8401837066974374250}
   - component: {fileID: 901320513714920485}
   - component: {fileID: 7418886830597678862}
-  - component: {fileID: 612262429085648614}
   m_Layer: 0
   m_Name: WallInnerCurveRight
   m_TagString: Untagged
@@ -124,20 +123,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &612262429085648614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1911622450397516199}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de0dc1f5b4d45539c874786105ae950, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_CarMatchMania.Scripts.Contexts._GameplayContext.Models.GridWall
-  _leftBottomPoint: {fileID: 8946118597520393898}
-  _rightBottomPoint: {fileID: 1766578886063877839}
 --- !u!1 &7716724570722293871
 GameObject:
   m_ObjectHideFlags: 0

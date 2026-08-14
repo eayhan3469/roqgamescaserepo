@@ -66,8 +66,6 @@ GameObject:
   - component: {fileID: 4637365169808820668}
   - component: {fileID: 3566058752040372678}
   - component: {fileID: 1301761195379132350}
-  - component: {fileID: 6390459804450590655}
-  - component: {fileID: 1725802934908249623}
   m_Layer: 0
   m_Name: Fracture Object 6
   m_TagString: Untagged
@@ -196,34 +194,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6390459804450590655
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 328530126193459330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1725802934908249623
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 328530126193459330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.3752116
 --- !u!1 &346449937799867443
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,8 +207,6 @@ GameObject:
   - component: {fileID: 5400298036440775765}
   - component: {fileID: 4991948656163004956}
   - component: {fileID: 8399451019118017248}
-  - component: {fileID: 7840960220255450370}
-  - component: {fileID: 29407778747454895}
   m_Layer: 0
   m_Name: Fracture Object 7
   m_TagString: Untagged
@@ -367,34 +335,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7840960220255450370
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346449937799867443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &29407778747454895
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 346449937799867443}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.44087642
 --- !u!1 &369488257022577953
 GameObject:
   m_ObjectHideFlags: 0
@@ -408,8 +348,6 @@ GameObject:
   - component: {fileID: 9044768549384229754}
   - component: {fileID: 2100743107096707365}
   - component: {fileID: 1207585979999245229}
-  - component: {fileID: 6534089986780148448}
-  - component: {fileID: 5880724437424284562}
   m_Layer: 0
   m_Name: Fracture Object 0
   m_TagString: Untagged
@@ -538,34 +476,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6534089986780148448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369488257022577953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5880724437424284562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 369488257022577953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.20526117
 --- !u!1 &1109718798326949779
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,8 +489,6 @@ GameObject:
   - component: {fileID: 597035402668224208}
   - component: {fileID: 860441134486709498}
   - component: {fileID: 7780879050481710660}
-  - component: {fileID: 609320458662812026}
-  - component: {fileID: 2761417630521007020}
   m_Layer: 0
   m_Name: Fracture Object 13
   m_TagString: Untagged
@@ -709,34 +617,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &609320458662812026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1109718798326949779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2761417630521007020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1109718798326949779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.021128578
 --- !u!1 &1133477584174187615
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,8 +630,6 @@ GameObject:
   - component: {fileID: 5920209266594974816}
   - component: {fileID: 7813366331687985594}
   - component: {fileID: 615097291989836615}
-  - component: {fileID: 9121579267297557978}
-  - component: {fileID: 3711147278488647717}
   m_Layer: 0
   m_Name: Fracture Object 18
   m_TagString: Untagged
@@ -880,34 +758,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9121579267297557978
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1133477584174187615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3711147278488647717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1133477584174187615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.20715523
 --- !u!1 &1553331070237239704
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,8 +771,6 @@ GameObject:
   - component: {fileID: 699677503079806990}
   - component: {fileID: 770544266843329371}
   - component: {fileID: 4286488025074242124}
-  - component: {fileID: 7105692698987448607}
-  - component: {fileID: 7514379669779122504}
   m_Layer: 0
   m_Name: Fracture Object 2
   m_TagString: Untagged
@@ -1051,34 +899,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7105692698987448607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1553331070237239704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7514379669779122504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1553331070237239704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.14461675
 --- !u!1 &3272396858138473497
 GameObject:
   m_ObjectHideFlags: 0
@@ -1092,8 +912,6 @@ GameObject:
   - component: {fileID: 6465494198253098592}
   - component: {fileID: 131189664353431565}
   - component: {fileID: 8370859861559559874}
-  - component: {fileID: 1275744553472454026}
-  - component: {fileID: 3133871248886730679}
   m_Layer: 0
   m_Name: Fracture Object 3
   m_TagString: Untagged
@@ -1222,34 +1040,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1275744553472454026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3272396858138473497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3133871248886730679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3272396858138473497}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.15488021
 --- !u!1 &3667195060584969361
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,8 +1053,6 @@ GameObject:
   - component: {fileID: 7350242895177747560}
   - component: {fileID: 4816220457875614334}
   - component: {fileID: 4845829204840515647}
-  - component: {fileID: 4264132711060145626}
-  - component: {fileID: 27203749752225769}
   m_Layer: 0
   m_Name: Fracture Object 4
   m_TagString: Untagged
@@ -1393,34 +1181,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4264132711060145626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3667195060584969361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &27203749752225769
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3667195060584969361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.000024409614
 --- !u!1 &4027442274403059513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1434,8 +1194,6 @@ GameObject:
   - component: {fileID: 2295658211943374425}
   - component: {fileID: 6560652154995990364}
   - component: {fileID: 5256416007893934291}
-  - component: {fileID: 6193870516790996150}
-  - component: {fileID: 9146130162264036506}
   m_Layer: 0
   m_Name: Fracture Object 10
   m_TagString: Untagged
@@ -1564,34 +1322,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6193870516790996150
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4027442274403059513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &9146130162264036506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4027442274403059513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.06587846
 --- !u!1 &4197390086188163528
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,8 +1335,6 @@ GameObject:
   - component: {fileID: 8253216261714171136}
   - component: {fileID: 1185900000788092893}
   - component: {fileID: 5057246100491269144}
-  - component: {fileID: 576690436790062279}
-  - component: {fileID: 2861921264089666784}
   m_Layer: 0
   m_Name: Fracture Object 17
   m_TagString: Untagged
@@ -1735,34 +1463,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &576690436790062279
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4197390086188163528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2861921264089666784
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4197390086188163528}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.218252
 --- !u!1 &4793261589524592730
 GameObject:
   m_ObjectHideFlags: 0
@@ -1776,8 +1476,6 @@ GameObject:
   - component: {fileID: 8781435940959469293}
   - component: {fileID: 7717529612629163093}
   - component: {fileID: 3959037307348699281}
-  - component: {fileID: 4597001008014783671}
-  - component: {fileID: 3315774585257195387}
   m_Layer: 0
   m_Name: Fracture Object 5
   m_TagString: Untagged
@@ -1906,34 +1604,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4597001008014783671
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4793261589524592730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3315774585257195387
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4793261589524592730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.0063139987
 --- !u!1 &5086435891578867476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1947,8 +1617,6 @@ GameObject:
   - component: {fileID: 5612611664899980514}
   - component: {fileID: 695687508358504882}
   - component: {fileID: 4030680968166769743}
-  - component: {fileID: 1995168033039982388}
-  - component: {fileID: 2153027798539684079}
   m_Layer: 0
   m_Name: Fracture Object 16
   m_TagString: Untagged
@@ -2077,34 +1745,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1995168033039982388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5086435891578867476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2153027798539684079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5086435891578867476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.21188435
 --- !u!1 &5134977744982988370
 GameObject:
   m_ObjectHideFlags: 0
@@ -2118,8 +1758,6 @@ GameObject:
   - component: {fileID: 2082707238039626508}
   - component: {fileID: 7273294307562866998}
   - component: {fileID: 4287399853941086163}
-  - component: {fileID: 268290190021504953}
-  - component: {fileID: 7274440035739915561}
   m_Layer: 0
   m_Name: Fracture Object 19
   m_TagString: Untagged
@@ -2248,34 +1886,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &268290190021504953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5134977744982988370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7274440035739915561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5134977744982988370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.1830816
 --- !u!1 &5353504039798897106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2289,8 +1899,6 @@ GameObject:
   - component: {fileID: 4153675043616839966}
   - component: {fileID: 2287428950446856600}
   - component: {fileID: 5180323448451428977}
-  - component: {fileID: 4459538510407360536}
-  - component: {fileID: 2388840361165763209}
   m_Layer: 0
   m_Name: Fracture Object 15
   m_TagString: Untagged
@@ -2419,34 +2027,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4459538510407360536
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5353504039798897106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2388840361165763209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5353504039798897106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.20046182
 --- !u!1 &6789909774721340258
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,8 +2040,6 @@ GameObject:
   - component: {fileID: 7404828950378671005}
   - component: {fileID: 5950338814709114572}
   - component: {fileID: 5813347963804198183}
-  - component: {fileID: 9140235864395268038}
-  - component: {fileID: 5570139311682972578}
   m_Layer: 0
   m_Name: Fracture Object 1
   m_TagString: Untagged
@@ -2590,34 +2168,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &9140235864395268038
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6789909774721340258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &5570139311682972578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6789909774721340258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.21030419
 --- !u!1 &7083908287634920828
 GameObject:
   m_ObjectHideFlags: 0
@@ -2631,8 +2181,6 @@ GameObject:
   - component: {fileID: 6277593498722575566}
   - component: {fileID: 2517533839191987919}
   - component: {fileID: 1718951077253687684}
-  - component: {fileID: 1960403499735010079}
-  - component: {fileID: 7691826444903213244}
   m_Layer: 0
   m_Name: Fracture Object 9
   m_TagString: Untagged
@@ -2761,34 +2309,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1960403499735010079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7083908287634920828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7691826444903213244
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7083908287634920828}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.055073593
 --- !u!1 &7084167999136819106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2802,8 +2322,6 @@ GameObject:
   - component: {fileID: 1955042020207470440}
   - component: {fileID: 4200746538162995067}
   - component: {fileID: 6394506298606056193}
-  - component: {fileID: 43520012669303223}
-  - component: {fileID: 4143673154518242701}
   m_Layer: 0
   m_Name: Fracture Object 11
   m_TagString: Untagged
@@ -2932,34 +2450,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &43520012669303223
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7084167999136819106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4143673154518242701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7084167999136819106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.26763743
 --- !u!1 &7097785771648221678
 GameObject:
   m_ObjectHideFlags: 0
@@ -2973,8 +2463,6 @@ GameObject:
   - component: {fileID: 1914929401443705674}
   - component: {fileID: 6250247951331870267}
   - component: {fileID: 197822083683870605}
-  - component: {fileID: 3318621594187667749}
-  - component: {fileID: 2685300962829900245}
   m_Layer: 0
   m_Name: Fracture Object 14
   m_TagString: Untagged
@@ -3103,34 +2591,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3318621594187667749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7097785771648221678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2685300962829900245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7097785771648221678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.032614164
 --- !u!1 &7216777931088834473
 GameObject:
   m_ObjectHideFlags: 0
@@ -3144,8 +2604,6 @@ GameObject:
   - component: {fileID: 5602250925733539613}
   - component: {fileID: 1437603640058624831}
   - component: {fileID: 6991807042610914252}
-  - component: {fileID: 16169902535632907}
-  - component: {fileID: 1076990574460818601}
   m_Layer: 0
   m_Name: Fracture Object 8
   m_TagString: Untagged
@@ -3274,34 +2732,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &16169902535632907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7216777931088834473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1076990574460818601
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7216777931088834473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.25492668
 --- !u!1 &7924499913862930783
 GameObject:
   m_ObjectHideFlags: 0
@@ -3315,8 +2745,6 @@ GameObject:
   - component: {fileID: 4015954649622318891}
   - component: {fileID: 4682081335245579194}
   - component: {fileID: 528908094097580173}
-  - component: {fileID: 7757604974333276963}
-  - component: {fileID: 6764626206446043912}
   m_Layer: 0
   m_Name: Fracture Object 21
   m_TagString: Untagged
@@ -3445,34 +2873,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7757604974333276963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7924499913862930783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6764626206446043912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7924499913862930783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.05196486
 --- !u!1 &8403610586869919616
 GameObject:
   m_ObjectHideFlags: 0
@@ -3486,8 +2886,6 @@ GameObject:
   - component: {fileID: 3194302255288186619}
   - component: {fileID: 5225653411666423683}
   - component: {fileID: 6229349012936764023}
-  - component: {fileID: 6368600978413874976}
-  - component: {fileID: 3788314439162825246}
   m_Layer: 0
   m_Name: Fracture Object 20
   m_TagString: Untagged
@@ -3616,34 +3014,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6368600978413874976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8403610586869919616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3788314439162825246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8403610586869919616}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.01916154
 --- !u!1 &8955107573216017242
 GameObject:
   m_ObjectHideFlags: 0
@@ -3657,8 +3027,6 @@ GameObject:
   - component: {fileID: 759762829938041492}
   - component: {fileID: 1640198188271326518}
   - component: {fileID: 3944195386533841039}
-  - component: {fileID: 316722286566167522}
-  - component: {fileID: 401202048280296174}
   m_Layer: 0
   m_Name: Fracture Object 12
   m_TagString: Untagged
@@ -3787,34 +3155,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &316722286566167522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8955107573216017242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74a66a1d9fc746d49abdfc531db526f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &401202048280296174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8955107573216017242}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40b3b4341d686c248bc5aecab579e715, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FracturedObject
-  TotalMass: 0
-  TotalVolume: 3.6188717
-  ThisMass: 0
-  ThisVolume: 0.29216272
 --- !u!43 &-6317707130348227876
 Mesh:
   m_ObjectHideFlags: 0
@@ -6307,20 +5647,6 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!114 &3607593436206341434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e83d9ab6d15863488629954d90e1a93, type: 3}
-  m_Name: Metadata
-  m_EditorClassIdentifier: DinoFracture.Scripts::DinoFracture.FractureMeshesMetadata
-  UniqueId: GlobalObjectId_V1-2-5bd161b5a4b8f4527bb869eea53027e6-2799436848093684178-8896869
-  ScenePath: GameplayVisuals/Block-Single
 --- !u!43 &4412497311072194075
 Mesh:
   m_ObjectHideFlags: 0

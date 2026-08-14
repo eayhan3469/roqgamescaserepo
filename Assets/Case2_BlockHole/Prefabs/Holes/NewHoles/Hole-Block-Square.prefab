@@ -132,8 +132,6 @@ GameObject:
   - component: {fileID: 7622659277075068870}
   - component: {fileID: 6885050106675208833}
   - component: {fileID: 5605890769831025292}
-  - component: {fileID: 2242610120832582923}
-  - component: {fileID: 8259885867158610622}
   m_Layer: 0
   m_Name: Hole-Block-Square
   m_TagString: Untagged
@@ -216,33 +214,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2242610120832582923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4591044610509303624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15ae4ba142cb4fa4b0faa502bf5ef98f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.HoleContext.Models.GridHole
-  _holeMainTransform: {fileID: 7622659277075068870}
---- !u!114 &8259885867158610622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4591044610509303624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c72a2992307d4406be43e7619f6876a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_HoleBlock.Scripts.Contexts.Gameplay.Contexts.HoleContext.Models.HoleVisual
-  _centerTransform: {fileID: 8025916478263017475}
-  _hoverElementsParent: {fileID: 8768552880781510593}
 --- !u!1 &8768552880781510593
 GameObject:
   m_ObjectHideFlags: 0

@@ -257,7 +257,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3864579125048126345}
-  - component: {fileID: 3290872322098469236}
   m_Layer: 0
   m_Name: WallCorner
   m_TagString: Untagged
@@ -285,40 +284,6 @@ Transform:
   - {fileID: 1704292037986728239}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3290872322098469236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5384264231198259994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9017ca293bb4a429450e3dc7b97e1e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_CarMatchMania.Scripts.Contexts._GameplayContext.Models.MapCellCorner
-  _root: {fileID: 3864579125048126345}
-  _sitPoint: {fileID: 3159287935105383778}
-  _innerCornerSitPoint: {fileID: 7492304289240050622}
-  _leftPointForScaling: {fileID: 8608699057912377483}
-  _rightPointForScaling: {fileID: 757820108306009851}
-  _rotationAndData:
-  - _rotationType: 0
-    _cornerType: 1
-    _rotationVisual: {fileID: 8398448308760285251}
-    _startPoint: {fileID: 3351492472760336995}
-    _startPointSecond: {fileID: 1713362864284425075}
-    _endPoint: {fileID: 1142616202358755635}
-    _endPointSecond: {fileID: 5771299812264756029}
-  - _rotationType: 0
-    _cornerType: 0
-    _rotationVisual: {fileID: 7506274493543948280}
-    _startPoint: {fileID: 6424919382150120206}
-    _startPointSecond: {fileID: 3675045472308285042}
-    _endPoint: {fileID: 7891097943749648144}
-    _endPointSecond: {fileID: 3169290320928608786}
-  CurrentRotationType: 0
-  CurrentCornerType: 0
 --- !u!1 &5755322408915585807
 GameObject:
   m_ObjectHideFlags: 0
@@ -545,7 +510,6 @@ GameObject:
   - component: {fileID: 5134183182289882236}
   - component: {fileID: 7385410687732521568}
   - component: {fileID: 6335970028046256646}
-  - component: {fileID: 6498286730365920485}
   - component: {fileID: 2019079150610668092}
   m_Layer: 0
   m_Name: Frame_InCorner
@@ -634,26 +598,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6498286730365920485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8398448308760285251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9017ca293bb4a429450e3dc7b97e1e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_CarMatchMania.Scripts.Contexts._GameplayContext.Models.MapCellCorner
-  _root: {fileID: 0}
-  _sitPoint: {fileID: 0}
-  _innerCornerSitPoint: {fileID: 0}
-  _leftPointForScaling: {fileID: 0}
-  _rightPointForScaling: {fileID: 0}
-  _rotationAndData: []
-  CurrentRotationType: 0
-  CurrentCornerType: 0
 --- !u!65 &2019079150610668092
 BoxCollider:
   m_ObjectHideFlags: 0
