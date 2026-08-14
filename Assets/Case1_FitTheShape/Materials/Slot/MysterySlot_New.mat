@@ -106,7 +106,6 @@ Material:
     - _IsAttaacked: 0
     - _IsWindy: 0
     - _Is_Attaacked: 0
-    - _Metallic: 0
     - _NormalStrength: 0
     - _QueueControl: 0
     - _QueueOffset: 0
