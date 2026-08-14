@@ -43,7 +43,6 @@ GameObject:
   - component: {fileID: 3119682346286365362}
   - component: {fileID: 2362741714444595004}
   - component: {fileID: 6411299942737052627}
-  - component: {fileID: 2504104878819384117}
   m_Layer: 0
   m_Name: DeckSlot
   m_TagString: Untagged
@@ -126,23 +125,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2504104878819384117
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4532339573554172429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd64db82008a04d2ba8273517497e212, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Deck.DeckSlotModel
-  _shapeAnchor: {fileID: 5313011716464752048}
-  _shapeFilter: {fileID: 7303630363842095123}
-  _shapeRenderer: {fileID: 457141035535859534}
-  _leftEdge: {fileID: 2816286345361847566}
-  _rightEdge: {fileID: 4804538484663287829}
 --- !u!1 &5378867646417796564
 GameObject:
   m_ObjectHideFlags: 0

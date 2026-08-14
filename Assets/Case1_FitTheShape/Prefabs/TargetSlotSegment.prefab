@@ -667,33 +667,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 78a60f70c2a114749a84df87ddca76c4, type: 3}
   m_PrefabInstance: {fileID: 6908633204896292376}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7755527038225424770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5990082835904652105}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb9d59a47cfa5432dbe963196aa04acf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Target.TargetSlotSegmentModel
-  _bodyRenderer: {fileID: 5197700333042483868}
-  _holeFilter: {fileID: 5872540612072137584}
-  _holeRenderer: {fileID: 7491824116559498547}
-  _capFilter: {fileID: 7135240679394909602}
-  _capRenderer: {fileID: 4428178623363639702}
-  _leftEdge: {fileID: 1911157235797092300}
-  _rightEdge: {fileID: 7489456089694052342}
-  _sideMountAnchorLeft: {fileID: 5798291534337255633}
-  _sideMountAnchorRight: {fileID: 4103202063911346533}
-  _middlePartAnchorLeft: {fileID: 4883579437186536485}
-  _middlePartAnchorRight: {fileID: 5748029396952359227}
-  _frontAnchorFirst: {fileID: 3461170650750746966}
-  _frontAnchor: {fileID: 2606133259492319006}
-  _vfxAnchor: {fileID: 4845290115676623272}
-  _mysteryOverlay: {fileID: 541862409008787493}
 --- !u!4 &6371146750105926131 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78a60f70c2a114749a84df87ddca76c4, type: 3}
