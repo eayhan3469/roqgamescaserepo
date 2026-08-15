@@ -131,7 +131,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 358889742784414569}
-  - component: {fileID: 4335626241819404581}
   m_Layer: 0
   m_Name: WastePileModel
   m_TagString: Untagged
@@ -159,23 +158,6 @@ Transform:
   - {fileID: 4245019509999854625}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4335626241819404581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4177829617359068027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b75cc40a53cc9413c8843d35781fa384, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Sticker.WastePile.Models.WastePileModel
-  _windowRoot: {fileID: 615955307089697613}
-  _buriedBadge: {fileID: 1100270793587282576}
-  _buriedBadgeBg: {fileID: 7531730629882852853}
-  _totalCount: {fileID: 8942063834974438584}
-  _totalCountBg: {fileID: 418655491929875121}
 --- !u!1 &4377158122984940762
 GameObject:
   m_ObjectHideFlags: 0

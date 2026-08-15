@@ -622,7 +622,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7172358493959085483}
   - component: {fileID: 5758201054794716595}
-  - component: {fileID: 5278648135946066053}
   m_Layer: 0
   m_Name: SheetModel
   m_TagString: Untagged
@@ -673,30 +672,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5.347, y: 8.362, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5278648135946066053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5139837395648556593}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5925b93417798467cb02a2e9bed85b08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Sticker.Sheet.Models.SheetModel
-  _bg: {fileID: 8342466912295739080}
-  _bgRight: {fileID: 5132862194525397419}
-  _ringL: {fileID: 566620225780301440}
-  _ringR: {fileID: 209292156367506902}
-  _labelBg: {fileID: 5067474892654277945}
-  _doneRing: {fileID: 8182407529189218858}
-  _label: {fileID: 4760611150818892167}
-  _count: {fileID: 1261758205327112806}
-  _leafL: {fileID: 5448139748294470383}
-  _leafR: {fileID: 4439303701212815807}
-  _cellsRoot: {fileID: 2071909949714471211}
-  _collider: {fileID: 5758201054794716595}
 --- !u!1 &5693329572044899523
 GameObject:
   m_ObjectHideFlags: 0

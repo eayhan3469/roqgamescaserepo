@@ -1462,7 +1462,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9213445708212093506}
   - component: {fileID: 2491159435924678442}
-  - component: {fileID: 8323156565270384812}
   m_Layer: 0
   m_Name: DrawPileModel
   m_TagString: Untagged
@@ -1518,28 +1517,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.06, y: 2.82, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8323156565270384812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8325552295971550619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f778337bed3a45d38043da595e19527, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Sticker.DrawPile.Models.DrawPileModel
-  _packSprite: {fileID: 7388061968423931048}
-  _themeIcon: {fileID: 8510432222147412012}
-  _themeName: {fileID: 4936767967114207886}
-  _cardCount: {fileID: 3516796599137853293}
-  _cardCountBg: {fileID: 8075444075412072645}
-  _remaining: {fileID: 2051881042478555979}
-  _remainingBg: {fileID: 7752332297059703343}
-  _recycleIcon: {fileID: 518481623095663171}
-  _recycleLabel: {fileID: 7044630428668653817}
-  _recycleLabelBg: {fileID: 5227823737482467366}
-  _recycleBg: {fileID: 4569565366841823080}
-  _emptyOutline: {fileID: 3226541821973487801}
-  _collider: {fileID: 2491159435924678442}

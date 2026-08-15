@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7431375872376323044}
   - component: {fileID: 853664427062891776}
-  - component: {fileID: 8058495680962115621}
   m_Layer: 0
   m_Name: PegModel
   m_TagString: Untagged
@@ -60,26 +59,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.758, y: 3.557, z: 0.1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8058495680962115621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 455602270527901765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d48a610d6b734da4be5411cfc1d33e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_GameSample.Scripts.GameplayContext.Sticker.Peg.Models.PegModel
-  _sealedPack: {fileID: 4426857492079953168}
-  _sealedIcon: {fileID: 2295691992013669326}
-  _sealedCount: {fileID: 3180636692975288779}
-  _stackRoot: {fileID: 7715069135604259954}
-  _badge: {fileID: 5817278423201971365}
-  _badgeBg: {fileID: 1682797596622674785}
-  _collider: {fileID: 853664427062891776}
-  _sealedCollider: {fileID: 7943508922564812453}
 --- !u!1 &3202528845104772882
 GameObject:
   m_ObjectHideFlags: 0
