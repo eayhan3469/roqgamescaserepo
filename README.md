@@ -17,7 +17,7 @@ material, prefab vb. her şeyi kendi klasörü altında tutmanızı bekliyoruz:
       Case1_FitTheShape/   → Models, Materials, Textures, Prefabs, VFX, Scenes (staged sahne hazır)
       Case2_BlockHole/     → Models, Materials, Textures, Prefabs (Blocks/Holes/Walls/Fractured), VFX, Scenes (staged sahne hazır)
       Case3_Stickerdom/    → Prefabs, Sprites (sticker + ghost), Textures, VFX, Scenes (staged sahne hazır)
-      Case4_Buca/
+      Case4_Buca/          → Materials, Textures, Prefabs (lane/hole/puck/green blocks + fractured), VFX, Scenes (staged sahne hazır)
 
 Her case klasöründeki `Scenes/` altında sahnelenmiş bir başlangıç sahnesi
 bulunur (kamera + ışık + dizilmiş art). Bu sahnede hiç script yoktur —
@@ -38,3 +38,5 @@ Case 2'de blokların önceden kırılmış (pre-fractured) mesh parçaları
 `Prefabs/Fractured/` altındadır — kırılma efektinizi bunlarla kurabilirsiniz.
 
 Case 3'te her sticker'ın soluk `_ghost` varyantı yapışma hedefi olarak kullanılabilir.
+
+Case 4'te yeşil blokların önceden bölünmüş (fractured) varyantları `Prefabs/`dedir; parçalar Rigidbody'lidir (isKinematic açık başlar).
