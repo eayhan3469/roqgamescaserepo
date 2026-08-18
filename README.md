@@ -38,5 +38,3 @@ Case 2'de blokların önceden kırılmış (pre-fractured) mesh parçaları
 `Prefabs/Fractured/` altındadır — kırılma efektinizi bunlarla kurabilirsiniz.
 
 Case 3'te her sticker'ın soluk `_ghost` varyantı yapışma hedefi olarak kullanılabilir.
-
-Case 4'te yeşil blokların önceden bölünmüş (fractured) varyantları `Prefabs/`dedir; parçalar Rigidbody'lidir (isKinematic açık başlar).
