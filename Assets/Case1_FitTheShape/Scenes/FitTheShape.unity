@@ -3269,13 +3269,13 @@ MonoBehaviour:
   lastAnchor: {fileID: 646554842}
   slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
-  liftDuration: 0.2
-  liftScaleMultiplier: 1.2
-  liftEase: 6
-  insertDuration: 0.25
-  spinRotation: {x: 0, y: 360, z: 0}
-  insertEase: 26
-  vfxOnEntered: {fileID: 0}
+  flightDuration: 0.42
+  peakScaleMultiplier: 1.2
+  flightEase: 7
+  spinEase: 7
+  starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
+  flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
+  insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
   sfxOnEntered: {fileID: 0}
   OnShapeMoveStarted:
     m_PersistentCalls:
@@ -7316,13 +7316,13 @@ MonoBehaviour:
   lastAnchor: {fileID: 146348107}
   slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
-  liftDuration: 0.2
-  liftScaleMultiplier: 1.2
-  liftEase: 6
-  insertDuration: 0.25
-  spinRotation: {x: 0, y: 360, z: 0}
-  insertEase: 26
-  vfxOnEntered: {fileID: 0}
+  flightDuration: 0.42
+  peakScaleMultiplier: 1.2
+  flightEase: 7
+  spinEase: 7
+  starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
+  flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
+  insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
   sfxOnEntered: {fileID: 0}
   OnShapeMoveStarted:
     m_PersistentCalls:
@@ -7657,13 +7657,13 @@ MonoBehaviour:
   lastAnchor: {fileID: 319623626}
   slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
-  liftDuration: 0.2
-  liftScaleMultiplier: 1.2
-  liftEase: 6
-  insertDuration: 0.25
-  spinRotation: {x: 0, y: 360, z: 0}
-  insertEase: 26
-  vfxOnEntered: {fileID: 0}
+  flightDuration: 0.42
+  peakScaleMultiplier: 1.2
+  flightEase: 7
+  spinEase: 7
+  starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
+  flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
+  insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
   sfxOnEntered: {fileID: 0}
   OnShapeMoveStarted:
     m_PersistentCalls:

@@ -17,8 +17,10 @@ Material:
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  stringTagMap:
+    RenderType: Opaque
+  disabledShaderPasses:
+  - MOTIONVECTORS
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
@@ -212,7 +214,7 @@ Material:
     - __dummy__: 0
     m_Colors:
     - _BaseColor: {r: 0.8773585, g: 0.23748364, b: 0.12829298, a: 1}
-    - _Color: {r: 0.97647053, g: 0.12235845, b: 0, a: 1}
+    - _Color: {r: 0.8773585, g: 0.23748359, b: 0.12829295, a: 1}
     - _CustomTime: {r: 0.05, g: 1, b: 2, a: 3}
     - _DiffuseTint: {r: 1, g: 0.5, b: 0, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 1}
