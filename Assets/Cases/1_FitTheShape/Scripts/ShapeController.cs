@@ -8,7 +8,7 @@ using DG.Tweening;
 namespace FitTheShape
 {
     [RequireComponent(typeof(Collider))]
-    public class ShapeController : MonoBehaviour, IPointerClickHandler
+    public class ShapeController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
     {
         [Header("Target & Anchor Transforms")]
         [Tooltip("The target segment or hole on the wheel.")]
@@ -156,7 +156,7 @@ namespace FitTheShape
             }
         }
 
-        private void OnMouseDown()
+        public void OnPointerDown(PointerEventData eventData)
         {
             TriggerFitSequence();
         }
@@ -184,7 +184,7 @@ namespace FitTheShape
                 shapeCollider.enabled = false;
             }
 
-            // 1. Audio: Whoosh / Launch Sound (Anında tetikleme)
+            // 1. Audio: Whoosh / Launch Sound
             if (FitTheShapeAudioManager.Instance != null)
             {
                 FitTheShapeAudioManager.Instance.PlayLaunchSound();
