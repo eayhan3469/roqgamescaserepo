@@ -200,6 +200,12 @@ namespace FitTheShape
 
         private void TriggerGridReaction(int hitCol, int hitRow, Vector3 impactPos, Transform seatedShape)
         {
+            // Trigger Resonance Wobble Audio
+            if (FitTheShapeAudioManager.Instance != null)
+            {
+                FitTheShapeAudioManager.Instance.PlayWobbleSound();
+            }
+
             if (impactParticles != null)
             {
                 impactParticles.transform.position = impactPos;

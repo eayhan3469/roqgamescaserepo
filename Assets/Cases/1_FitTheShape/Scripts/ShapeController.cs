@@ -50,6 +50,7 @@ namespace FitTheShape
         [Tooltip("Insertion friction sparks prefab spawned at the hole rim on landing.")]
         [SerializeField] private GameObject insertionSparksPrefab;
 
+        [Header("Events & Audio")]
         [SerializeField] private AudioSource sfxOnEntered;
         [SerializeField] private UnityEvent OnShapeMoveStarted;
         [SerializeField] private UnityEvent OnShapeEntered;
@@ -183,6 +184,12 @@ namespace FitTheShape
                 shapeCollider.enabled = false;
             }
 
+            // 1. Audio: Whoosh / Launch Sound (Anında tetikleme)
+            if (FitTheShapeAudioManager.Instance != null)
+            {
+                FitTheShapeAudioManager.Instance.PlayLaunchSound();
+            }
+
             OnShapeMoveStarted?.Invoke();
 
             activeSequence?.Kill();
@@ -217,7 +224,17 @@ namespace FitTheShape
             scaleSeq.Append(transform.DOScale(originalScale, flightDuration * 0.55f).SetEase(Ease.InQuad));
             activeSequence.Join(scaleSeq);
 
-            // 4. Tam yuvasına indiğinde
+            // 4. Snap Sesini tam temas anından bir kare önce (0 gecikme hissi) tetikle
+            activeSequence.InsertCallback(Mathf.Max(0f, flightDuration - 0.02f), () =>
+            {
+                if (FitTheShapeAudioManager.Instance != null)
+                {
+                    FitTheShapeAudioManager.Instance.PlaySnapImpactSound();
+                    FitTheShapeAudioManager.Instance.PlaySuccessSound();
+                }
+            });
+
+            // 5. Tam yuvasına indiğinde
             activeSequence.OnComplete(() =>
             {
                 transform.position = sunkenTargetPos;
@@ -229,7 +246,7 @@ namespace FitTheShape
                 // 1. Yuvaya giriş sürtünme kıvılcımı (Insertion Friction Sparks)
                 SpawnInsertionSparks(sunkenTargetPos);
 
-                // 2. Yukarı ve dışa doğru yelpaze taç şeklinde yıldız patlaması (Fan/Crown Arc)
+                // 2. Çok tonlu parlak sarı yıldızlar + minik kıvılcım tozları patlaması
                 SpawnStarBurstVfx(sunkenTargetPos);
 
                 if (sfxOnEntered != null)
@@ -237,7 +254,7 @@ namespace FitTheShape
                     sfxOnEntered.Play();
                 }
 
-                // Dalgayı başlat
+                // Dalgayı şekil referansıyla birlikte başlat
                 if (WheelReactor.Instance != null)
                 {
                     WheelReactor.Instance.TriggerReaction(lastAnchor, transform);
@@ -292,7 +309,6 @@ namespace FitTheShape
         {
             if (starBurstVfxPrefab == null) return;
 
-            // Görseldeki gibi objenin üst kenarından yukarıya ve dışa yelpaze şeklinde püskürme yönü
             Vector3 upwardDir = (Vector3.up * 0.78f + (lastAnchor != null ? lastAnchor.up : Vector3.forward) * 0.40f).normalized;
             Quaternion sprayRot = Quaternion.LookRotation(upwardDir);
 
