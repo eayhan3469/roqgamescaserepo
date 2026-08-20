@@ -129,6 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 264991237}
   - component: {fileID: 264991238}
+  - component: {fileID: 264991239}
   m_Layer: 0
   m_Name: Ghost_Meyve
   m_TagString: Untagged
@@ -210,6 +211,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &264991239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 264991236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c81050a41761e4b85c18e11a3c7491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
+  stickerType: 1
+  isOccupied: 0
+  placedSortingOrder: 20
+  ghostInitialAlpha: 1
+  ghostCompletedAlpha: 0
 --- !u!1 &339643456
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +239,7 @@ GameObject:
   - component: {fileID: 339643459}
   - component: {fileID: 339643458}
   - component: {fileID: 339643457}
+  - component: {fileID: 339643460}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -240,6 +259,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+--- !u!114 &339643460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 339643456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d07049449f854b42b6574f8263efcf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.Physics2DRaycaster
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
   m_RenderShadows: 1
   m_RequiresDepthTextureOption: 2
   m_RequiresOpaqueTextureOption: 2
@@ -348,6 +383,7 @@ GameObject:
   m_Component:
   - component: {fileID: 367521627}
   - component: {fileID: 367521628}
+  - component: {fileID: 367521629}
   m_Layer: 0
   m_Name: Ghost_Hayvan
   m_TagString: Untagged
@@ -429,6 +465,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &367521629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367521626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c81050a41761e4b85c18e11a3c7491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
+  stickerType: 0
+  isOccupied: 0
+  placedSortingOrder: 20
+  ghostInitialAlpha: 1
+  ghostCompletedAlpha: 0
 --- !u!1 &548803014
 GameObject:
   m_ObjectHideFlags: 0
@@ -530,6 +583,7 @@ GameObject:
   m_Component:
   - component: {fileID: 636427986}
   - component: {fileID: 636427987}
+  - component: {fileID: 636427988}
   m_Layer: 0
   m_Name: Ghost_Arac
   m_TagString: Untagged
@@ -611,6 +665,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &636427988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636427985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c81050a41761e4b85c18e11a3c7491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
+  stickerType: 2
+  isOccupied: 0
+  placedSortingOrder: 20
+  ghostInitialAlpha: 1
+  ghostCompletedAlpha: 0
 --- !u!1 &740737549
 GameObject:
   m_ObjectHideFlags: 0
@@ -964,6 +1035,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1215549563}
   - component: {fileID: 1215549564}
+  - component: {fileID: 1215549565}
+  - component: {fileID: 1215549566}
   m_Layer: 0
   m_Name: Sticker_Arac
   m_TagString: Untagged
@@ -1045,6 +1118,73 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!61 &1215549565
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215549562}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 4.72, y: 3.13}
+    newSize: {x: 4.72, y: 3.13}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 4.72, y: 3.13}
+  m_EdgeRadius: 0
+--- !u!114 &1215549566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1215549562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d91050a41761e4b85c18e11a3c7492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerClickable
+  stickerType: 2
+  targetGhostSlot: {fileID: 636427988}
+  peelDuration: 0.15
+  peelPunchAmount: 0.15
+  flightDuration: 0.55
+  flightArcHeight: 2
+  flightEase: 6
+  flightSortingOrder: 100
+  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
+  stampPunchDuration: 0.25
 --- !u!1 &1306484379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1208,6 +1348,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1644672741}
   - component: {fileID: 1644672742}
+  - component: {fileID: 1644672743}
+  - component: {fileID: 1644672744}
   m_Layer: 0
   m_Name: Sticker_Meyve
   m_TagString: Untagged
@@ -1289,6 +1431,73 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!61 &1644672743
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644672740}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.5, y: 4.02}
+    newSize: {x: 3.5, y: 4.02}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.5, y: 4.02}
+  m_EdgeRadius: 0
+--- !u!114 &1644672744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644672740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d91050a41761e4b85c18e11a3c7492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerClickable
+  stickerType: 1
+  targetGhostSlot: {fileID: 264991239}
+  peelDuration: 0.15
+  peelPunchAmount: 0.15
+  flightDuration: 0.55
+  flightArcHeight: 2
+  flightEase: 6
+  flightSortingOrder: 100
+  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
+  stampPunchDuration: 0.25
 --- !u!1 &1856208314
 GameObject:
   m_ObjectHideFlags: 0
@@ -1368,6 +1577,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2055223284}
   - component: {fileID: 2055223285}
+  - component: {fileID: 2055223286}
   m_Layer: 0
   m_Name: Ghost_Doga
   m_TagString: Untagged
@@ -1449,6 +1659,23 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &2055223286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2055223283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c81050a41761e4b85c18e11a3c7491, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
+  stickerType: 3
+  isOccupied: 0
+  placedSortingOrder: 20
+  ghostInitialAlpha: 1
+  ghostCompletedAlpha: 0
 --- !u!1 &2059011742
 GameObject:
   m_ObjectHideFlags: 0
@@ -1459,6 +1686,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2059011743}
   - component: {fileID: 2059011744}
+  - component: {fileID: 2059011745}
+  - component: {fileID: 2059011746}
   m_Layer: 0
   m_Name: Sticker_Hayvan
   m_TagString: Untagged
@@ -1540,6 +1769,147 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!61 &2059011745
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059011742}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.56, y: 4.37}
+    newSize: {x: 3.56, y: 4.37}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3.56, y: 4.37}
+  m_EdgeRadius: 0
+--- !u!114 &2059011746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059011742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5d91050a41761e4b85c18e11a3c7492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerClickable
+  stickerType: 0
+  targetGhostSlot: {fileID: 367521629}
+  peelDuration: 0.15
+  peelPunchAmount: 0.15
+  flightDuration: 0.55
+  flightArcHeight: 2
+  flightEase: 6
+  flightSortingOrder: 100
+  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
+  stampPunchDuration: 0.25
+--- !u!1 &1500000001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1500000002}
+  - component: {fileID: 1500000003}
+  - component: {fileID: 1500000004}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1500000002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500000001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1500000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!114 &1500000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1550,3 +1920,4 @@ SceneRoots:
   - {fileID: 740737550}
   - {fileID: 2005150150}
   - {fileID: 1487409587}
+  - {fileID: 1500000002}
