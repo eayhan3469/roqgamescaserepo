@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Stickerdom
 {
@@ -25,7 +26,7 @@ namespace Stickerdom
 
         [Header("Visuals")]
         [Tooltip("Sorting order for the placed sticker.")]
-        [SerializeField] private int placedSortingOrder = 20;
+        [SerializeField] private int placedSortingOrder = 30;
 
         [Tooltip("Alpha opacity of ghost outline before sticker placement.")]
         [Range(0f, 1f)] [SerializeField] private float ghostInitialAlpha = 1.0f;
@@ -48,6 +49,15 @@ namespace Stickerdom
             UpdateGhostVisual();
         }
 
+        public void HideGhost()
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.DOKill();
+                spriteRenderer.DOFade(0f, 0.15f).OnComplete(() => spriteRenderer.enabled = false);
+            }
+        }
+
         public void SetOccupied(bool occupied)
         {
             isOccupied = occupied;
@@ -57,6 +67,7 @@ namespace Stickerdom
         public void OnStickerPlaced(StickerClickable sticker)
         {
             SetOccupied(true);
+            HideGhost();
         }
 
         private void UpdateGhostVisual()

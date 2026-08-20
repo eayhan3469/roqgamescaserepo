@@ -20,32 +20,43 @@ namespace Stickerdom
         [Tooltip("Direct reference to the matching GhostSlot on the album sheet.")]
         [SerializeField] private GhostSlot targetGhostSlot;
 
-        [Header("Peel-Off Feedback")]
-        [Tooltip("Duration of the initial peel-off pop scale.")]
-        [SerializeField] private float peelDuration = 0.15f;
+        [Header("3D Peel Mesh Controller")]
+        [SerializeField] private StickerPeel3DMesh peelMesh3D;
 
-        [Tooltip("Amount of punch scale during peel-off.")]
-        [SerializeField] private float peelPunchAmount = 0.15f;
+        [Header("Tactile Peel-Off Settings")]
+        [Tooltip("Duration of the true 3D corner peel-off animation (0 to 1).")]
+        [SerializeField] private float peelDuration = 0.22f;
+
+        [Tooltip("Corner lift tilt angle strength in degrees.")]
+        [SerializeField] private float peelTiltStrength = 14.0f;
 
         [Header("Flight Animation Settings")]
-        [Tooltip("Duration of the flight from tray to album sheet.")]
-        [SerializeField] private float flightDuration = 0.55f;
+        [Tooltip("Duration of the flight while rolled in the air.")]
+        [SerializeField] private float flightDuration = 0.40f;
 
-        [Tooltip("Height of the flight arc curve midpoint.")]
-        [SerializeField] private float flightArcHeight = 2.0f;
+        [Tooltip("Jump arc height multiplier during flight.")]
+        [SerializeField] private float flightJumpPower = 1.5f;
 
         [Tooltip("Easing curve for the flight path.")]
-        [SerializeField] private Ease flightEase = Ease.OutQuad;
+        [SerializeField] private Ease flightEase = Ease.InOutQuad;
 
         [Tooltip("Sorting order while airborne above other sprites.")]
         [SerializeField] private int flightSortingOrder = 100;
 
-        [Header("Stamp Impact Feedback")]
+        [Header("Reverse Stick & Land Feedback")]
+        [Tooltip("Duration of 3D reverse unroll onto page (1 to 0).")]
+        [SerializeField] private float stickDuration = 0.20f;
+
         [Tooltip("Squash & stretch punch scale upon sticking onto the page.")]
-        [SerializeField] private Vector3 stampPunchScale = new Vector3(0.2f, -0.1f, 0f);
+        [SerializeField] private Vector3 stampPunchScale = new Vector3(0.20f, -0.10f, 0f);
 
         [Tooltip("Duration of the stamp squash & stretch.")]
         [SerializeField] private float stampPunchDuration = 0.25f;
+
+        [Header("VFX Prefabs")]
+        [SerializeField] private GameObject peelVfxPrefab;
+        [SerializeField] private GameObject attachVfxPrefab;
+        [SerializeField] private GameObject sparkleVfxPrefab;
 
         [Header("Events")]
         [SerializeField] private UnityEvent onPeelStarted;
@@ -53,6 +64,7 @@ namespace Stickerdom
 
         private Collider2D col2D;
         private SpriteRenderer spriteRenderer;
+        private Vector3 originalLocalScale;
         private bool isFlying = false;
         private bool isPlaced = false;
 
@@ -65,7 +77,13 @@ namespace Stickerdom
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             col2D = GetComponent<Collider2D>();
-            
+            originalLocalScale = transform.localScale;
+
+            if (peelMesh3D == null)
+            {
+                peelMesh3D = GetComponent<StickerPeel3DMesh>() ?? gameObject.AddComponent<StickerPeel3DMesh>();
+            }
+
             // Ensure BoxCollider2D matches sprite bounds perfectly
             if (col2D == null)
             {
@@ -89,7 +107,7 @@ namespace Stickerdom
         {
             if (isPlaced || isFlying) return;
 
-            // Bulletproof Direct Input System Pointer Check (Works on Mouse & Touch without EventSystem dependencies)
+            // Direct Input System Pointer Check (Mouse & Touch)
 #if ENABLE_INPUT_SYSTEM
             bool isPressed = false;
             Vector2 screenPos = Vector2.zero;
@@ -163,51 +181,99 @@ namespace Stickerdom
             {
                 spriteRenderer.sortingOrder = flightSortingOrder;
             }
+            if (peelMesh3D != null)
+            {
+                peelMesh3D.UpdateSortingOrder(flightSortingOrder);
+            }
 
             onPeelStarted?.Invoke();
 
-            // 3. Construct Flight Tween Sequence
-            Sequence flySeq = DOTween.Sequence();
-            flySeq.SetTarget(transform);
+            // 3. Spawn Peel Dust Particles at the sticker corner
+            SpawnVFX(peelVfxPrefab, transform.position);
 
-            // Step A: Tactile Peel-off pop
-            flySeq.Append(transform.DOPunchScale(Vector3.one * peelPunchAmount, peelDuration, 10, 1));
+            // 4. Calculate corner peel tilt
+            float chosenAngle = peelMesh3D != null ? peelMesh3D.PickRandomCornerAngle() : 45f;
+            float rad = chosenAngle * Mathf.Deg2Rad;
+            Vector3 peelTiltAngles = new Vector3(-Mathf.Sin(rad) * peelTiltStrength, Mathf.Cos(rad) * peelTiltStrength, -6f);
 
-            // Step B: Elevated Arc Flight + Rotation + Scale sync
-            Vector3 startPos = transform.position;
-            Vector3 endPos = targetGhostSlot.TargetPosition;
-            // Elevate midpoint along flight path
-            Vector3 midPeakPos = (startPos + endPos) * 0.5f + Vector3.up * flightArcHeight + Vector3.back * 0.5f;
+            // 5. Construct Sequence: 3D Peel Off -> Flight (Rolled in Air) -> 3D Reverse Stick On Landing
+            Vector3 targetPos = targetGhostSlot.TargetPosition;
+            Vector3 targetRotEuler = targetGhostSlot.transform.eulerAngles;
+            Vector3 targetScale = targetGhostSlot.TargetScale;
 
-            Vector3[] arcPath = new Vector3[] { startPos, midPeakPos, endPos };
+            Sequence masterSequence = DOTween.Sequence();
+            masterSequence.SetTarget(transform);
 
-            flySeq.Append(transform.DOPath(arcPath, flightDuration, PathType.CatmullRom).SetEase(flightEase));
-            flySeq.Join(transform.DORotateQuaternion(targetGhostSlot.TargetRotation, flightDuration).SetEase(Ease.OutQuad));
-            flySeq.Join(transform.DOScale(targetGhostSlot.TargetScale, flightDuration).SetEase(Ease.OutQuad));
-
-            // Step C: On Target Arrival -> Precise Snap & Stamp Impact Squash
-            flySeq.OnComplete(() =>
+            // PHASE 1: SÖKÜLME (0 -> 1) - Sticker 3D olarak bükülür, arkası öne katlanır ve rulo haline gelir
+            if (peelMesh3D != null)
             {
-                isFlying = false;
-                isPlaced = true;
+                masterSequence.Append(peelMesh3D.AnimatePeelOff(peelDuration));
+            }
+            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.OutQuad));
 
-                transform.position = endPos;
+            // PHASE 2: UÇUŞ - Sticker havada rulo/arkası dönük haliyle hedef yuvaya doğru uçar
+            masterSequence.Append(transform.DOJump(targetPos, flightJumpPower, 1, flightDuration).SetEase(flightEase));
+            masterSequence.Join(transform.DORotate(targetRotEuler, flightDuration).SetEase(Ease.OutCubic));
+            masterSequence.Join(transform.DOScale(targetScale, flightDuration).SetEase(Ease.OutCubic));
+
+            // PHASE 3: GERİ YAPIŞTIRMA (1 -> 0) - Hedefe ulaştığında ghost silüetini gizle ve sayfaya 3D unroll yap
+            masterSequence.AppendCallback(() =>
+            {
+                if (targetGhostSlot != null)
+                {
+                    targetGhostSlot.HideGhost();
+                }
+            });
+
+            if (peelMesh3D != null)
+            {
+                masterSequence.Append(peelMesh3D.AnimateReverseUnroll(stickDuration));
+            }
+
+            // PHASE 4: Stamp Impact & Sparkles
+            masterSequence.OnComplete(OnStickerLanded);
+        }
+
+        private void OnStickerLanded()
+        {
+            isFlying = false;
+            isPlaced = true;
+
+            if (targetGhostSlot != null)
+            {
+                transform.position = targetGhostSlot.TargetPosition;
                 transform.rotation = targetGhostSlot.TargetRotation;
                 transform.localScale = targetGhostSlot.TargetScale;
 
-                // Match slot sorting order (e.g. 20)
+                // Match slot sorting order (30)
                 if (spriteRenderer != null)
                 {
                     spriteRenderer.sortingOrder = targetGhostSlot.PlacedSortingOrder;
                 }
+                if (peelMesh3D != null)
+                {
+                    peelMesh3D.UpdateSortingOrder(targetGhostSlot.PlacedSortingOrder);
+                }
 
-                // Tactile Stamp Squash & Stretch
+                // Tactile Stamp Squash & Stretch Impact
                 transform.DOPunchScale(stampPunchScale, stampPunchDuration, 10, 1);
+
+                // Spawn Sparkle & Attach Burst VFX
+                SpawnVFX(attachVfxPrefab, transform.position);
+                SpawnVFX(sparkleVfxPrefab, transform.position);
 
                 // Notify target slot
                 targetGhostSlot.OnStickerPlaced(this);
-                onStickerPlaced?.Invoke();
-            });
+            }
+
+            onStickerPlaced?.Invoke();
+        }
+
+        private void SpawnVFX(GameObject vfxPrefab, Vector3 pos)
+        {
+            if (vfxPrefab == null) return;
+            GameObject vfxInstance = Instantiate(vfxPrefab, pos, Quaternion.identity);
+            Destroy(vfxInstance, 2.0f);
         }
 
         private void FindMatchingGhostSlotIfNull()
