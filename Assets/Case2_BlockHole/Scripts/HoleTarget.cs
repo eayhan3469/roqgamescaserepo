@@ -28,21 +28,28 @@ namespace BlockHole
         [Tooltip("Y position down the hole shaft where the block falls.")]
         [SerializeField] private float dropDepthY = -2.5f;
 
+        [Header("Neon Edge Glow")]
+        [SerializeField] private HoleEdgeGlow edgeGlow;
+        [SerializeField] private Color emissionGlowColor = Color.white;
+        [SerializeField] private Material edgeGlowMaterial;
+
         [Header("State & Visuals")]
         [SerializeField] private bool isFilled = false;
         [SerializeField] private bool isHighlighted = false;
-        [SerializeField] private ParticleSystem holeGlowRays;
-        [SerializeField] private ParticleSystem magicDust;
         [SerializeField] private GameObject isActiveVisual;
-        [SerializeField] private Color emissionGlowColor = Color.white;
-        [Range(0f, 1f)] [SerializeField] private float maxHighlightEmission = 0.25f;
+
+        [Header("Staggered Hole Close Timings")]
+        [Tooltip("Delay after block impact before floor tiles start rising (waits for debris to finish).")]
+        [SerializeField] private float holeCloseInitialDelay = 0.48f;
+
+        [Tooltip("Stagger interval between each rising floor tile (tık-tık-tık effect).")]
+        [SerializeField] private float tileStaggerInterval = 0.085f;
 
         [Header("Events")]
         [SerializeField] private UnityEvent onBlockEnteredHole;
 
         private MeshRenderer meshRenderer;
         private Material dynamicMat;
-        private Tweener emissionTween;
         private ParticleSystem[] allChildParticles;
 
         public BlockShapeType ShapeType { get => shapeType; set => shapeType = value; }
@@ -54,10 +61,22 @@ namespace BlockHole
         public bool IsFilled => isFilled;
         public bool IsHighlighted => isHighlighted;
         public Color EmissionGlowColor { get => emissionGlowColor; set => emissionGlowColor = value; }
+        public HoleEdgeGlow EdgeGlow { get => edgeGlow; set => edgeGlow = value; }
 
         private void Awake()
         {
             InitializeVisuals();
+        }
+
+        private void Start()
+        {
+            // Re-verify perimeter once GridManager is fully initialized
+            if (edgeGlow != null && GridManager.Instance != null)
+            {
+                Vector3 originPos = GridManager.Instance.OriginWorldPosition;
+                Vector3 gridOriginBase = originPos - new Vector3(0.5f, 0f, 0.5f);
+                edgeGlow.BuildPerimeterFromCells(GetWorldFootprint(), gridOriginBase, GridManager.Instance.TileSize);
+            }
         }
 
         public void InitializeVisuals()
@@ -73,21 +92,42 @@ namespace BlockHole
                 }
             }
 
-            if (holeGlowRays == null)
-            {
-                holeGlowRays = transform.Find("HoleGlowRays")?.GetComponent<ParticleSystem>();
-            }
-            if (magicDust == null)
-            {
-                magicDust = transform.Find("MagicDust")?.GetComponent<ParticleSystem>();
-            }
             if (isActiveVisual == null)
             {
                 isActiveVisual = transform.Find("IsActive")?.gameObject;
             }
 
+            // Cache child particles (including VacumTile)
             allChildParticles = GetComponentsInChildren<ParticleSystem>(true);
+
+            // Setup Crisp Neon Edge Glow
+            if (edgeGlow == null)
+            {
+                edgeGlow = GetComponent<HoleEdgeGlow>() ?? gameObject.AddComponent<HoleEdgeGlow>();
+            }
+
+            if (edgeGlow != null)
+            {
+                if (edgeGlowMaterial != null) edgeGlow.GlowMaterial = edgeGlowMaterial;
+                edgeGlow.GlowColor = emissionGlowColor;
+
+                // Build contour lines from grid cells
+                Vector3 originPos = GridManager.Instance != null ? GridManager.Instance.OriginWorldPosition : new Vector3(0.5f, 0.03f, 1.0f);
+                Vector3 gridOriginBase = originPos - new Vector3(0.5f, 0f, 0.5f);
+                edgeGlow.BuildPerimeterFromCells(GetWorldFootprint(), gridOriginBase, GridManager.Instance != null ? GridManager.Instance.TileSize : 1.0f);
+            }
+
             SetHighlight(false, true);
+        }
+
+        public List<Vector2Int> GetWorldFootprint()
+        {
+            List<Vector2Int> list = new List<Vector2Int>(footprint.Count);
+            for (int i = 0; i < footprint.Count; i++)
+            {
+                list.Add(anchorGridPos + footprint[i]);
+            }
+            return list;
         }
 
         public bool Matches(BlockDraggable block)
@@ -109,59 +149,32 @@ namespace BlockHole
             if (isFilled) return;
             isHighlighted = active;
 
-            emissionTween?.Kill();
-
-            if (dynamicMat == null && meshRenderer != null)
+            // Trigger Crisp Neon Perimeter Edge Glow
+            if (edgeGlow != null)
             {
-                dynamicMat = Application.isPlaying ? meshRenderer.material : meshRenderer.sharedMaterial;
+                edgeGlow.SetGlow(active, immediate);
             }
 
-            if (active)
+            if (isActiveVisual != null)
             {
-                if (isActiveVisual != null) isActiveVisual.SetActive(true);
-
-                if (allChildParticles != null)
-                {
-                    foreach (var ps in allChildParticles)
-                    {
-                        if (ps != null && !ps.isPlaying) ps.Play();
-                    }
-                }
-
-                // Subtle soft rim glow preserving deep 3D dark pit
-                if (dynamicMat != null && dynamicMat.HasProperty("_EmissionColor") && maxHighlightEmission > 0f)
-                {
-                    dynamicMat.EnableKeyword("_EMISSION");
-                    Color targetColor = (emissionGlowColor != Color.black ? emissionGlowColor : Color.white) * maxHighlightEmission;
-                    if (immediate)
-                    {
-                        dynamicMat.SetColor("_EmissionColor", targetColor);
-                    }
-                    else
-                    {
-                        emissionTween = dynamicMat.DOColor(targetColor, "_EmissionColor", 0.2f);
-                    }
-                }
+                isActiveVisual.SetActive(active);
             }
-            else
-            {
-                if (allChildParticles != null)
-                {
-                    foreach (var ps in allChildParticles)
-                    {
-                        if (ps != null && ps.isPlaying) ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
-                    }
-                }
 
-                if (dynamicMat != null && dynamicMat.HasProperty("_EmissionColor"))
+            // Play / Stop child vacuum particles (VacumTile)
+            if (allChildParticles != null)
+            {
+                foreach (var ps in allChildParticles)
                 {
-                    if (immediate)
+                    if (ps != null && ps != edgeGlow.GetComponent<ParticleSystem>())
                     {
-                        dynamicMat.SetColor("_EmissionColor", Color.black);
-                    }
-                    else
-                    {
-                        emissionTween = dynamicMat.DOColor(Color.black, "_EmissionColor", 0.25f);
+                        if (active)
+                        {
+                            if (!ps.isPlaying) ps.Play();
+                        }
+                        else
+                        {
+                            if (ps.isPlaying) ps.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+                        }
                     }
                 }
             }
@@ -184,11 +197,33 @@ namespace BlockHole
         {
             SetFilled(true);
             onBlockEnteredHole?.Invoke();
+            CloseHoleWithStaggeredTiles(holeCloseInitialDelay, tileStaggerInterval);
         }
 
-        private void OnDestroy()
+        public void CloseHoleWithStaggeredTiles(float initialDelay = 0.48f, float tileInterval = 0.085f)
         {
-            emissionTween?.Kill();
+            DOVirtual.DelayedCall(initialDelay, () =>
+            {
+                // Deactivate hole visual once pieces have gone
+                transform.DOScale(Vector3.zero, 0.20f).SetEase(Ease.InBack).OnComplete(() =>
+                {
+                    gameObject.SetActive(false);
+                });
+
+                if (GridManager.Instance != null)
+                {
+                    List<Vector2Int> cells = GetWorldFootprint();
+                    for (int i = 0; i < cells.Count; i++)
+                    {
+                        Vector2Int cell = cells[i];
+                        float tileDelay = i * tileInterval;
+                        DOVirtual.DelayedCall(tileDelay, () =>
+                        {
+                            GridManager.Instance.CloseHoleCell(cell);
+                        });
+                    }
+                }
+            });
         }
     }
 }

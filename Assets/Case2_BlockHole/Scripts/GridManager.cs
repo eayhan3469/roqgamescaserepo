@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace BlockHole
 {
@@ -27,6 +28,10 @@ namespace BlockHole
         [SerializeField] private Transform holesRoot;
         [SerializeField] private Transform blocksRoot;
 
+        [Header("Floor Tile Prefabs & Materials for Hole Closing")]
+        [SerializeField] private Material floorLightMaterial;
+        [SerializeField] private Material floorDarkMaterial;
+
         private GridCellType[,] gridMap;
         private BlockDraggable[,] blockOccupancyMap;
         private List<BlockDraggable> allBlocks = new List<BlockDraggable>();
@@ -38,6 +43,7 @@ namespace BlockHole
         public int Height => height;
         public float TileSize => tileSize;
         public Vector3 OriginWorldPosition => originWorldPosition;
+        public Transform FloorRoot => floorRoot;
         public List<BlockDraggable> AllBlocks => allBlocks;
         public List<HoleTarget> AllHoles => allHoles;
 
@@ -53,7 +59,27 @@ namespace BlockHole
                 return;
             }
 
+            InitializePostProcessing();
+            InitializeAudioManager();
             InitializeGrid();
+        }
+
+        private void InitializePostProcessing()
+        {
+            if (FindObjectOfType<BlockHolePostProcessing>() == null)
+            {
+                GameObject ppGo = new GameObject("Global Post Processing (Bloom & Vibrancy)");
+                ppGo.AddComponent<BlockHolePostProcessing>();
+            }
+        }
+
+        private void InitializeAudioManager()
+        {
+            if (FindObjectOfType<BlockHoleAudioManager>() == null)
+            {
+                GameObject audioGo = new GameObject("AudioManager");
+                audioGo.AddComponent<BlockHoleAudioManager>();
+            }
         }
 
         public void InitializeGrid()
@@ -71,6 +97,17 @@ namespace BlockHole
             if (blocksRoot == null)
             {
                 blocksRoot = GameObject.Find("Blocks")?.transform ?? GameObject.Find("Board/Blocks")?.transform;
+            }
+
+            if (floorLightMaterial == null && floorRoot != null)
+            {
+                var t00 = floorRoot.Find("Tile_0_0");
+                if (t00 != null) floorLightMaterial = t00.GetComponent<MeshRenderer>()?.sharedMaterial;
+            }
+            if (floorDarkMaterial == null && floorRoot != null)
+            {
+                var t10 = floorRoot.Find("Tile_1_0");
+                if (t10 != null) floorDarkMaterial = t10.GetComponent<MeshRenderer>()?.sharedMaterial;
             }
 
             gridMap = new GridCellType[width, height];
@@ -173,11 +210,6 @@ namespace BlockHole
             return null;
         }
 
-        /// <summary>
-        /// Validates whether a footprint can be occupied.
-        /// When ignoreHoles is true (during active drag), blocks slide freely across hole spaces.
-        /// When ignoreHoles is false (on drop/landing), holes are not valid landing tiles for unmatched shapes.
-        /// </summary>
         public bool CanShapeOccupy(List<Vector2Int> gridPositions, BlockDraggable block, bool ignoreHoles = false)
         {
             if (gridPositions == null || gridPositions.Count == 0) return false;
@@ -194,13 +226,11 @@ namespace BlockHole
                     return false;
                 }
 
-                // If not ignoring holes, blocks cannot land/rest on holes
                 if (type == GridCellType.Hole && !ignoreHoles)
                 {
                     return false;
                 }
 
-                // Check block collision (cannot pass through other blocks)
                 if (type == GridCellType.OccupiedByBlock)
                 {
                     BlockDraggable occupant = blockOccupancyMap[pos.x, pos.y];
@@ -214,9 +244,6 @@ namespace BlockHole
             return true;
         }
 
-        /// <summary>
-        /// Finds the nearest valid empty floor anchor if a block is dropped over an invalid tile.
-        /// </summary>
         public Vector2Int FindNearestValidAnchor(BlockDraggable block, Vector2Int desiredAnchor)
         {
             if (CanShapeOccupy(block.GetWorldFootprint(desiredAnchor), block, false))
@@ -224,7 +251,6 @@ namespace BlockHole
                 return desiredAnchor;
             }
 
-            // Breadth-first search outward for nearest valid anchor
             for (int r = 1; r < Mathf.Max(width, height); r++)
             {
                 for (int dx = -r; dx <= r; dx++)
@@ -281,6 +307,49 @@ namespace BlockHole
         {
             UnregisterBlock(block);
             RegisterBlock(block, newAnchorPos);
+        }
+
+        /// <summary>
+        /// Instantiates and pops up a solid floor tile to close a hole cell with a punchy bounce.
+        /// </summary>
+        public void CloseHoleCell(Vector2Int cell)
+        {
+            if (!IsInBounds(cell)) return;
+
+            holeCells.Remove(cell);
+            gridMap[cell.x, cell.y] = GridCellType.Empty;
+
+            if (floorRoot == null) return;
+
+            string tileName = $"Tile_{cell.x}_{cell.y}";
+            Transform existingTile = floorRoot.Find(tileName);
+            GameObject tileGo;
+
+            if (existingTile != null)
+            {
+                tileGo = existingTile.gameObject;
+                tileGo.SetActive(true);
+            }
+            else
+            {
+                tileGo = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                tileGo.name = tileName;
+                tileGo.transform.SetParent(floorRoot, false);
+                tileGo.transform.localScale = new Vector3(1.0f, 0.06f, 1.0f);
+
+                Material mat = ((cell.x + cell.y) % 2 == 0) ? floorLightMaterial : floorDarkMaterial;
+                if (mat != null)
+                {
+                    tileGo.GetComponent<MeshRenderer>().sharedMaterial = mat;
+                }
+            }
+
+            Vector3 finalWorldPos = new Vector3(originWorldPosition.x + cell.x * tileSize, 0.0f, originWorldPosition.z + cell.y * tileSize);
+            Vector3 spawnWorldPos = finalWorldPos + Vector3.down * 1.2f;
+
+            tileGo.transform.position = spawnWorldPos;
+            tileGo.transform.DOKill();
+            tileGo.transform.DOMoveY(0.0f, 0.26f).SetEase(Ease.OutBack, 1.45f);
         }
     }
 }

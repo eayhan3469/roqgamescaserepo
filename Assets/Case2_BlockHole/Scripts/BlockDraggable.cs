@@ -33,15 +33,35 @@ namespace BlockHole
         [Tooltip("Easing curve for the grid snap animation.")]
         [SerializeField] private Ease snapEase = Ease.OutQuad;
 
+        [Header("Dynamic Tilt & Sway Juice")]
+        [Tooltip("Maximum tilt angle in degrees when dragging fast.")]
+        [SerializeField] private float maxTiltAngle = 10f;
+
+        [Tooltip("Sensitivity of the tilt response to drag velocity.")]
+        [SerializeField] private float tiltSensitivity = 1.4f;
+
+        [Tooltip("Speed at which rotation lerps towards target sway during active drag.")]
+        [SerializeField] private float swayLerpSpeed = 16f;
+
+        [Tooltip("Duration of the spring recovery back to zero rotation on release.")]
+        [SerializeField] private float swayResetDuration = 0.20f;
+
         [Header("Instant Mid-Drag Hole Capture")]
         [Tooltip("Threshold distance from hole mouth to trigger instant mid-drag suction.")]
         [SerializeField] private float autoCaptureDistance = 0.45f;
 
         [Tooltip("Duration of the downward drop into the hole.")]
-        [SerializeField] private float holeDropDuration = 0.30f;
+        [SerializeField] private float holeDropDuration = 0.24f;
+
+        [Tooltip("Y position down the hole shaft where impact occurs.")]
+        [SerializeField] private float dropDepthY = -0.75f;
 
         [Tooltip("Easing curve for falling down the hole.")]
         [SerializeField] private Ease holeDropEase = Ease.InQuad;
+
+        [Header("Fracture Destruction")]
+        [Tooltip("Fracture effect component to spawn shattered pieces on impact.")]
+        [SerializeField] private BlockFractureEffect fractureEffect;
 
         [Header("Juice & Visual Feedback")]
         [Tooltip("Slight height elevation during drag.")]
@@ -62,10 +82,13 @@ namespace BlockHole
         private bool isDragging = false;
         private bool isDroppedInHole = false;
         private Tweener snapTween;
+        private Tweener swayResetTween;
         private Vector3 currentValidWorldPos;
         private Vector2Int lastValidAnchorGridPos;
         private Collider[] allColliders;
         private HoleTarget cachedMatchingHole;
+        private Material blockPrimaryMaterial;
+        private Vector3 prevFrameWorldPos;
 
         public BlockShapeType ShapeType { get => shapeType; set => shapeType = value; }
         public List<Vector2Int> Footprint => footprint;
@@ -73,11 +96,24 @@ namespace BlockHole
         public Vector2Int CurrentAnchorGridPos { get => currentAnchorGridPos; set => currentAnchorGridPos = value; }
         public bool IsDragging => isDragging;
         public bool IsDroppedInHole => isDroppedInHole;
+        public BlockFractureEffect FractureEffect { get => fractureEffect; set => fractureEffect = value; }
 
         private void Awake()
         {
             originalLocalScale = transform.localScale;
             allColliders = GetComponentsInChildren<Collider>();
+            
+            var mr = GetComponentInChildren<MeshRenderer>();
+            if (mr != null)
+            {
+                blockPrimaryMaterial = mr.sharedMaterial;
+            }
+
+            if (fractureEffect == null)
+            {
+                fractureEffect = GetComponent<BlockFractureEffect>();
+            }
+
             Initialize();
         }
 
@@ -91,7 +127,26 @@ namespace BlockHole
 
             lastValidAnchorGridPos = currentAnchorGridPos;
             currentValidWorldPos = GetWorldPosForAnchor(currentAnchorGridPos);
+            prevFrameWorldPos = transform.position;
             boardPlane = new Plane(Vector3.up, new Vector3(0f, 0.03f, 0f));
+        }
+
+        private void Update()
+        {
+            if (!isDragging || isDroppedInHole) return;
+
+            // Calculate velocity delta on XZ plane
+            Vector3 currentPos = transform.position;
+            float dt = Mathf.Max(Time.deltaTime, 0.001f);
+            Vector3 velocity = (currentPos - prevFrameWorldPos) / dt;
+            prevFrameWorldPos = currentPos;
+
+            // Tilting around Z axis for X movement, and around X axis for Z movement
+            float targetTiltZ = -Mathf.Clamp(velocity.x * tiltSensitivity, -maxTiltAngle, maxTiltAngle);
+            float targetTiltX = Mathf.Clamp(velocity.z * tiltSensitivity, -maxTiltAngle, maxTiltAngle);
+
+            Quaternion targetSwayRotation = Quaternion.Euler(targetTiltX, 0f, targetTiltZ);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetSwayRotation, Time.deltaTime * swayLerpSpeed);
         }
 
         public List<Vector2Int> GetWorldFootprint(Vector2Int anchor)
@@ -116,6 +171,14 @@ namespace BlockHole
 
             isDragging = true;
             snapTween?.Kill();
+            swayResetTween?.Kill();
+            prevFrameWorldPos = transform.position;
+
+            // Audio: Play Pickup Sound
+            if (BlockHoleAudioManager.Instance != null)
+            {
+                BlockHoleAudioManager.Instance.PlayPickupSound();
+            }
 
             // 1. Find and highlight matching HoleTarget
             if (GridManager.Instance != null)
@@ -232,6 +295,10 @@ namespace BlockHole
             isDragging = false;
 
             snapTween?.Kill();
+            swayResetTween?.Kill();
+
+            // Reset sway rotation with a soft overshoot spring
+            swayResetTween = transform.DOLocalRotate(Vector3.zero, swayResetDuration).SetEase(Ease.OutBack);
 
             // 1. Turn off highlight on matching HoleTarget
             if (cachedMatchingHole != null)
@@ -251,7 +318,12 @@ namespace BlockHole
                 return;
             }
 
-            // 3. Regular floor snap
+            // 3. Regular floor snap: Play SnapBack tactile sound
+            if (BlockHoleAudioManager.Instance != null)
+            {
+                BlockHoleAudioManager.Instance.PlaySnapBackSound();
+            }
+
             if (GridManager.Instance != null)
             {
                 Vector2Int desiredAnchor = currentAnchorGridPos;
@@ -279,9 +351,16 @@ namespace BlockHole
             isDroppedInHole = true;
             this.enabled = false;
             snapTween?.Kill();
+            swayResetTween?.Kill();
 
             // Turn off highlight immediately
             hole.SetHighlight(false);
+
+            // Audio: Play Drop Swallowed Sound
+            if (BlockHoleAudioManager.Instance != null)
+            {
+                BlockHoleAudioManager.Instance.PlayDropSound();
+            }
 
             if (allColliders != null)
             {
@@ -299,22 +378,45 @@ namespace BlockHole
             hole.SetFilled(true);
 
             Vector3 holeMouthPos = hole.TargetDropWorldPos;
-            Vector3 holeBottomPos = new Vector3(holeMouthPos.x, hole.DropDepthY, holeMouthPos.z);
+            Vector3 holeBottomPos = new Vector3(holeMouthPos.x, dropDepthY, holeMouthPos.z);
 
             Sequence dropSeq = DOTween.Sequence();
             dropSeq.SetTarget(transform);
 
-            // 1. Snap seamlessly to hole mouth
+            // 1. Snap seamlessly to hole mouth & level rotation
             dropSeq.Append(transform.DOMove(holeMouthPos, 0.06f).SetEase(Ease.OutQuad));
             dropSeq.Join(transform.DOScale(originalLocalScale, 0.06f).SetEase(Ease.OutQuad));
+            dropSeq.Join(transform.DOLocalRotate(Vector3.zero, 0.06f).SetEase(Ease.OutQuad));
 
-            // 2. Fall straight down the hole shaft
+            // 2. Fall into the hole shaft
             dropSeq.Append(transform.DOMove(holeBottomPos, holeDropDuration).SetEase(holeDropEase));
 
             dropSeq.OnComplete(() =>
             {
+                // Hide intact block renderers seamlessly
+                var renderers = GetComponentsInChildren<Renderer>();
+                foreach (var r in renderers)
+                {
+                    if (r != null) r.enabled = false;
+                }
+
+                // Audio: Play Shatter Impact Sound
+                if (BlockHoleAudioManager.Instance != null)
+                {
+                    BlockHoleAudioManager.Instance.PlayShatterSound();
+                }
+
+                // 1. Trigger Fracture at the EXACT position and rotation of the block
+                if (fractureEffect != null)
+                {
+                    fractureEffect.TriggerFracture(transform.position, transform.rotation, blockPrimaryMaterial);
+                }
+
+                // 2. Complete hole event and schedule destroy
                 hole.OnBlockDropped(this);
                 onDroppedInHole?.Invoke();
+
+                Destroy(gameObject, 0.8f);
             });
 
             onDragEnded?.Invoke();
@@ -323,6 +425,7 @@ namespace BlockHole
         private void OnDestroy()
         {
             snapTween?.Kill();
+            swayResetTween?.Kill();
         }
     }
 }
