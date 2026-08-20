@@ -25,17 +25,17 @@ namespace Stickerdom
 
         [Header("Tactile Peel-Off Settings")]
         [Tooltip("Duration of the true 3D corner peel-off animation (0 to 1).")]
-        [SerializeField] private float peelDuration = 0.22f;
+        [SerializeField] private float peelDuration = 0.46f;
 
         [Tooltip("Corner lift tilt angle strength in degrees.")]
         [SerializeField] private float peelTiltStrength = 14.0f;
 
         [Header("Flight Animation Settings")]
         [Tooltip("Duration of the flight while rolled in the air.")]
-        [SerializeField] private float flightDuration = 0.40f;
+        [SerializeField] private float flightDuration = 0.55f;
 
         [Tooltip("Jump arc height multiplier during flight.")]
-        [SerializeField] private float flightJumpPower = 1.5f;
+        [SerializeField] private float flightJumpPower = 1.6f;
 
         [Tooltip("Easing curve for the flight path.")]
         [SerializeField] private Ease flightEase = Ease.InOutQuad;
@@ -43,15 +43,12 @@ namespace Stickerdom
         [Tooltip("Sorting order while airborne above other sprites.")]
         [SerializeField] private int flightSortingOrder = 100;
 
-        [Header("Reverse Stick & Land Feedback")]
+        [Header("Reverse Stick & Shine Feedback")]
         [Tooltip("Duration of 3D reverse unroll onto page (1 to 0).")]
-        [SerializeField] private float stickDuration = 0.20f;
+        [SerializeField] private float stickDuration = 0.42f;
 
-        [Tooltip("Squash & stretch punch scale upon sticking onto the page.")]
-        [SerializeField] private Vector3 stampPunchScale = new Vector3(0.20f, -0.10f, 0f);
-
-        [Tooltip("Duration of the stamp squash & stretch.")]
-        [SerializeField] private float stampPunchDuration = 0.25f;
+        [Tooltip("Duration of the diagonal shine ray passing over the sticker upon landing.")]
+        [SerializeField] private float shineRayDuration = 0.50f;
 
         [Header("VFX Prefabs")]
         [SerializeField] private GameObject peelVfxPrefab;
@@ -204,19 +201,19 @@ namespace Stickerdom
             Sequence masterSequence = DOTween.Sequence();
             masterSequence.SetTarget(transform);
 
-            // PHASE 1: SÖKÜLME (0 -> 1) - Sticker 3D olarak bükülür, arkası öne katlanır ve rulo haline gelir
+            // PHASE 1: SÖKÜLME (0 -> 1) - Silky Smooth 3D corner curl with Ease.InOutSine (0.46s)
             if (peelMesh3D != null)
             {
                 masterSequence.Append(peelMesh3D.AnimatePeelOff(peelDuration));
             }
-            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.OutQuad));
+            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.InOutSine));
 
-            // PHASE 2: UÇUŞ - Sticker havada rulo/arkası dönük haliyle hedef yuvaya doğru uçar
+            // PHASE 2: UÇUŞ (0.55s) - Sticker havada rulo/arkası dönük haliyle hedef yuvaya doğru uçar
             masterSequence.Append(transform.DOJump(targetPos, flightJumpPower, 1, flightDuration).SetEase(flightEase));
             masterSequence.Join(transform.DORotate(targetRotEuler, flightDuration).SetEase(Ease.OutCubic));
             masterSequence.Join(transform.DOScale(targetScale, flightDuration).SetEase(Ease.OutCubic));
 
-            // PHASE 3: GERİ YAPIŞTIRMA (1 -> 0) - Hedefe ulaştığında ghost silüetini gizle ve sayfaya 3D unroll yap
+            // PHASE 3: GERİ YAPIŞTIRMA (1 -> 0) (0.42s) - Silky Smooth 3D unroll onto album sheet
             masterSequence.AppendCallback(() =>
             {
                 if (targetGhostSlot != null)
@@ -230,7 +227,7 @@ namespace Stickerdom
                 masterSequence.Append(peelMesh3D.AnimateReverseUnroll(stickDuration));
             }
 
-            // PHASE 4: Stamp Impact & Sparkles
+            // PHASE 4: Shine Ray Sweep & Sparkles (0.50s)
             masterSequence.OnComplete(OnStickerLanded);
         }
 
@@ -255,8 +252,11 @@ namespace Stickerdom
                     peelMesh3D.UpdateSortingOrder(targetGhostSlot.PlacedSortingOrder);
                 }
 
-                // Tactile Stamp Squash & Stretch Impact
-                transform.DOPunchScale(stampPunchScale, stampPunchDuration, 10, 1);
+                // Smooth Light Ray / Shine Sweep over the placed sticker
+                if (peelMesh3D != null)
+                {
+                    peelMesh3D.AnimateShineRay(shineRayDuration);
+                }
 
                 // Spawn Sparkle & Attach Burst VFX
                 SpawnVFX(attachVfxPrefab, transform.position);

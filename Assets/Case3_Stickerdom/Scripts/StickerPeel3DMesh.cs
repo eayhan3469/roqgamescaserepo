@@ -10,7 +10,7 @@ namespace Stickerdom
         private static readonly float[] CornerAngles = new float[] { 45f, 135f, 225f, 315f };
 
         [Header("3D Subdivided Mesh Settings")]
-        [Range(12, 36)] [SerializeField] private int gridResolution = 28;
+        [Range(12, 40)] [SerializeField] private int gridResolution = 32;
 
         [Header("Peel Mechanics")]
         [Tooltip("Direction angle in degrees from which the corner curls up.")]
@@ -20,7 +20,7 @@ namespace Stickerdom
         [Range(0.15f, 0.80f)] [SerializeField] private float rollRadius = 0.38f;
 
         [Tooltip("Backside adhesive color.")]
-        [SerializeField] private Color backSideColor = new Color(0.92f, 0.93f, 0.95f, 1.0f);
+        [SerializeField] private Color backSideColor = new Color(0.90f, 0.91f, 0.93f, 1.0f);
 
         private SpriteRenderer spriteRenderer;
         private GameObject meshHolder;
@@ -30,15 +30,18 @@ namespace Stickerdom
 
         private Vector3[] baseVertices;
         private Vector3[] workingVertices;
+        private Color[] workingColors;
         private Vector2[] baseUVs;
         private int[] baseTriangles;
 
         private float currentPeelProgress = 0f;
+        private float currentShineProgress = -0.5f;
         private Material dynamicMat;
         private bool isInitialized = false;
 
         private static readonly int PropMainTex = Shader.PropertyToID("_MainTex");
         private static readonly int PropBackSideColor = Shader.PropertyToID("_BackSideColor");
+        private static readonly int PropShineProgress = Shader.PropertyToID("_ShineProgress");
 
         public float PeelProgress
         {
@@ -47,6 +50,19 @@ namespace Stickerdom
             {
                 currentPeelProgress = Mathf.Clamp(value, 0f, 1.0f);
                 DeformMesh();
+            }
+        }
+
+        public float ShineProgress
+        {
+            get => currentShineProgress;
+            set
+            {
+                currentShineProgress = value;
+                if (dynamicMat != null)
+                {
+                    dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
+                }
             }
         }
 
@@ -79,17 +95,19 @@ namespace Stickerdom
             dynamicMat = new Material(shader);
             dynamicMat.SetTexture(PropMainTex, sprite.texture);
             dynamicMat.SetColor(PropBackSideColor, backSideColor);
+            dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
             meshRenderer.material = dynamicMat;
             meshRenderer.sortingOrder = spriteRenderer.sortingOrder;
 
             // Disable original SpriteRenderer so the 3D curling mesh renders
             spriteRenderer.enabled = false;
 
-            // 2. Subdivide Grid Mesh
+            // 2. Subdivide Grid Mesh (Higher resolution for silky smooth curvature)
             int res = gridResolution;
             int numVerts = (res + 1) * (res + 1);
             baseVertices = new Vector3[numVerts];
             workingVertices = new Vector3[numVerts];
+            workingColors = new Color[numVerts];
             baseUVs = new Vector2[numVerts];
             baseTriangles = new int[res * res * 6];
 
@@ -106,6 +124,7 @@ namespace Stickerdom
 
                     baseVertices[vertIdx] = new Vector3(posX, posY, 0f);
                     workingVertices[vertIdx] = baseVertices[vertIdx];
+                    workingColors[vertIdx] = new Color(0f, 0f, 0f, 1f);
                     baseUVs[vertIdx] = new Vector2(normX, normY);
                     vertIdx++;
                 }
@@ -135,6 +154,7 @@ namespace Stickerdom
             deformedMesh = new Mesh();
             deformedMesh.name = $"{gameObject.name}_DeformedMesh";
             deformedMesh.vertices = workingVertices;
+            deformedMesh.colors = workingColors;
             deformedMesh.uv = baseUVs;
             deformedMesh.triangles = baseTriangles;
             deformedMesh.RecalculateNormals();
@@ -153,7 +173,7 @@ namespace Stickerdom
         }
 
         /// <summary>
-        /// True 3D cylinder curl vertex deformation.
+        /// True 3D cylinder curl vertex deformation with exact geometric Apex Highlight.
         /// </summary>
         private void DeformMesh()
         {
@@ -194,6 +214,7 @@ namespace Stickerdom
                 {
                     // Flat on table
                     workingVertices[i] = basePos;
+                    workingColors[i] = new Color(0f, 0f, 0f, 1f);
                 }
                 else
                 {
@@ -211,6 +232,11 @@ namespace Stickerdom
                             basePos.y + deltaD * dir.y,
                             zOffset
                         );
+
+                        // Geometric Apex Highlight peaks precisely at the roll crest
+                        float normalizedCurve = Mathf.Clamp01(alpha / Mathf.PI);
+                        float apexFactor = Mathf.Sin(normalizedCurve * Mathf.PI);
+                        workingColors[i] = new Color(apexFactor, 0f, 0f, 1f);
                     }
                     else
                     {
@@ -223,11 +249,15 @@ namespace Stickerdom
                             basePos.y + deltaD * dir.y,
                             zOffset
                         );
+
+                        // Flat folded back
+                        workingColors[i] = new Color(0f, 0f, 0f, 1f);
                     }
                 }
             }
 
             deformedMesh.vertices = workingVertices;
+            deformedMesh.colors = workingColors;
             deformedMesh.RecalculateNormals();
             deformedMesh.RecalculateBounds();
         }
@@ -246,19 +276,35 @@ namespace Stickerdom
         }
 
         /// <summary>
-        /// 3D SÖKÜLME: 0 -> 1 (Sticker köşeden başlayarak 3D rulo şeklinde sökülür, arkası tamamen öne katlanır).
+        /// 3D SÖKÜLME: 0 -> 1 (Ultra-smooth Ease.InOutSine ile kadifemsi sökülme).
         /// </summary>
-        public Tween AnimatePeelOff(float duration = 0.22f)
+        public Tween AnimatePeelOff(float duration = 0.46f)
         {
-            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.OutQuad);
+            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.InOutSine);
         }
 
         /// <summary>
-        /// 3D GERİ YAPIŞTIRMA (UNROLL): 1 -> 0 (Ayrılan son noktadan başlayarak rulo sayfaya açılır ve düzleşir).
+        /// 3D GERİ YAPIŞTIRMA (UNROLL): 1 -> 0 (Ultra-smooth Ease.InOutSine ile kadifemsi sayfaya açılma).
         /// </summary>
-        public Tween AnimateReverseUnroll(float duration = 0.20f)
+        public Tween AnimateReverseUnroll(float duration = 0.42f)
         {
-            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 0.0f, duration).SetEase(Ease.OutQuad);
+            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 0.0f, duration).SetEase(Ease.InOutSine);
+        }
+
+        /// <summary>
+        /// Yapışma tamamlandığında sticker'ın üzerinden geçen ışık şeridi (Shine Ray Sweep).
+        /// </summary>
+        public Tween AnimateShineRay(float duration = 0.50f)
+        {
+            currentShineProgress = -0.3f;
+            if (dynamicMat != null) dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
+
+            return DOTween.To(() => currentShineProgress, x => ShineProgress = x, 1.3f, duration).SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    currentShineProgress = -0.5f;
+                    if (dynamicMat != null) dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
+                });
         }
 
         /// <summary>

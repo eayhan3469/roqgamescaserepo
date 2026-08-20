@@ -6,6 +6,8 @@ Shader "Custom/StickerDoubleSidedURP"
         _Color ("Tint Color", Color) = (1, 1, 1, 1)
         _BackSideColor ("Backside Adhesive Color", Color) = (0.90, 0.91, 0.93, 1.0)
         _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.1
+        _ShineProgress ("Shine Ray Progress", Range(-0.5, 1.5)) = -0.5
+        _ShineColor ("Shine Ray Color", Color) = (1.0, 1.0, 1.0, 0.85)
     }
 
     SubShader
@@ -58,7 +60,9 @@ Shader "Custom/StickerDoubleSidedURP"
             CBUFFER_START(UnityPerMaterial)
                 float4 _Color;
                 float4 _BackSideColor;
+                float4 _ShineColor;
                 float _Cutoff;
+                float _ShineProgress;
             CBUFFER_END
 
             Varyings vert(Attributes input)
@@ -66,7 +70,7 @@ Shader "Custom/StickerDoubleSidedURP"
                 Varyings output;
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 output.uv = input.uv;
-                output.color = input.color * _Color;
+                output.color = input.color;
                 output.normalWS = TransformObjectToWorldNormal(input.normalOS);
                 return output;
             }
@@ -79,14 +83,35 @@ Shader "Custom/StickerDoubleSidedURP"
                 if (isFrontFace)
                 {
                     // Front side: colorful sticker graphic
-                    return float4(texCol.rgb * input.color.rgb, texCol.a * input.color.a);
+                    float3 frontRgb = texCol.rgb * _Color.rgb;
+
+                    // Diagonal Shine Ray / Gloss Light Sweep across sticker
+                    if (_ShineProgress > -0.4 && _ShineProgress < 1.4)
+                    {
+                        float rayPos = (input.uv.x + input.uv.y) * 0.5;
+                        float rayDist = abs(rayPos - _ShineProgress);
+                        float rayIntensity = saturate(1.0 - rayDist / 0.12);
+                        rayIntensity = pow(rayIntensity, 2.0);
+
+                        frontRgb += _ShineColor.rgb * (rayIntensity * _ShineColor.a);
+                    }
+
+                    return float4(frontRgb, texCol.a * _Color.a);
                 }
                 else
                 {
-                    // Back side: realistic metallic/paper adhesive backside
-                    float sheen = 0.94 + 0.10 * sin((input.uv.x + input.uv.y) * 20.0);
-                    float3 backRgb = _BackSideColor.rgb * sheen;
-                    return float4(backRgb * input.color.rgb, texCol.a * _BackSideColor.a * input.color.a);
+                    // Back side: Geometric Apex Curvature Highlight passed via vertex color (input.color.r)
+                    float apexHighlight = saturate(input.color.r);
+
+                    // Smooth ambient base (0.78 in crease/shadow) to bright luminous peak (1.35 at apex)
+                    float lightIntensity = lerp(0.78, 1.35, apexHighlight);
+                    float3 backRgb = _BackSideColor.rgb * lightIntensity;
+
+                    // Brilliant specular metallic sheen streak along the apex crest
+                    float glossStreak = pow(apexHighlight, 2.5) * 0.40;
+                    backRgb += float3(glossStreak, glossStreak, glossStreak);
+
+                    return float4(backRgb * _Color.rgb, texCol.a * _BackSideColor.a * _Color.a);
                 }
             }
             ENDHLSL

@@ -1179,14 +1179,14 @@ MonoBehaviour:
   stickerType: 2
   targetGhostSlot: {fileID: 636427988}
   peelMesh3D: {fileID: 1215549567}
-  peelDuration: 0.24
+  peelDuration: 0.46
   peelTiltStrength: 14
-  flightDuration: 0.38
-  flightJumpPower: 1.5
+  flightDuration: 0.55
+  flightJumpPower: 1.6
   flightEase: 6
   flightSortingOrder: 100
-  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
-  stampPunchDuration: 0.25
+  stickDuration: 0.42
+  shineRayDuration: 0.5
   peelVfxPrefab: {fileID: 169d8249c72044fbc9c4bdda5d62ceab, guid: 169d8249c72044fbc9c4bdda5d62ceab, type: 3}
   attachVfxPrefab: {fileID: 2f77878140559486c8a60be3fd513359, guid: 2f77878140559486c8a60be3fd513359, type: 3}
   sparkleVfxPrefab: {fileID: 701ee89ecf7b8416fa1d48b015cc0c63, guid: 701ee89ecf7b8416fa1d48b015cc0c63, type: 3}
@@ -1202,7 +1202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 28
+  gridResolution: 32
   peelAngle: 45
   rollRadius: 0.38
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
@@ -1513,14 +1513,14 @@ MonoBehaviour:
   stickerType: 1
   targetGhostSlot: {fileID: 264991239}
   peelMesh3D: {fileID: 1644672745}
-  peelDuration: 0.24
+  peelDuration: 0.46
   peelTiltStrength: 14
-  flightDuration: 0.38
-  flightJumpPower: 1.5
+  flightDuration: 0.55
+  flightJumpPower: 1.6
   flightEase: 6
   flightSortingOrder: 100
-  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
-  stampPunchDuration: 0.25
+  stickDuration: 0.42
+  shineRayDuration: 0.5
   peelVfxPrefab: {fileID: 169d8249c72044fbc9c4bdda5d62ceab, guid: 169d8249c72044fbc9c4bdda5d62ceab, type: 3}
   attachVfxPrefab: {fileID: 2f77878140559486c8a60be3fd513359, guid: 2f77878140559486c8a60be3fd513359, type: 3}
   sparkleVfxPrefab: {fileID: 701ee89ecf7b8416fa1d48b015cc0c63, guid: 701ee89ecf7b8416fa1d48b015cc0c63, type: 3}
@@ -1536,7 +1536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 28
+  gridResolution: 32
   peelAngle: 45
   rollRadius: 0.38
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
@@ -1872,14 +1872,14 @@ MonoBehaviour:
   stickerType: 0
   targetGhostSlot: {fileID: 367521629}
   peelMesh3D: {fileID: 2059011747}
-  peelDuration: 0.24
+  peelDuration: 0.46
   peelTiltStrength: 14
-  flightDuration: 0.38
-  flightJumpPower: 1.5
+  flightDuration: 0.55
+  flightJumpPower: 1.6
   flightEase: 6
   flightSortingOrder: 100
-  stampPunchScale: {x: 0.2, y: -0.1, z: 0}
-  stampPunchDuration: 0.25
+  stickDuration: 0.42
+  shineRayDuration: 0.5
   peelVfxPrefab: {fileID: 169d8249c72044fbc9c4bdda5d62ceab, guid: 169d8249c72044fbc9c4bdda5d62ceab, type: 3}
   attachVfxPrefab: {fileID: 2f77878140559486c8a60be3fd513359, guid: 2f77878140559486c8a60be3fd513359, type: 3}
   sparkleVfxPrefab: {fileID: 701ee89ecf7b8416fa1d48b015cc0c63, guid: 701ee89ecf7b8416fa1d48b015cc0c63, type: 3}
@@ -1895,7 +1895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 28
+  gridResolution: 32
   peelAngle: 45
   rollRadius: 0.38
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
