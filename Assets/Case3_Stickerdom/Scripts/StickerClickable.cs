@@ -50,7 +50,7 @@ namespace Stickerdom
         [Tooltip("Duration of the diagonal shine ray passing over the sticker upon landing.")]
         [SerializeField] private float shineRayDuration = 0.50f;
 
-        [Header("VFX Prefabs")]
+        [Header("VFX Prefabs (Fallback / Overrides)")]
         [SerializeField] private GameObject peelVfxPrefab;
         [SerializeField] private GameObject attachVfxPrefab;
         [SerializeField] private GameObject sparkleVfxPrefab;
@@ -185,8 +185,20 @@ namespace Stickerdom
 
             onPeelStarted?.Invoke();
 
-            // 3. Spawn Peel Dust Particles at the sticker corner
-            SpawnVFX(peelVfxPrefab, transform.position);
+            // 3. Audio & VFX: Play Peel Sound & Peel Poof Particles
+            if (StickerAudioManager.Instance != null)
+            {
+                StickerAudioManager.Instance.PlayPeelSound();
+            }
+
+            if (StickerVFXManager.Instance != null)
+            {
+                StickerVFXManager.Instance.PlayPeelVFX(transform.position);
+            }
+            else
+            {
+                SpawnVFX(peelVfxPrefab, transform.position);
+            }
 
             // 4. Calculate corner peel tilt
             float chosenAngle = peelMesh3D != null ? peelMesh3D.PickRandomCornerAngle() : 45f;
@@ -208,17 +220,28 @@ namespace Stickerdom
             }
             masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.InOutSine));
 
-            // PHASE 2: UÇUŞ (0.55s) - Sticker havada rulo/arkası dönük haliyle hedef yuvaya doğru uçar
+            // PHASE 2: UÇUŞ (0.55s) - Play Fly Swoosh & arc flight to target slot
+            masterSequence.AppendCallback(() =>
+            {
+                if (StickerAudioManager.Instance != null)
+                {
+                    StickerAudioManager.Instance.PlayFlySound();
+                }
+            });
             masterSequence.Append(transform.DOJump(targetPos, flightJumpPower, 1, flightDuration).SetEase(flightEase));
             masterSequence.Join(transform.DORotate(targetRotEuler, flightDuration).SetEase(Ease.OutCubic));
             masterSequence.Join(transform.DOScale(targetScale, flightDuration).SetEase(Ease.OutCubic));
 
-            // PHASE 3: GERİ YAPIŞTIRMA (1 -> 0) (0.42s) - Silky Smooth 3D unroll onto album sheet
+            // PHASE 3: GERİ YAPIŞTIRMA (1 -> 0) (0.42s) - Play stamp sound immediately on touchdown & unroll
             masterSequence.AppendCallback(() =>
             {
                 if (targetGhostSlot != null)
                 {
                     targetGhostSlot.HideGhost();
+                }
+                if (StickerAudioManager.Instance != null)
+                {
+                    StickerAudioManager.Instance.PlayStampSound();
                 }
             });
 
@@ -227,7 +250,7 @@ namespace Stickerdom
                 masterSequence.Append(peelMesh3D.AnimateReverseUnroll(stickDuration));
             }
 
-            // PHASE 4: Shine Ray Sweep & Sparkles (0.50s)
+            // PHASE 4: Shine Ray Sweep, Sparkles & Victory Check
             masterSequence.OnComplete(OnStickerLanded);
         }
 
@@ -258,12 +281,25 @@ namespace Stickerdom
                     peelMesh3D.AnimateShineRay(shineRayDuration);
                 }
 
-                // Spawn Sparkle & Attach Burst VFX
-                SpawnVFX(attachVfxPrefab, transform.position);
-                SpawnVFX(sparkleVfxPrefab, transform.position);
+                // Spawn Sparkle Burst via StickerVFXManager
+                if (StickerVFXManager.Instance != null)
+                {
+                    StickerVFXManager.Instance.PlayStampVFX(targetGhostSlot.TargetPosition);
+                }
+                else
+                {
+                    SpawnVFX(attachVfxPrefab, transform.position);
+                    SpawnVFX(sparkleVfxPrefab, transform.position);
+                }
 
                 // Notify target slot
                 targetGhostSlot.OnStickerPlaced(this);
+
+                // Check Level Victory
+                if (StickerAudioManager.Instance != null)
+                {
+                    StickerAudioManager.Instance.CheckAllSlotsCompleted();
+                }
             }
 
             onStickerPlaced?.Invoke();
