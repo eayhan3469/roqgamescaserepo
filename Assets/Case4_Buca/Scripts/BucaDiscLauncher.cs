@@ -17,22 +17,19 @@ namespace Buca
 
         [Header("Slingshot & Aim Settings")]
         [Tooltip("Maximum drag distance in world units to reach 100% power.")]
-        [SerializeField] private float maxDragDistance = 3.2f;
+        [SerializeField] private float maxDragDistance = 3.5f;
 
         [Tooltip("Distance from touch center below which the shot is CANCELLED.")]
         [SerializeField] private float cancelThresholdDistance = 0.45f;
 
-        [Tooltip("Maximum launch speed at full aim.")]
-        [SerializeField] private float maxLaunchSpeed = 38.0f;
+        [Tooltip("Maximum launch impulse force at 100% pull.")]
+        [SerializeField] private float maxLaunchForce = 34.0f;
 
-        [Tooltip("Minimum launch speed at minimum threshold.")]
-        [SerializeField] private float minLaunchSpeed = 8.0f;
+        [Tooltip("Minimum launch impulse force.")]
+        [SerializeField] private float minLaunchForce = 8.0f;
 
         [Tooltip("Base forward direction along the launch track.")]
         [SerializeField] private Vector3 baseForwardDir = new Vector3(0f, 0f, 1f);
-
-        [Tooltip("Maximum allowed horizontal aim angle deflection in degrees (+/-).")]
-        [SerializeField] private float maxAimAngle = 45.0f;
 
         [Header("Forward Aim Indicator (At Disc)")]
         [SerializeField] private LineRenderer aimLine;
@@ -47,9 +44,27 @@ namespace Buca
         [SerializeField] private Color ringActiveColor = new Color(0.3f, 0.9f, 1.0f, 0.85f);
         [SerializeField] private Color ringCancelColor = new Color(1.0f, 0.35f, 0.35f, 0.5f);
 
-        [Header("Spin & Reset")]
-        [SerializeField] private float spinSpeed = 720.0f;
-        [SerializeField] private float autoResetDelay = 4.0f;
+        [Header("Wall Impact Friction Spin Settings (Exact 2-Turn Physics)")]
+        [Tooltip("Exact radius of the visual mesh (0.58m from FBX).")]
+        [SerializeField] private float discRadius = 0.58f;
+
+        [Tooltip("Base spin rate added on solid wall hit (in degrees/sec).")]
+        [SerializeField] private float wallImpactSpinSpeed = 700.0f;
+
+        [Tooltip("Maximum visual spin speed cap in degrees/sec.")]
+        [SerializeField] private float maxSpinSpeedCap = 1000.0f;
+
+        [Tooltip("Smooth spin deceleration rate in degrees/sec^2.")]
+        [SerializeField] private float spinDeceleration = 320.0f;
+
+        [Header("PhysX Bounce & Friction Properties")]
+        [SerializeField] private float dynamicFriction = 0.05f;
+        [SerializeField] private float staticFriction = 0.05f;
+        [SerializeField] private float bounciness = 0.75f;
+        [SerializeField] private float linearDamping = 0.15f;
+
+        [Header("Reset Delay")]
+        [SerializeField] private float autoResetDelay = 4.5f;
 
         private Rigidbody discRb;
         private SphereCollider discCollider;
@@ -60,16 +75,25 @@ namespace Buca
         private bool isLaunched = false;
         private bool isCanceling = false;
         private Vector3 dragStartWorldPos;
-        private Vector3 currentLaunchDir;
+        private Vector3 currentLaunchDir = Vector3.forward;
         private float currentPowerRatio = 0f;
         private Camera mainCam;
         private float resetTimer = 0f;
         private Plane groundPlane;
 
+        // Strict speed cap to prevent wall acceleration
+        private float maxAllowedSpeed = 0f;
+        private Vector3 preCollisionVelocity = Vector3.zero;
+
+        // Dedicated visual & physical spin integration
+        private float currentVisualAngleY = 0f;
+        private float currentSpinSpeedY = 0f;
+
         public bool IsAiming => isAiming;
         public bool IsLaunched => isLaunched;
         public bool IsCanceling => isCanceling;
         public Transform DiscTransform => discTransform;
+        public float CurrentSpinSpeedY => currentSpinSpeedY;
 
         private void Awake()
         {
@@ -79,6 +103,7 @@ namespace Buca
             mainCam = Camera.main;
 
             FindAndSetupDisc();
+            SetupPhysXMaterials();
             SetupAimLine();
             SetupTouchVisualizers();
         }
@@ -87,8 +112,11 @@ namespace Buca
         {
             if (discTransform != null)
             {
+                discTransform.SetParent(null, true);
+
                 spawnPosition = discTransform.position;
                 spawnRotation = discTransform.rotation;
+                currentVisualAngleY = spawnRotation.eulerAngles.y;
                 groundPlane = new Plane(Vector3.up, spawnPosition);
             }
         }
@@ -98,9 +126,18 @@ namespace Buca
             if (discTransform == null)
             {
                 GameObject discGo = GameObject.Find("disc");
-                if (discGo != null)
+                if (discGo != null) discTransform = discGo.transform;
+            }
+
+            if (discTransform == null)
+            {
+                foreach (var t in FindObjectsOfType<Transform>(true))
                 {
-                    discTransform = discGo.transform;
+                    if (t.name.ToLower() == "disc")
+                    {
+                        discTransform = t;
+                        break;
+                    }
                 }
             }
 
@@ -110,18 +147,28 @@ namespace Buca
                 return;
             }
 
-            // Setup Rigidbody
+            // Attach collision relay component directly to disc so Unity collision messages are 100% delivered!
+            if (discTransform.GetComponent<BucaDiscCollisionRelay>() == null)
+            {
+                discTransform.gameObject.AddComponent<BucaDiscCollisionRelay>();
+            }
+
             discRb = discTransform.GetComponent<Rigidbody>();
             if (discRb == null) discRb = discTransform.gameObject.AddComponent<Rigidbody>();
 
-            discRb.mass = 1.2f;
-            discRb.linearDamping = 0.12f;
-            discRb.angularDamping = 0.4f;
+            discRb.mass = 1.0f;
+            discRb.linearDamping = linearDamping;
+            discRb.angularDamping = 0.1f;
+            discRb.useGravity = false;
             discRb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             discRb.interpolation = RigidbodyInterpolation.Interpolate;
+
+            discRb.constraints = RigidbodyConstraints.FreezePositionY |
+                                 RigidbodyConstraints.FreezeRotationX |
+                                 RigidbodyConstraints.FreezeRotationZ;
+
             discRb.isKinematic = true;
 
-            // Setup SphereCollider
             discCollider = discTransform.GetComponent<SphereCollider>();
             if (discCollider == null)
             {
@@ -129,23 +176,54 @@ namespace Buca
                 if (mc != null) Destroy(mc);
 
                 discCollider = discTransform.gameObject.AddComponent<SphereCollider>();
-                discCollider.radius = 0.45f;
             }
 
-            // Smooth physics material
-            PhysicsMaterial discPhysMat = new PhysicsMaterial("BucaDiscMat")
+            discCollider.radius = discRadius;
+            discCollider.center = new Vector3(0f, 0.25f, 0f);
+
+            PhysicsMaterial puckPhysMat = new PhysicsMaterial("BucaPuckMat")
             {
-                dynamicFriction = 0.01f,
-                staticFriction = 0.01f,
-                bounciness = 0.85f,
-                frictionCombine = PhysicsMaterialCombine.Minimum,
-                bounceCombine = PhysicsMaterialCombine.Maximum
+                dynamicFriction = dynamicFriction,
+                staticFriction = staticFriction,
+                bounciness = bounciness,
+                frictionCombine = PhysicsMaterialCombine.Average,
+                bounceCombine = PhysicsMaterialCombine.Multiply
             };
-            discCollider.material = discPhysMat;
+            discCollider.material = puckPhysMat;
 
             if (!discTransform.CompareTag("Player"))
             {
                 discTransform.gameObject.tag = "Player";
+            }
+        }
+
+        private void SetupPhysXMaterials()
+        {
+            PhysicsMaterial wallPhysMat = new PhysicsMaterial("BucaWallMat")
+            {
+                dynamicFriction = dynamicFriction,
+                staticFriction = staticFriction,
+                bounciness = bounciness,
+                frictionCombine = PhysicsMaterialCombine.Average,
+                bounceCombine = PhysicsMaterialCombine.Multiply
+            };
+
+            MeshRenderer[] renderers = FindObjectsOfType<MeshRenderer>(true);
+            foreach (var r in renderers)
+            {
+                if (r.gameObject == (discTransform != null ? discTransform.gameObject : null)) continue;
+
+                string lower = r.gameObject.name.ToLower();
+                if (lower.Contains("frame") || lower.Contains("level") || lower.Contains("wall") || lower.Contains("track"))
+                {
+                    Collider col = r.GetComponent<Collider>();
+                    if (col != null) col.material = wallPhysMat;
+                }
+                else if (lower.Contains("obstacle"))
+                {
+                    Collider col = r.GetComponent<Collider>();
+                    if (col != null) col.material = wallPhysMat;
+                }
             }
         }
 
@@ -154,10 +232,7 @@ namespace Buca
             if (aimLine == null)
             {
                 aimLine = GetComponent<LineRenderer>();
-                if (aimLine == null)
-                {
-                    aimLine = gameObject.AddComponent<LineRenderer>();
-                }
+                if (aimLine == null) aimLine = gameObject.AddComponent<LineRenderer>();
             }
 
             aimLine.positionCount = 3;
@@ -167,8 +242,8 @@ namespace Buca
             AnimationCurve widthCurve = new AnimationCurve();
             widthCurve.AddKey(0f, 0.28f);
             widthCurve.AddKey(0.75f, 0.22f);
-            widthCurve.AddKey(0.85f, 0.40f); // Arrow flare
-            widthCurve.AddKey(1f, 0.02f);    // Sharp arrow tip
+            widthCurve.AddKey(0.85f, 0.40f);
+            widthCurve.AddKey(1f, 0.02f);
             aimLine.widthCurve = widthCurve;
             aimLine.widthMultiplier = 1.0f;
 
@@ -178,7 +253,6 @@ namespace Buca
 
         private void SetupTouchVisualizers()
         {
-            // Touch Origin Ring (Clean circle at the touch point)
             if (touchOriginRing == null)
             {
                 GameObject ringGo = new GameObject("TouchOriginRing");
@@ -200,21 +274,59 @@ namespace Buca
         {
             HandleInput();
 
-            if (isLaunched)
+            if (isLaunched && discTransform != null)
             {
-                // Spin disc visually while moving
-                if (discRb != null && discRb.linearVelocity.sqrMagnitude > 0.1f)
+                // Accumulate rotational spin around Y with clean linear damping
+                if (Mathf.Abs(currentSpinSpeedY) > 0.5f)
                 {
-                    discTransform.Rotate(Vector3.up, spinSpeed * Time.deltaTime, Space.World);
+                    currentVisualAngleY += currentSpinSpeedY * Time.deltaTime;
+                    currentSpinSpeedY = Mathf.MoveTowards(currentSpinSpeedY, 0f, spinDeceleration * Time.deltaTime);
+                }
+                else
+                {
+                    currentSpinSpeedY = 0f;
                 }
 
-                // Check auto reset if stopped or timeout
+                // Apply rotation strictly flat in the XZ plane
+                Quaternion targetRot = Quaternion.Euler(0f, currentVisualAngleY, 0f);
+                discTransform.rotation = targetRot;
+
+                if (discRb != null && !discRb.isKinematic)
+                {
+                    discRb.MoveRotation(targetRot);
+                }
+
+                // Auto reset when stopped or timeout
                 resetTimer += Time.deltaTime;
-                if (resetTimer > autoResetDelay || (resetTimer > 1.5f && discRb != null && discRb.linearVelocity.magnitude < 0.2f))
+                if (resetTimer > autoResetDelay || (resetTimer > 1.5f && discRb != null && discRb.linearVelocity.magnitude < 0.25f))
                 {
                     ResetDisc();
                 }
             }
+        }
+
+        private void FixedUpdate()
+        {
+            if (!isLaunched || discRb == null) return;
+
+            Vector3 vel = discRb.linearVelocity;
+
+            // Lock Y velocity strictly to 0
+            vel.y = 0f;
+
+            // Strict energy conservation (speed can never exceed maxAllowedSpeed)
+            if (vel.magnitude > maxAllowedSpeed)
+            {
+                vel = vel.normalized * maxAllowedSpeed;
+            }
+
+            discRb.linearVelocity = vel;
+
+            // Continuous decay of max speed via linear damping
+            maxAllowedSpeed = Mathf.Max(0f, maxAllowedSpeed - 0.2f * Time.fixedDeltaTime);
+
+            // Cache velocity before the next collision step
+            preCollisionVelocity = vel;
         }
 
         private void HandleInput()
@@ -292,11 +404,10 @@ namespace Buca
             currentPowerRatio = 0f;
             currentLaunchDir = baseForwardDir.normalized;
 
-            // Disc stays fixed at spawn position
             discTransform.position = spawnPosition;
             discTransform.rotation = spawnRotation;
+            currentVisualAngleY = spawnRotation.eulerAngles.y;
 
-            // Show touch origin ring only
             DrawOriginRing(dragStartWorldPos, ringCancelColor);
 
             if (aimLine != null) aimLine.enabled = false;
@@ -309,18 +420,18 @@ namespace Buca
 
             float dragDist = dragVector.magnitude;
 
-            // Check if inside cancel zone
+            // Check cancel zone
             if (dragDist < cancelThresholdDistance)
             {
                 isCanceling = true;
                 currentPowerRatio = 0f;
 
-                // Color ring red/soft to indicate release will cancel
                 DrawOriginRing(dragStartWorldPos, ringCancelColor);
 
                 if (aimLine != null) aimLine.enabled = false;
 
                 discTransform.rotation = spawnRotation;
+                currentVisualAngleY = spawnRotation.eulerAngles.y;
                 return;
             }
 
@@ -329,21 +440,15 @@ namespace Buca
             float effectiveDrag = dragDist - cancelThresholdDistance;
             currentPowerRatio = Mathf.Clamp01(effectiveDrag / (maxDragDistance - cancelThresholdDistance));
 
-            // Aim vector: pulling backwards aims forward
+            // Full 360 aim: pulling backwards aims forward
             Vector3 aimVector = -dragVector;
-            Vector3 candidateDir = aimVector.normalized;
+            currentLaunchDir = aimVector.normalized;
 
-            float angle = Vector3.SignedAngle(baseForwardDir, candidateDir, Vector3.up);
-            float clampedAngle = Mathf.Clamp(angle, -maxAimAngle, maxAimAngle);
-            currentLaunchDir = Quaternion.AngleAxis(clampedAngle, Vector3.up) * baseForwardDir.normalized;
+            currentVisualAngleY = Quaternion.LookRotation(currentLaunchDir, Vector3.up).eulerAngles.y;
+            discTransform.rotation = Quaternion.Euler(0f, currentVisualAngleY, 0f);
 
-            // Update Disc rotation facing the aim
-            discTransform.rotation = Quaternion.LookRotation(currentLaunchDir, Vector3.up);
-
-            // Update Touch Origin Ring (Glow active color)
             DrawOriginRing(dragStartWorldPos, ringActiveColor);
 
-            // Update Forward Aim Indicator at the disc
             if (aimLine != null)
             {
                 aimLine.enabled = true;
@@ -399,21 +504,27 @@ namespace Buca
 
             if (isCanceling || currentPowerRatio <= 0.001f)
             {
-                // CANCELED!
                 discTransform.position = spawnPosition;
                 discTransform.rotation = spawnRotation;
-                Debug.Log("[BucaDiscLauncher] Shot Canceled (Released inside cancel zone).");
+                currentVisualAngleY = spawnRotation.eulerAngles.y;
+                Debug.Log("[BucaDiscLauncher] Shot Canceled.");
                 return;
             }
 
-            // Fire forward along the chosen aim direction!
-            float launchSpeed = Mathf.Lerp(minLaunchSpeed, maxLaunchSpeed, currentPowerRatio);
+            float launchForce = Mathf.Lerp(minLaunchForce, maxLaunchForce, currentPowerRatio);
             isLaunched = true;
             resetTimer = 0f;
+            currentSpinSpeedY = 0f;
+            maxAllowedSpeed = launchForce;
 
             discRb.isKinematic = false;
-            discRb.useGravity = true;
-            discRb.linearVelocity = currentLaunchDir.normalized * launchSpeed;
+            discRb.useGravity = false;
+            discRb.linearVelocity = Vector3.zero;
+            discRb.angularVelocity = Vector3.zero;
+
+            Vector3 impulse = currentLaunchDir.normalized * launchForce;
+            discRb.AddForce(impulse, ForceMode.Impulse);
+            preCollisionVelocity = impulse;
         }
 
         private void HideVisualizers()
@@ -429,6 +540,9 @@ namespace Buca
             isCanceling = false;
             resetTimer = 0f;
             currentPowerRatio = 0f;
+            currentSpinSpeedY = 0f;
+            maxAllowedSpeed = 0f;
+            preCollisionVelocity = Vector3.zero;
 
             HideVisualizers();
 
@@ -444,16 +558,105 @@ namespace Buca
                 discTransform.DOKill();
                 discTransform.position = spawnPosition;
                 discTransform.rotation = spawnRotation;
+                currentVisualAngleY = spawnRotation.eulerAngles.y;
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        /// <summary>
+        /// Called ONLY on initial impact by BucaDiscCollisionRelay!
+        /// </summary>
+        public void OnDiscCollisionEnter(Collision collision)
         {
-            // Direct impact on blocks
+            ProcessWallImpactSpin(collision);
+
+            // Block hit
             if (collision.gameObject.TryGetComponent<BucaBlock>(out var block))
             {
                 Vector3 hitPoint = collision.contacts.Length > 0 ? collision.contacts[0].point : collision.transform.position;
-                block.HitByDisc(hitPoint, discRb != null ? discRb.linearVelocity : currentLaunchDir * maxLaunchSpeed, 1.2f);
+                block.HitByDisc(hitPoint, discRb != null ? discRb.linearVelocity : currentLaunchDir * maxLaunchForce, 1.2f);
+            }
+            // Obstacle hit
+            else if (collision.gameObject.TryGetComponent<BucaObstacle>(out var obstacle))
+            {
+                obstacle.SendMessage("TriggerHitFeedback", SendMessageOptions.DontRequireReceiver);
+            }
+        }
+
+        public void OnDiscCollisionStay(Collision collision)
+        {
+            // Do NOT re-add spin every continuous frame while sliding!
+        }
+
+        /// <summary>
+        /// Applies a clean rotational spin kick calculated to complete 1.5 - 2 turns on hard hits,
+        /// and smoothly decelerate to a complete stop over 1 - 2 seconds.
+        /// </summary>
+        private void ProcessWallImpactSpin(Collision collision)
+        {
+            if (collision.contactCount == 0 || discRb == null || !isLaunched) return;
+            if (collision.gameObject.name.ToLower().Contains("plane")) return;
+
+            // 1. Natural kinetic energy loss upon impact (absorb 8% per bounce)
+            maxAllowedSpeed *= 0.92f;
+            if (discRb.linearVelocity.magnitude > maxAllowedSpeed)
+            {
+                discRb.linearVelocity = discRb.linearVelocity.normalized * maxAllowedSpeed;
+            }
+
+            // 2. Find the contact point
+            ContactPoint contact = collision.GetContact(0);
+            Vector3 contactPoint = contact.point;
+
+            // Outward normal from contact to disc center
+            Vector3 outwardNormal = discTransform.position - contactPoint;
+            outwardNormal.y = 0f;
+            if (outwardNormal.sqrMagnitude < 0.001f) return;
+            outwardNormal.Normalize();
+
+            // Extract movement direction before bounce
+            Vector3 incomingVel = preCollisionVelocity.sqrMagnitude > 0.5f ? preCollisionVelocity : discRb.linearVelocity;
+            incomingVel.y = 0f;
+            float speed = incomingVel.magnitude;
+            if (speed < 0.2f) return;
+
+            Vector3 moveDir = incomingVel / speed;
+
+            // Cross product:
+            // Invert sign to match physical surface friction roll (Clockwise on left wall, Counter-Clockwise on right wall)
+            float crossY = Vector3.Cross(moveDir, outwardNormal).y;
+            float sideSign = -Mathf.Sign(crossY);
+
+            // Clean speed ratio (scales from 0.25 on soft hits up to 1.0 on max hits)
+            float speedRatio = Mathf.Clamp(speed / 20.0f, 0.25f, 1.0f);
+
+            // Glancing grazing factor
+            float glancingFactor = 0.4f + 0.6f * Mathf.Clamp01(Mathf.Abs(crossY));
+            float spinImpact = wallImpactSpinSpeed * speedRatio * glancingFactor;
+
+            // Add single-hit spin kick, naturally capped
+            currentSpinSpeedY += sideSign * spinImpact;
+            currentSpinSpeedY = Mathf.Clamp(currentSpinSpeedY, -maxSpinSpeedCap, maxSpinSpeedCap);
+        }
+    }
+
+    /// <summary>
+    /// Attached directly to the disc GameObject to relay all PhysX collision events to BucaDiscLauncher!
+    /// </summary>
+    public class BucaDiscCollisionRelay : MonoBehaviour
+    {
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (BucaDiscLauncher.Instance != null)
+            {
+                BucaDiscLauncher.Instance.OnDiscCollisionEnter(collision);
+            }
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            if (BucaDiscLauncher.Instance != null)
+            {
+                BucaDiscLauncher.Instance.OnDiscCollisionStay(collision);
             }
         }
     }
