@@ -31,25 +31,24 @@ namespace FitTheShape
         [Tooltip("Duration of the springy button press recoil.")]
         [SerializeField] private float pedestalPunchDuration = 0.25f;
 
-        [Header("Continuous Fluid Flight & Spin Settings")]
+        [Header("3-Stage Flight: Arc Fly -> Hover Align -> Snap Plunge")]
         [Tooltip("Height of the parabolic arc towards the camera to clear all drum segments.")]
         [SerializeField] private float arcLiftTowardsCamera = 3.0f;
 
-        [Tooltip("Total duration of the continuous fluid flight from deck to hole entrance.")]
-        [SerializeField] private float flightDuration = 0.40f;
+        [Tooltip("Duration of the flight from deck to overhead alignment position.")]
+        [SerializeField] private float flightToHoverDuration = 0.36f;
+
+        [Tooltip("Brief hover pause right above the hole while fully leveled/aligned.")]
+        [SerializeField] private float overheadHoverDuration = 0.08f;
+
+        [Tooltip("Fast snappy plunge straight down into the hole ('TAK!' oturma).")]
+        [SerializeField] private float snapPlungeDuration = 0.09f;
+
+        [Tooltip("Height above hole for overhead hover alignment.")]
+        [SerializeField] private float overheadHoverHeight = 0.70f;
 
         [Tooltip("Scale multiplier during the mid-air peak.")]
         [SerializeField] private float peakScaleMultiplier = 1.2f;
-
-        [Tooltip("Easing curve for the continuous flight path.")]
-        [SerializeField] private Ease flightEase = Ease.InOutQuad;
-
-        [Header("Dynamic Flight Spin Variety")]
-        [Tooltip("Randomly pick between Y-spin (XZ plane) and Z/X flips (XY plane).")]
-        [SerializeField] private bool randomizeSpinAxis = true;
-
-        [Tooltip("Easing curve for the mid-air spin.")]
-        [SerializeField] private Ease spinEase = Ease.InOutQuad;
 
         [Header("Pneumatic Sinking & Flush Plug Settings")]
         [Tooltip("Height above the hole the shape lands at first (embossed look on impact).")]
@@ -238,64 +237,57 @@ namespace FitTheShape
             activeSequence?.Kill();
             activeSequence = DOTween.Sequence();
 
+            Camera mainCam = Camera.main;
+            Vector3 camUp = mainCam != null ? mainCam.transform.up : Vector3.up;
+            Vector3 toCameraDir = mainCam != null ? -mainCam.transform.forward : new Vector3(0f, 0.94f, -0.34f);
+
             Vector3 startPos = transform.position;
-            Vector3 embossedLandingPos = lastAnchor.position + (lastAnchor.up * embossedLandingOffset);
+            Vector3 holeNormal = lastAnchor.up;
+
+            // Game ekranında deliğin hemen üstünde tatlı ve dengeli bir mesafede beklemesi için ofset
+            Vector3 overheadApproachPos = lastAnchor.position + (camUp * 0.45f) + (holeNormal * 0.22f);
+            Vector3 embossedLandingPos = lastAnchor.position + (holeNormal * embossedLandingOffset);
             Vector3 flushSeatedPos = lastAnchor.position;
 
             StartFlightTrail();
 
-            Camera mainCam = Camera.main;
-            Vector3 toCameraDir = mainCam != null ? -mainCam.transform.forward : new Vector3(0f, 0.94f, -0.34f);
-            
-            Vector3 arcGuidePos = firstAnchor != null ? firstAnchor.position : Vector3.Lerp(startPos, embossedLandingPos, 0.5f);
-            Vector3 arcMidPoint = Vector3.Lerp(startPos, arcGuidePos, 0.6f) + toCameraDir * arcLiftTowardsCamera;
+            Vector3 arcGuidePos = firstAnchor != null ? firstAnchor.position : Vector3.Lerp(startPos, overheadApproachPos, 0.5f);
+            Vector3 arcMidPoint = Vector3.Lerp(startPos, arcGuidePos, 0.55f) + toCameraDir * arcLiftTowardsCamera;
 
-            Vector3[] continuousPath = new Vector3[] {
+            Vector3[] arcPath = new Vector3[] {
                 startPos,
                 arcMidPoint,
-                embossedLandingPos
+                overheadApproachPos
             };
 
-            // 1. Kesintisiz Akıcı Uçuş (Yuva Ağzına Kadar)
-            activeSequence.Append(transform.DOPath(continuousPath, flightDuration, PathType.CatmullRom).SetEase(flightEase));
+            Quaternion targetRot = lastAnchor.rotation;
+            float ySpinDir = UnityEngine.Random.value > 0.5f ? 180f : -180f;
+            Vector3 spinAngles = new Vector3(0f, ySpinDir, 0f);
 
-            // 2. Dinamik 3D Spin Çeşitliliği (XZ vs XY Düzlemleri)
-            Vector3 spinAngles = new Vector3(0f, 360f, 0f);
-            if (randomizeSpinAxis)
-            {
-                int spinType = UnityEngine.Random.Range(0, 3);
-                if (spinType == 0)
-                {
-                    float yDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
-                    spinAngles = new Vector3(0f, yDir, 0f);
-                }
-                else if (spinType == 1)
-                {
-                    float zDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
-                    spinAngles = new Vector3(0f, 0f, zDir);
-                }
-                else
-                {
-                    float yDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
-                    float zDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
-                    spinAngles = new Vector3(0f, yDir, zDir);
-                }
-            }
+            // AŞAMA 1: Butona basıldığı an deliğin tam üst hizasına kavisli akıcı uçuş başlar
+            activeSequence.Append(transform.DOPath(arcPath, flightToHoverDuration, PathType.CatmullRom).SetEase(Ease.OutQuad));
 
-            activeSequence.Join(transform.DORotate(spinAngles, flightDuration, RotateMode.LocalAxisAdd).SetEase(spinEase));
+            // Havada sakin 180 derece dönüş ve deliğin üstüne varırken YUVA AÇISIYLA TAM DÜZLEŞME
+            Sequence rotSeq = DOTween.Sequence();
+            rotSeq.Append(transform.DORotate(spinAngles, flightToHoverDuration * 0.65f, RotateMode.LocalAxisAdd).SetEase(Ease.Linear));
+            rotSeq.Append(transform.DORotate(targetRot.eulerAngles, flightToHoverDuration * 0.35f, RotateMode.Fast).SetEase(Ease.OutQuad));
+            activeSequence.Join(rotSeq);
 
-            // 3. Havada Boyut Standardizasyonu
-            float uniformBase = Mathf.Max(originalScale.x, originalScale.z);
-            Vector3 peakNormalizedScale = new Vector3(uniformBase, uniformBase, uniformBase) * peakScaleMultiplier;
-            Vector3 worldEmbossedScale = new Vector3(uniformBase, embossedThickness, uniformBase);
-
+            // Boyut ölçeklemesi (Kesinlikle incelme/yassılaşma yok, daima tam ve tok 3D kalınlığını korur)
+            Vector3 peakScale = originalScale * peakScaleMultiplier;
             Sequence scaleSeq = DOTween.Sequence();
-            scaleSeq.Append(transform.DOScale(peakNormalizedScale, flightDuration * 0.45f).SetEase(Ease.OutQuad));
-            scaleSeq.Append(transform.DOScale(worldEmbossedScale, flightDuration * 0.55f).SetEase(Ease.InQuad));
+            scaleSeq.Append(transform.DOScale(peakScale, flightToHoverDuration * 0.45f).SetEase(Ease.OutQuad));
+            scaleSeq.Append(transform.DOScale(originalScale, flightToHoverDuration * 0.55f).SetEase(Ease.InQuad));
             activeSequence.Join(scaleSeq);
 
-            // 4. Snap Sesini tam yuva ağzına temas anından bir kare önce tetikle ("CUK!")
-            activeSequence.InsertCallback(Mathf.Max(0f, flightDuration - 0.015f), () =>
+            // AŞAMA 2: Uçuş bitip deliğin tam üstüne gelindiğinde kısa bir an bekleme (Anticipation)
+            activeSequence.AppendInterval(overheadHoverDuration);
+
+            // AŞAMA 3: Deliğe tam 90 derece dikey ve hızlı 'TAK!' diye oturma dalışı
+            activeSequence.Append(transform.DOMove(embossedLandingPos, snapPlungeDuration).SetEase(Ease.InQuad));
+
+            // Tam 'TAK!' çarpma anında ses tetikleme
+            activeSequence.InsertCallback(flightToHoverDuration + overheadHoverDuration + snapPlungeDuration * 0.3f, () =>
             {
                 if (FitTheShapeAudioManager.Instance != null)
                 {
@@ -325,18 +317,13 @@ namespace FitTheShape
                     transform.SetParent(parentSeg, true);
 
                     // Segment'in asimetrik (non-uniform) scale'ini (0.87, 1.47, 1.47) ters çarpanla (inverse) dengele!
-                    // Böylece dünya koordinatlarında şekil %100 kusursuz 1:1 simetrik kalır, ASLA STRETCH OLMAZ!
+                    // Böylece dünya koordinatlarında şekil %100 kusursuz 3D oranını korur, ASLA İNCELMEZ VE STRETCH OLMAZ!
                     Vector3 pLossy = parentSeg.lossyScale;
                     float invX = pLossy.x > 0.001f ? 1f / pLossy.x : 1f;
                     float invY = pLossy.y > 0.001f ? 1f / pLossy.y : 1f;
                     float invZ = pLossy.z > 0.001f ? 1f / pLossy.z : 1f;
 
-                    float worldDiameter = Mathf.Max(originalScale.x, originalScale.z);
-                    Vector3 targetWorldEmbossed = new Vector3(worldDiameter, embossedThickness, worldDiameter);
-                    Vector3 targetWorldFlush = new Vector3(worldDiameter, flushPlugThickness, worldDiameter);
-
-                    Vector3 localEmbossedScale = new Vector3(targetWorldEmbossed.x * invX, targetWorldEmbossed.y * invY, targetWorldEmbossed.z * invZ);
-                    Vector3 localFlushScale = new Vector3(targetWorldFlush.x * invX, targetWorldFlush.y * invY, targetWorldFlush.z * invZ);
+                    Vector3 localShapeScale = new Vector3(originalScale.x * invX, originalScale.y * invY, originalScale.z * invZ);
 
                     Vector3 localEmbossedPos = parentSeg.InverseTransformPoint(embossedLandingPos);
                     Vector3 localFlushPos = parentSeg.InverseTransformPoint(flushSeatedPos);
@@ -344,7 +331,7 @@ namespace FitTheShape
 
                     transform.localPosition = localEmbossedPos;
                     transform.localRotation = localRot;
-                    transform.localScale = localEmbossedScale;
+                    transform.localScale = localShapeScale;
 
                     StopFlightTrail();
 
@@ -371,12 +358,14 @@ namespace FitTheShape
                     }
 
                     // 🌟 2. AŞAMA: Segment'in içinde pürüzsüzce içeri süzülerek yüzeye kilitlenme
-                    transform.DOLocalMove(localFlushPos, sinkDuration).SetEase(sinkEase);
-                    transform.DOScale(localFlushScale, sinkDuration).SetEase(sinkEase).OnComplete(() =>
+                    transform.DOLocalMove(localFlushPos, sinkDuration).SetEase(sinkEase).OnComplete(() =>
                     {
                         transform.localPosition = localFlushPos;
                         transform.localRotation = localRot;
-                        transform.localScale = localFlushScale;
+
+                        // Şekil deliği doldurup oturduktan sonra Hole objesini kapat ve yüzeyin DÜMDÜZ kalmasını sağla
+                        HideHoleCutout(parentSeg);
+                        gameObject.SetActive(false);
 
                         OnShapeEntered?.Invoke();
                     });
@@ -388,19 +377,29 @@ namespace FitTheShape
         {
             if (segmentRoot == null) return;
 
-            Transform hole = segmentRoot.Find("Hole");
-            if (hole != null) hole.gameObject.SetActive(false);
-
-            Transform holeCap = segmentRoot.Find("Hole-Cap");
-            if (holeCap != null) holeCap.gameObject.SetActive(false);
-
-            for (int i = 0; i < segmentRoot.childCount; i++)
+            // Segment ve altındaki tüm Hole / Hole-Cap objelerini eksiksiz bulup kapat
+            Transform[] allTrans = segmentRoot.GetComponentsInChildren<Transform>(true);
+            foreach (Transform t in allTrans)
             {
-                Transform child = segmentRoot.GetChild(i);
-                string cName = child.name.ToLower();
-                if (cName == "hole" || cName == "hole-cap" || cName.StartsWith("hole"))
+                if (t == null) continue;
+                string cName = t.name.ToLower();
+                if (cName.Contains("hole") || cName.Contains("hole-cap") || cName.Contains("cutout"))
                 {
-                    child.gameObject.SetActive(false);
+                    t.gameObject.SetActive(false);
+                }
+            }
+
+            if (targetHole != null && targetHole != segmentRoot)
+            {
+                Transform[] targetTrans = targetHole.GetComponentsInChildren<Transform>(true);
+                foreach (Transform t in targetTrans)
+                {
+                    if (t == null) continue;
+                    string cName = t.name.ToLower();
+                    if (cName.Contains("hole") || cName.Contains("hole-cap") || cName.Contains("cutout"))
+                    {
+                        t.gameObject.SetActive(false);
+                    }
                 }
             }
         }

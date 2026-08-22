@@ -3347,11 +3347,11 @@ MonoBehaviour:
   pedestalPunchDepth: 0.14
   pedestalPunchDuration: 0.25
   arcLiftTowardsCamera: 3
-  flightDuration: 0.42
+  flightToHoverDuration: 0.36
+  overheadHoverDuration: 0.08
+  snapPlungeDuration: 0.09
+  overheadHoverHeight: 0.7
   peakScaleMultiplier: 1.2
-  flightEase: 7
-  randomizeSpinAxis: 1
-  spinEase: 7
   embossedLandingOffset: 0.15
   embossedThickness: 0.28
   flushPlugThickness: 0.12
@@ -4321,6 +4321,14 @@ PrefabInstance:
     - target: {fileID: 1858566224807498376, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2606133259492319006, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.606
+      objectReference: {fileID: 0}
+    - target: {fileID: 2606133259492319006, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.003
       objectReference: {fileID: 0}
     - target: {fileID: 5197700333042483868, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -7631,11 +7639,11 @@ MonoBehaviour:
   pedestalPunchDepth: 0.14
   pedestalPunchDuration: 0.25
   arcLiftTowardsCamera: 3
-  flightDuration: 0.42
+  flightToHoverDuration: 0.36
+  overheadHoverDuration: 0.08
+  snapPlungeDuration: 0.09
+  overheadHoverHeight: 0.7
   peakScaleMultiplier: 1.2
-  flightEase: 7
-  randomizeSpinAxis: 1
-  spinEase: 7
   embossedLandingOffset: 0.15
   embossedThickness: 0.28
   flushPlugThickness: 0.12
@@ -7988,11 +7996,11 @@ MonoBehaviour:
   pedestalPunchDepth: 0.14
   pedestalPunchDuration: 0.25
   arcLiftTowardsCamera: 3
-  flightDuration: 0.42
+  flightToHoverDuration: 0.36
+  overheadHoverDuration: 0.08
+  snapPlungeDuration: 0.09
+  overheadHoverHeight: 0.7
   peakScaleMultiplier: 1.2
-  flightEase: 7
-  randomizeSpinAxis: 1
-  spinEase: 7
   embossedLandingOffset: 0.15
   embossedThickness: 0.28
   flushPlugThickness: 0.12
