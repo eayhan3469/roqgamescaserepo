@@ -172,12 +172,12 @@ Material:
     - _RimMin: 1.38
     - _ShadowColorLightAtten: 1
     - _SingleIndirectColor: 0
-    - _Smoothness: 0.15
+    - _Smoothness: 0.64
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SpecularMapType: 0
     - _SpecularRoughness: 0.307
-    - _SpecularRoughnessPBR: 0.477
+    - _SpecularRoughnessPBR: 0.377
     - _SpecularToonSize: 0.25
     - _SpecularToonSmoothness: 0.05
     - _SpecularType: 0

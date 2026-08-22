@@ -21,7 +21,7 @@ Shader "FitTheShape/HoleCavityDepth"
         Tags
         {
             "RenderType" = "Opaque"
-            "Queue" = "Geometry"
+            "Queue" = "Geometry+10"
             "RenderPipeline" = "UniversalPipeline"
         }
 
@@ -33,6 +33,7 @@ Shader "FitTheShape/HoleCavityDepth"
             Cull Off
             ZWrite On
             ZTest LEqual
+            Offset -3, -3
 
             HLSLPROGRAM
             #pragma target 3.0
