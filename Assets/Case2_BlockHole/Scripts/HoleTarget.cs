@@ -51,6 +51,7 @@ namespace BlockHole
         private MeshRenderer meshRenderer;
         private Material dynamicMat;
         private ParticleSystem[] allChildParticles;
+        private Vector3 originalLocalScale;
 
         public BlockShapeType ShapeType { get => shapeType; set => shapeType = value; }
         public Vector3 TargetDropWorldPos { get => targetDropWorldPos; set => targetDropWorldPos = value; }
@@ -65,6 +66,11 @@ namespace BlockHole
 
         private void Awake()
         {
+            if (originalLocalScale == Vector3.zero)
+            {
+                originalLocalScale = transform.localScale;
+                if (originalLocalScale == Vector3.zero) originalLocalScale = Vector3.one;
+            }
             InitializeVisuals();
         }
 
@@ -243,7 +249,8 @@ namespace BlockHole
             gameObject.SetActive(true);
             transform.DOKill();
             transform.localScale = Vector3.zero;
-            transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack, 1.4f);
+            Vector3 targetScale = originalLocalScale != Vector3.zero ? originalLocalScale : Vector3.one;
+            transform.DOScale(targetScale, 0.35f).SetEase(Ease.OutBack, 1.4f);
 
             InitializeVisuals();
             SetHighlight(false, true);

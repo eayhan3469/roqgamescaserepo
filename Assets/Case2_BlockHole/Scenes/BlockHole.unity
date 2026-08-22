@@ -2036,16 +2036,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: c2b10000c19c1ead00000000000000a3, type: 2}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.5118402
-      objectReference: {fileID: 0}
-    - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0295
+      value: 0.0293
       objectReference: {fileID: 0}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9344,6 +9340,8 @@ MonoBehaviour:
   tiltSensitivity: 1.4
   swayLerpSpeed: 16
   swayResetDuration: 0.2
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0.045
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
   dropDepthY: -0.45
@@ -9402,10 +9400,12 @@ MonoBehaviour:
   smallChipSize: 0.11
   minPopHeight: 0.55
   maxPopHeight: 1.1
-  shapeOverflowMultiplier: 1.35
-  popUpDuration: 0.22
-  moundHoverDuration: 0.08
-  fallDownDuration: 0.32
+  popDuration: 0.18
+  fallDuration: 0.26
+  outsidePieceRatio: 0.2
+  outsideScatterDist: 0.55
+  floorStayDuration: 0.35
+  floorFadeDuration: 0.28
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
@@ -11671,6 +11671,8 @@ MonoBehaviour:
   tiltSensitivity: 1.4
   swayLerpSpeed: 16
   swayResetDuration: 0.2
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0.045
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
   dropDepthY: -0.45
@@ -11729,10 +11731,12 @@ MonoBehaviour:
   smallChipSize: 0.11
   minPopHeight: 0.55
   maxPopHeight: 1.1
-  shapeOverflowMultiplier: 1.35
-  popUpDuration: 0.22
-  moundHoverDuration: 0.08
-  fallDownDuration: 0.32
+  popDuration: 0.18
+  fallDuration: 0.26
+  outsidePieceRatio: 0.2
+  outsideScatterDist: 0.55
+  floorStayDuration: 0.35
+  floorFadeDuration: 0.28
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
@@ -14030,6 +14034,8 @@ MonoBehaviour:
   tiltSensitivity: 1.4
   swayLerpSpeed: 16
   swayResetDuration: 0.2
+  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineWidth: 0.045
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
   dropDepthY: -0.45
@@ -14088,10 +14094,12 @@ MonoBehaviour:
   smallChipSize: 0.11
   minPopHeight: 0.55
   maxPopHeight: 1.1
-  shapeOverflowMultiplier: 1.35
-  popUpDuration: 0.22
-  moundHoverDuration: 0.08
-  fallDownDuration: 0.32
+  popDuration: 0.18
+  fallDuration: 0.26
+  outsidePieceRatio: 0.2
+  outsideScatterDist: 0.55
+  floorStayDuration: 0.35
+  floorFadeDuration: 0.28
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18

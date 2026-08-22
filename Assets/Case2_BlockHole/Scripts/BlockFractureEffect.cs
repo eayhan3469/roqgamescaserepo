@@ -183,8 +183,8 @@ namespace BlockHole
                 }
             }
 
-            // 6. Spawn subtle soft dust puffs at impact
-            SpawnSubtleDust(spawnPos, blockColor);
+            // 6. Spawn soft dust puffs matching the exact shape footprint and shard positions
+            SpawnSubtleDust(allChildren, spawnPos, blockColor);
 
             // 7. Subtle camera micro-shake
             if (Camera.main != null)
@@ -198,33 +198,40 @@ namespace BlockHole
             Destroy(fracturedInstance, totalLifetime);
         }
 
+        [Header("Smash Dust VFX Prefab")]
+        [Tooltip("Optional dust / smash explosion VFX prefab.")]
+        [SerializeField] private GameObject dustExplosionPrefab;
+
+        private static Texture2D softMistyTexture;
+
         /// <summary>
-        /// Kırılma anında bloğun renginde çıkan tatlı, hafif toz pufcukları.
+        /// Kırılma anında bloğun tüm geometrisi boyunca (L, T, Kare, Çizgi vb.) uçuşan parçaların arasından çıkan soft duman.
         /// </summary>
-        private void SpawnSubtleDust(Vector3 holeCenter, Color blockColor)
+        private void SpawnSubtleDust(List<Transform> shards, Vector3 spawnPos, Color blockColor)
         {
-            GameObject vfxGo = new GameObject("VFX_SubtleDust");
-            vfxGo.transform.position = holeCenter + Vector3.up * 0.10f;
+            if (shards == null || shards.Count == 0) return;
+
+            GameObject vfxGo = new GameObject("VFX_SoftMistyDust");
+            vfxGo.transform.position = spawnPos;
 
             ParticleSystem ps = vfxGo.AddComponent<ParticleSystem>();
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = ps.main;
             main.loop = false;
-            main.duration = 0.40f;
-            main.startLifetime = new ParticleSystem.MinMaxCurve(0.25f, 0.40f);
-            main.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 1.6f);
-            main.startSize = new ParticleSystem.MinMaxCurve(0.10f, 0.20f);
+            main.duration = 1.60f;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(1.20f, 1.60f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.20f, 0.50f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.28f, 0.45f);
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.playOnAwake = false;
-            main.gravityModifier = -0.05f;
+            main.gravityModifier = -0.010f; // Hafif ve dengeli süzülme
 
             var emission = ps.emission;
             emission.enabled = false;
 
             var shape = ps.shape;
-            shape.shapeType = ParticleSystemShapeType.Box;
-            shape.scale = new Vector3(0.8f, 0.1f, 0.8f);
+            shape.enabled = false; // Parçacıkların her birinin konumundan tek tek emit ediyoruz
 
             var colorOverLifetime = ps.colorOverLifetime;
             colorOverLifetime.enabled = true;
@@ -232,12 +239,16 @@ namespace BlockHole
             grad.SetKeys(
                 new GradientColorKey[] {
                     new GradientColorKey(Color.white, 0.0f),
-                    new GradientColorKey(blockColor, 0.40f),
-                    new GradientColorKey(Color.Lerp(blockColor, Color.black, 0.20f), 1.0f)
+                    new GradientColorKey(Color.Lerp(blockColor, Color.white, 0.50f), 0.15f),
+                    new GradientColorKey(blockColor, 0.55f),
+                    new GradientColorKey(Color.white, 1.0f)
                 },
                 new GradientAlphaKey[] {
                     new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(0.65f, 0.25f),
+                    new GradientAlphaKey(0.70f, 0.10f), // Hızlıca belirir
+                    new GradientAlphaKey(0.55f, 0.40f), // Parçalar yok olurken havada asılı kalır
+                    new GradientAlphaKey(0.35f, 0.75f), // Delik kapandıktan sonra kısa süre asılı kalır
+                    new GradientAlphaKey(0.12f, 0.90f), // Tatlıca söner
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );
@@ -246,34 +257,83 @@ namespace BlockHole
             var sizeOverLifetime = ps.sizeOverLifetime;
             sizeOverLifetime.enabled = true;
             AnimationCurve sizeCurve = new AnimationCurve();
-            sizeCurve.AddKey(0.0f, 0.6f);
-            sizeCurve.AddKey(0.50f, 1.1f);
-            sizeCurve.AddKey(1.0f, 1.3f);
+            sizeCurve.AddKey(0.0f, 0.65f);
+            sizeCurve.AddKey(0.30f, 1.15f);
+            sizeCurve.AddKey(0.65f, 1.45f);
+            sizeCurve.AddKey(1.0f, 1.75f);
             sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1.0f, sizeCurve);
 
             if (smoothDustMaterial == null)
             {
-                Material circleMat = Resources.Load<Material>("Mat_Particle_Circle");
-                if (circleMat != null)
-                {
-                    smoothDustMaterial = circleMat;
-                }
-                else
-                {
-                    Shader pShader = Shader.Find("Universal Render Pipeline/Particles/Unlit") 
-                                  ?? Shader.Find("Particles/Standard Unlit") 
-                                  ?? Shader.Find("Mobile/Particles/Alpha Blended");
-                    smoothDustMaterial = new Material(pShader);
-                }
+                Shader pShader = Shader.Find("BlockHole/SoftParticleDust")
+                              ?? Shader.Find("Universal Render Pipeline/Particles/Unlit");
+                smoothDustMaterial = new Material(pShader);
+                smoothDustMaterial.name = "Mat_SoftMistyDust_Instance";
             }
 
             var psRenderer = vfxGo.GetComponent<ParticleSystemRenderer>();
             psRenderer.renderMode = ParticleSystemRenderMode.Billboard;
             psRenderer.sharedMaterial = smoothDustMaterial;
 
-            ps.Emit(12);
+            // Bloğun L, T, Çizgi, Kare vb. tüm geometrisi boyunca dumanı birbirine kaynaşmış (kesintisiz ve organik) şekilde yay
+            Vector3 centerPos = spawnPos;
+            for (int i = 0; i < shards.Count; i++)
+            {
+                if (shards[i] == null) continue;
+                Vector3 shardWorld = shards[i].position;
+                Vector3 offsetDir = (shardWorld - centerPos);
+                offsetDir.y = 0f;
 
-            Destroy(vfxGo, 0.6f);
+                int puffsPerShard = (i % 2 == 0) ? 2 : 1;
+                for (int p = 0; p < puffsPerShard; p++)
+                {
+                    ParticleSystem.EmitParams ep = new ParticleSystem.EmitParams();
+                    // Karolar arası ayrımı yok eden organik yayılım (seamless blending)
+                    Vector3 jitter = new Vector3(
+                        UnityEngine.Random.Range(-0.28f, 0.28f),
+                        UnityEngine.Random.Range(-0.05f, 0.10f),
+                        UnityEngine.Random.Range(-0.28f, 0.28f)
+                    );
+                    ep.position = new Vector3(shardWorld.x, 0.18f, shardWorld.z) + jitter;
+                    ep.velocity = Vector3.up * UnityEngine.Random.Range(0.18f, 0.42f) 
+                                + offsetDir.normalized * UnityEngine.Random.Range(0.06f, 0.22f) 
+                                + UnityEngine.Random.insideUnitSphere * 0.08f;
+                    ep.startSize = UnityEngine.Random.Range(0.35f, 0.52f);
+                    ep.rotation = UnityEngine.Random.Range(0f, 360f);
+                    ep.startLifetime = UnityEngine.Random.Range(1.20f, 1.60f);
+                    ep.startColor = Color.Lerp(blockColor, Color.white, UnityEngine.Random.Range(0.25f, 0.55f));
+                    ps.Emit(ep, 1);
+                }
+            }
+
+            Destroy(vfxGo, 1.8f);
+        }
+
+        private static Texture2D CreateSoftGaussianTexture(int size)
+        {
+            Texture2D tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Bilinear;
+
+            Color[] cols = new Color[size * size];
+            float center = (size - 1) * 0.5f;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = (x - center) / center;
+                    float dy = (y - center) / center;
+                    float r = Mathf.Sqrt(dx * dx + dy * dy);
+
+                    float alpha = Mathf.Clamp01(Mathf.Exp(-r * r * 4.5f));
+                    cols[y * size + x] = new Color(1f, 1f, 1f, alpha);
+                }
+            }
+
+            tex.SetPixels(cols);
+            tex.Apply();
+            return tex;
         }
     }
 }

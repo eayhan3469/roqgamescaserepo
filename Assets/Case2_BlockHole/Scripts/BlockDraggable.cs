@@ -46,6 +46,13 @@ namespace BlockHole
         [Tooltip("Duration of the spring recovery back to zero rotation on release.")]
         [SerializeField] private float swayResetDuration = 0.20f;
 
+        [Header("Drag Outline Highlight")]
+        [Tooltip("Color of the outline when dragging.")]
+        [SerializeField] private Color outlineColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        [Tooltip("Thickness/width of the outline extruded along normals.")]
+        [SerializeField] private float outlineWidth = 0.045f;
+
         [Header("Instant Mid-Drag Hole Capture")]
         [Tooltip("Threshold distance from hole mouth to trigger instant mid-drag suction.")]
         [SerializeField] private float autoCaptureDistance = 0.45f;
@@ -90,6 +97,9 @@ namespace BlockHole
         private Material blockPrimaryMaterial;
         private Vector3 prevFrameWorldPos;
 
+        private List<GameObject> outlineObjects = new List<GameObject>();
+        private Material outlineMaterialInstance;
+
         public BlockShapeType ShapeType { get => shapeType; set => shapeType = value; }
         public List<Vector2Int> Footprint => footprint;
         public Vector3 RootVisualOffset { get => rootVisualOffset; set => rootVisualOffset = value; }
@@ -97,6 +107,32 @@ namespace BlockHole
         public bool IsDragging => isDragging;
         public bool IsDroppedInHole => isDroppedInHole;
         public BlockFractureEffect FractureEffect { get => fractureEffect; set => fractureEffect = value; }
+
+        public Color OutlineColor
+        {
+            get => outlineColor;
+            set
+            {
+                outlineColor = value;
+                if (outlineMaterialInstance != null)
+                {
+                    outlineMaterialInstance.SetColor("_OutlineColor", outlineColor);
+                }
+            }
+        }
+
+        public float OutlineWidth
+        {
+            get => outlineWidth;
+            set
+            {
+                outlineWidth = value;
+                if (outlineMaterialInstance != null)
+                {
+                    outlineMaterialInstance.SetFloat("_OutlineWidth", outlineWidth);
+                }
+            }
+        }
 
         private void Awake()
         {
@@ -115,6 +151,7 @@ namespace BlockHole
             }
 
             Initialize();
+            SetupOutline();
         }
 
         public void Initialize()
@@ -128,7 +165,96 @@ namespace BlockHole
             lastValidAnchorGridPos = currentAnchorGridPos;
             currentValidWorldPos = GetWorldPosForAnchor(currentAnchorGridPos);
             prevFrameWorldPos = transform.position;
-            boardPlane = new Plane(Vector3.up, new Vector3(0f, 0.03f, 0f));
+
+            float boardY = GridManager.Instance != null ? GridManager.Instance.transform.position.y : 0f;
+            boardPlane = new Plane(Vector3.up, new Vector3(0f, boardY, 0f));
+        }
+
+        private void SetupOutline()
+        {
+            if (outlineMaterialInstance == null)
+            {
+                Shader s = Shader.Find("BlockHole/BlockOutline");
+                if (s != null)
+                {
+                    outlineMaterialInstance = new Material(s);
+                    outlineMaterialInstance.name = "Mat_BlockOutline_Instance";
+                    outlineMaterialInstance.SetColor("_OutlineColor", outlineColor);
+                    outlineMaterialInstance.SetFloat("_OutlineWidth", outlineWidth);
+                    outlineMaterialInstance.SetFloat("_Alpha", 1f);
+                }
+            }
+
+            outlineObjects.Clear();
+
+            MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>(true);
+            foreach (var mf in meshFilters)
+            {
+                if (mf == null || mf.sharedMesh == null) continue;
+                string mName = mf.name.ToLower();
+                if (mName.Contains("chain") || mName.Contains("cover") || mName.Contains("outline")) continue;
+
+                Transform meshTrans = mf.transform;
+                Transform existing = meshTrans.Find("OutlineMesh");
+                if (existing != null)
+                {
+                    MeshRenderer existingMr = existing.GetComponent<MeshRenderer>();
+                    if (existingMr != null && outlineMaterialInstance != null)
+                    {
+                        existingMr.sharedMaterial = outlineMaterialInstance;
+                    }
+                    existing.gameObject.SetActive(false);
+                    outlineObjects.Add(existing.gameObject);
+                    continue;
+                }
+
+                GameObject outlineGo = new GameObject("OutlineMesh");
+                outlineGo.transform.SetParent(meshTrans, false);
+                outlineGo.transform.localPosition = Vector3.zero;
+                outlineGo.transform.localRotation = Quaternion.identity;
+                outlineGo.transform.localScale = Vector3.one;
+
+                MeshFilter outMf = outlineGo.AddComponent<MeshFilter>();
+                outMf.sharedMesh = mf.sharedMesh;
+
+                MeshRenderer outMr = outlineGo.AddComponent<MeshRenderer>();
+                outMr.sharedMaterial = outlineMaterialInstance;
+                outMr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                outMr.receiveShadows = false;
+
+                outlineGo.SetActive(false);
+                outlineObjects.Add(outlineGo);
+            }
+        }
+
+        public void SetOutlineActive(bool active)
+        {
+            if (outlineObjects.Count == 0 || outlineMaterialInstance == null)
+            {
+                SetupOutline();
+            }
+
+            if (outlineMaterialInstance != null)
+            {
+                outlineMaterialInstance.DOKill();
+                outlineMaterialInstance.SetColor("_OutlineColor", outlineColor);
+                outlineMaterialInstance.SetFloat("_OutlineWidth", outlineWidth);
+                outlineMaterialInstance.SetFloat("_Alpha", active ? 1.0f : 0.0f);
+            }
+
+            foreach (var go in outlineObjects)
+            {
+                if (go != null)
+                {
+                    go.SetActive(active);
+                    var mr = go.GetComponent<MeshRenderer>();
+                    if (mr != null && outlineMaterialInstance != null)
+                    {
+                        mr.sharedMaterial = outlineMaterialInstance;
+                        mr.enabled = active;
+                    }
+                }
+            }
         }
 
         private void Update()
@@ -179,6 +305,9 @@ namespace BlockHole
             {
                 BlockHoleAudioManager.Instance.PlayPickupSound();
             }
+
+            // Outline on drag start
+            SetOutlineActive(true);
 
             // 1. Find and highlight matching HoleTarget
             if (GridManager.Instance != null)
@@ -275,7 +404,7 @@ namespace BlockHole
             Vector3 validAnchorWorld = GetWorldPosForAnchor(currentAnchorGridPos);
             currentValidWorldPos = validAnchorWorld;
 
-            // Elastic lead clamped to 0.45 tiles
+            // Elastic lead clamped to 0.45 tiles (STRICT GRID & NEIGHBOR CLAMPING)
             float clampRange = tileSize * 0.45f;
             float clampedLeadX = Mathf.Clamp(rawDesiredWorldPos.x - validAnchorWorld.x, -clampRange, clampRange);
             float clampedLeadZ = Mathf.Clamp(rawDesiredWorldPos.z - validAnchorWorld.z, -clampRange, clampRange);
@@ -296,6 +425,9 @@ namespace BlockHole
 
             snapTween?.Kill();
             swayResetTween?.Kill();
+
+            // Outline off on release
+            SetOutlineActive(false);
 
             // Reset sway rotation with a soft overshoot spring
             swayResetTween = transform.DOLocalRotate(Vector3.zero, swayResetDuration).SetEase(Ease.OutBack);
@@ -353,7 +485,8 @@ namespace BlockHole
             snapTween?.Kill();
             swayResetTween?.Kill();
 
-            // Turn off highlight immediately
+            // Turn off outline and hole highlight immediately
+            SetOutlineActive(false);
             hole.SetHighlight(false);
 
             // Audio: Play Drop Swallowed Sound
@@ -431,6 +564,11 @@ namespace BlockHole
         {
             snapTween?.Kill();
             swayResetTween?.Kill();
+            if (outlineMaterialInstance != null)
+            {
+                outlineMaterialInstance.DOKill();
+                Destroy(outlineMaterialInstance);
+            }
         }
     }
 }
