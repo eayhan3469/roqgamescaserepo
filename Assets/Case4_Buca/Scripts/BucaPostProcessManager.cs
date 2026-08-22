@@ -3,7 +3,6 @@ using UnityEngine.Rendering;
 
 namespace Buca
 {
-    [ExecuteAlways]
     public class BucaPostProcessManager : MonoBehaviour
     {
         [Header("Volume Profile")]
@@ -16,31 +15,28 @@ namespace Buca
             SetupVolume();
         }
 
-        private void OnEnable()
-        {
-            SetupVolume();
-        }
-
         private void SetupVolume()
         {
-            volume = GetComponent<Volume>();
-            if (volume == null)
+            if (!TryGetComponent<Volume>(out volume))
             {
                 volume = gameObject.AddComponent<Volume>();
             }
 
-            volume.isGlobal = true;
-            volume.priority = 1f;
-            volume.weight = 1f;
-
-            if (volumeProfile == null)
+            if (volume != null)
             {
-                volumeProfile = Resources.Load<VolumeProfile>("BucaVolumeProfile");
-            }
+                volume.isGlobal = true;
+                volume.priority = 1f;
+                volume.weight = 1f;
 
-            if (volume.sharedProfile == null && volumeProfile != null)
-            {
-                volume.sharedProfile = volumeProfile;
+                if (volumeProfile == null)
+                {
+                    volumeProfile = Resources.Load<VolumeProfile>("BucaVolumeProfile");
+                }
+
+                if (volumeProfile != null && volume.sharedProfile == null)
+                {
+                    volume.sharedProfile = volumeProfile;
+                }
             }
         }
     }

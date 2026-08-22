@@ -705,12 +705,12 @@ namespace Buca
             // Obstacle hit
             else if (collision.gameObject.TryGetComponent<BucaObstacle>(out var obstacle))
             {
-                ProcessWallImpactSpin(collision);
+                ProcessWallImpactSpin(collision, true);
                 obstacle.SendMessage("TriggerHitFeedback", SendMessageOptions.DontRequireReceiver);
             }
             else
             {
-                ProcessWallImpactSpin(collision);
+                ProcessWallImpactSpin(collision, false);
             }
         }
 
@@ -723,7 +723,7 @@ namespace Buca
         /// Applies a clean rotational spin kick calculated to complete 1.5 - 2 turns on hard hits,
         /// and smoothly decelerate to a complete stop over 1 - 2 seconds.
         /// </summary>
-        private void ProcessWallImpactSpin(Collision collision)
+        private void ProcessWallImpactSpin(Collision collision, bool isObstacle = false)
         {
             if (collision.contactCount == 0 || discRb == null || !isLaunched) return;
             if (collision.gameObject.name.ToLower().Contains("plane")) return;
@@ -776,7 +776,14 @@ namespace Buca
 
             if (BucaAudioManager.Instance != null)
             {
-                BucaAudioManager.Instance.PlayWallBounceSound(speedRatio);
+                if (isObstacle)
+                {
+                    BucaAudioManager.Instance.PlayObstacleDeflectSound(speedRatio);
+                }
+                else
+                {
+                    BucaAudioManager.Instance.PlayWallBounceSound(speedRatio);
+                }
             }
         }
     }

@@ -41,12 +41,16 @@ namespace Buca
         [Tooltip("Played when the disc bounces off a side wall or obstacle.")]
         [SerializeField] private AudioClip wallBounceClip;
 
+        [Tooltip("Played when the disc hits a green neon obstacle.")]
+        [SerializeField] private AudioClip obstacleDeflectClip;
+
         [Tooltip("Played when the level target is cleared.")]
         [SerializeField] private AudioClip victoryClip;
 
         [Header("Audio Source & Pitch Settings")]
         [SerializeField] private AudioSource sfxSource;
         [SerializeField] private AudioSource clatterSource;
+        [SerializeField] private AudioSource victorySource;
         [SerializeField] private float minPitch = 0.92f;
         [SerializeField] private float maxPitch = 1.12f;
 
@@ -63,9 +67,11 @@ namespace Buca
         public AudioClip[] BlockClatterClips { get => blockClatterClips; set => blockClatterClips = value; }
         public AudioClip LaunchClip { get => launchClip; set => launchClip = value; }
         public AudioClip WallBounceClip { get => wallBounceClip; set => wallBounceClip = value; }
+        public AudioClip ObstacleDeflectClip { get => obstacleDeflectClip; set => obstacleDeflectClip = value; }
         public AudioClip VictoryClip { get => victoryClip; set => victoryClip = value; }
         public AudioSource SfxSource { get => sfxSource; set => sfxSource = value; }
         public AudioSource ClatterSource { get => clatterSource; set => clatterSource = value; }
+        public AudioSource VictorySource { get => victorySource; set => victorySource = value; }
 
         public float MasterVolume
         {
@@ -141,31 +147,29 @@ namespace Buca
 
         private void InitializeAudioSources()
         {
+            AudioSource[] sources = GetComponents<AudioSource>();
+
             if (sfxSource == null)
             {
-                sfxSource = GetComponent<AudioSource>();
-                if (sfxSource == null)
-                {
-                    sfxSource = gameObject.AddComponent<AudioSource>();
-                }
+                sfxSource = sources.Length > 0 ? sources[0] : gameObject.AddComponent<AudioSource>();
             }
             sfxSource.playOnAwake = false;
             sfxSource.spatialBlend = 0f;
 
             if (clatterSource == null)
             {
-                AudioSource[] sources = GetComponents<AudioSource>();
-                if (sources.Length > 1)
-                {
-                    clatterSource = sources[1];
-                }
-                else
-                {
-                    clatterSource = gameObject.AddComponent<AudioSource>();
-                }
+                clatterSource = sources.Length > 1 ? sources[1] : gameObject.AddComponent<AudioSource>();
             }
             clatterSource.playOnAwake = false;
             clatterSource.spatialBlend = 0f;
+
+            if (victorySource == null)
+            {
+                victorySource = sources.Length > 2 ? sources[2] : gameObject.AddComponent<AudioSource>();
+            }
+            victorySource.playOnAwake = false;
+            victorySource.spatialBlend = 0f;
+            victorySource.pitch = 1.0f;
         }
 
         private void LoadAudioPreferences()
@@ -180,16 +184,38 @@ namespace Buca
             float effectiveVolume = isMuted ? 0f : masterVolume;
             if (sfxSource != null) sfxSource.volume = effectiveVolume;
             if (clatterSource != null) clatterSource.volume = effectiveVolume;
+            if (victorySource != null) victorySource.volume = effectiveVolume;
         }
 
         private void AutoLoadClipsIfEmpty()
         {
+            if (launchClip == null)
+            {
+                launchClip = Resources.Load<AudioClip>("Case4/AUC_Launch")
+                          ?? Resources.Load<AudioClip>("AudioClips/AUC_Launch")
+                          ?? Resources.Load<AudioClip>("AUC_Launch");
+            }
+
+            if (wallBounceClip == null)
+            {
+                wallBounceClip = Resources.Load<AudioClip>("Case4/AUC_Ricochet")
+                              ?? Resources.Load<AudioClip>("AudioClips/AUC_Ricochet")
+                              ?? Resources.Load<AudioClip>("AUC_Ricochet");
+            }
+
+            if (obstacleDeflectClip == null)
+            {
+                obstacleDeflectClip = Resources.Load<AudioClip>("Case4/AUC_ObstacleDeflect")
+                                   ?? Resources.Load<AudioClip>("AudioClips/AUC_ObstacleDeflect")
+                                   ?? Resources.Load<AudioClip>("AUC_ObstacleDeflect");
+            }
+
             if (blockImpactClips == null || blockImpactClips.Length == 0 || blockImpactClips[0] == null)
             {
                 blockImpactClips = new AudioClip[]
                 {
-                    Resources.Load<AudioClip>("AudioClips/AUC_Shatter_01") ?? Resources.Load<AudioClip>("AUC_Shatter_01"),
-                    Resources.Load<AudioClip>("AudioClips/AUC_Shatter_02") ?? Resources.Load<AudioClip>("AUC_Shatter_02")
+                    Resources.Load<AudioClip>("Case4/AUC_BlocksDomino") ?? Resources.Load<AudioClip>("AUC_BlocksDomino"),
+                    Resources.Load<AudioClip>("Case4/AUC_ObstacleDeflect") ?? Resources.Load<AudioClip>("AUC_ObstacleDeflect")
                 };
             }
 
@@ -197,24 +223,15 @@ namespace Buca
             {
                 blockClatterClips = new AudioClip[]
                 {
-                    Resources.Load<AudioClip>("AudioClips/AUC_Pickup_01") ?? Resources.Load<AudioClip>("AUC_Pickup_01"),
-                    Resources.Load<AudioClip>("AudioClips/AUC_Pickup_02") ?? Resources.Load<AudioClip>("AUC_Pickup_02")
+                    Resources.Load<AudioClip>("Case4/AUC_BlocksDomino") ?? Resources.Load<AudioClip>("AUC_BlocksDomino")
                 };
-            }
-
-            if (launchClip == null)
-            {
-                launchClip = Resources.Load<AudioClip>("AudioClips/AUC_SnapBack") ?? Resources.Load<AudioClip>("AUC_SnapBack");
-            }
-
-            if (wallBounceClip == null)
-            {
-                wallBounceClip = Resources.Load<AudioClip>("AudioClips/AUC_SnapBack") ?? Resources.Load<AudioClip>("AUC_SnapBack");
             }
 
             if (victoryClip == null)
             {
-                victoryClip = Resources.Load<AudioClip>("AudioClips/AUC_Victory") ?? Resources.Load<AudioClip>("AUC_Victory");
+                victoryClip = Resources.Load<AudioClip>("Case4/AUC_Victory")
+                           ?? Resources.Load<AudioClip>("AudioClips/AUC_Victory")
+                           ?? Resources.Load<AudioClip>("AUC_Victory");
             }
         }
 
@@ -266,7 +283,7 @@ namespace Buca
         }
 
         /// <summary>
-        /// Plays wall contact bounce sound.
+        /// Plays wall contact bounce sound (Ricochet).
         /// </summary>
         public void PlayWallBounceSound(float speedRatio = 1.0f)
         {
@@ -276,12 +293,26 @@ namespace Buca
         }
 
         /// <summary>
-        /// Plays victory fanfare sound.
+        /// Plays neon obstacle deflect / impact sound.
+        /// </summary>
+        public void PlayObstacleDeflectSound(float speedRatio = 1.0f)
+        {
+            AudioClip clip = obstacleDeflectClip != null ? obstacleDeflectClip : wallBounceClip;
+            if (clip == null) return;
+            float scaledVolume = wallBounceVolume * Mathf.Clamp(speedRatio, 0.4f, 1.0f);
+            PlayClipWithPitch(sfxSource, clip, scaledVolume, true, 0.92f, 1.10f);
+        }
+
+        /// <summary>
+        /// Plays victory fanfare sound on a dedicated audio channel with locked 1.0 pitch.
         /// </summary>
         public void PlayVictorySound()
         {
-            if (victoryClip == null) return;
-            PlayClipWithPitch(sfxSource, victoryClip, victoryVolume, false, 1.0f, 1.0f);
+            if (victoryClip == null || isMuted || masterVolume <= 0.001f) return;
+            if (victorySource == null) InitializeAudioSources();
+
+            victorySource.pitch = 1.0f;
+            victorySource.PlayOneShot(victoryClip, victoryVolume * masterVolume);
         }
 
         private void PlayClipWithPitch(AudioSource source, AudioClip clip, float volume, bool randomizePitch, float pitchMin, float pitchMax)

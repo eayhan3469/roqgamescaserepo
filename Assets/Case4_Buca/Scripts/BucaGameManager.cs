@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 namespace Buca
 {
@@ -16,6 +17,9 @@ namespace Buca
         [SerializeField] private int totalBlocks = 0;
         [SerializeField] private int knockedBlocks = 0;
         [SerializeField] private bool isLevelCleared = false;
+        [SerializeField] private float autoRestartDelay = 1.85f;
+
+        private Tween autoRestartTween;
 
         public int TotalBlocks => totalBlocks;
         public int KnockedBlocks => knockedBlocks;
@@ -23,26 +27,53 @@ namespace Buca
 
         private void Awake()
         {
-            if (Instance == null) Instance = this;
-            else if (Instance != this) Destroy(gameObject);
-
-            InitializeLevel();
-        }
-
-        public void InitializeLevel()
-        {
-            // Find all blocks if not assigned
-            if (targetBlocks == null || targetBlocks.Count == 0)
+            if (Instance == null)
             {
-                targetBlocks = new List<BucaBlock>(FindObjectsOfType<BucaBlock>());
+                Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(gameObject);
+                return;
             }
 
-            totalBlocks = targetBlocks.Count;
+            FindBlocksAndLauncher();
+            SetupTrackColliders();
+        }
+
+        private void Start()
+        {
+            CountTotalBlocks();
+        }
+
+        private void FindBlocksAndLauncher()
+        {
+            if (discLauncher == null)
+            {
+                discLauncher = FindFirstObjectByType<BucaDiscLauncher>();
+            }
+
+            if (targetBlocks == null || targetBlocks.Count == 0)
+            {
+                targetBlocks.Clear();
+                BucaBlock[] blocks = FindObjectsByType<BucaBlock>(FindObjectsSortMode.None);
+                targetBlocks.AddRange(blocks);
+            }
+        }
+
+        private void CountTotalBlocks()
+        {
+            if (targetBlocks != null && targetBlocks.Count > 0)
+            {
+                totalBlocks = targetBlocks.Count;
+            }
+            else
+            {
+                FindBlocksAndLauncher();
+                totalBlocks = targetBlocks != null ? targetBlocks.Count : 0;
+            }
             knockedBlocks = 0;
             isLevelCleared = false;
-
-            // Setup track colliders dynamically if not present
-            SetupTrackColliders();
         }
 
         private void SetupTrackColliders()
@@ -84,6 +115,14 @@ namespace Buca
             }
         }
 
+        public void NotifyBlockHit(BucaBlock hitBlock)
+        {
+            if (!isLevelCleared)
+            {
+                CheckBlockProgress();
+            }
+        }
+
         private void CheckBlockProgress()
         {
             int count = 0;
@@ -102,15 +141,28 @@ namespace Buca
                 isLevelCleared = true;
                 Debug.Log($"[BucaGameManager] LEVEL CLEARED! Knocked {knockedBlocks}/{totalBlocks} blocks!");
 
-                if (BucaAudioManager.Instance != null)
+                // Play victory fanfare with a micro 0.18s delay so final block shatter crunch plays cleanly first!
+                DOVirtual.DelayedCall(0.18f, () =>
                 {
-                    BucaAudioManager.Instance.PlayVictorySound();
-                }
+                    if (BucaAudioManager.Instance != null)
+                    {
+                        BucaAudioManager.Instance.PlayVictorySound();
+                    }
+                });
+
+                // Automatically restart the level after the victory celebration
+                if (autoRestartTween != null && autoRestartTween.IsActive()) autoRestartTween.Kill();
+                autoRestartTween = DOVirtual.DelayedCall(autoRestartDelay, RestartLevel);
             }
         }
 
         public void RestartLevel()
         {
+            if (autoRestartTween != null && autoRestartTween.IsActive())
+            {
+                autoRestartTween.Kill();
+            }
+
             foreach (var block in targetBlocks)
             {
                 if (block != null) block.ResetBlock();
@@ -123,6 +175,14 @@ namespace Buca
 
             knockedBlocks = 0;
             isLevelCleared = false;
+        }
+
+        private void OnDestroy()
+        {
+            if (autoRestartTween != null && autoRestartTween.IsActive())
+            {
+                autoRestartTween.Kill();
+            }
         }
     }
 }

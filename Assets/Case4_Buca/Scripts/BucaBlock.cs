@@ -26,16 +26,21 @@ namespace Buca
 
         [Header("Visual & Juice Feedback")]
         [Tooltip("Flash color on impact.")]
-        [SerializeField] private Color hitFlashColor = new Color(1.0f, 0.95f, 0.4f, 1f);
+        [SerializeField] private Color hitFlashColor = Color.white;
 
         [Tooltip("Tactile squash & punch scale on hit.")]
         [SerializeField] private float punchScaleAmount = 0.18f;
 
+        private static readonly int BaseColorProp = Shader.PropertyToID("_BaseColor");
+        private static readonly int ColorProp = Shader.PropertyToID("_Color");
+        private static readonly int EmissionColorProp = Shader.PropertyToID("_EmissionColor");
+
         private Rigidbody rb;
         private BoxCollider boxCollider;
         private MeshRenderer meshRenderer;
-        private Material blockMat;
-        private Color originalColor;
+        private MaterialPropertyBlock propBlock;
+        private Tween flashTween;
+        private Color originalBaseColor;
         private bool isHit = false;
         private Vector3 initialPosition;
         private Quaternion initialRotation;
@@ -50,6 +55,7 @@ namespace Buca
             rb = GetComponent<Rigidbody>();
             boxCollider = GetComponent<BoxCollider>();
             meshRenderer = GetComponent<MeshRenderer>();
+            propBlock = new MaterialPropertyBlock();
 
             initialPosition = transform.position;
             initialRotation = transform.rotation;
@@ -58,10 +64,21 @@ namespace Buca
             SetupRigidbody();
             SetupPhysXMaterial();
 
-            if (meshRenderer != null && meshRenderer.material != null)
+            if (meshRenderer != null)
             {
-                blockMat = meshRenderer.material;
-                originalColor = blockMat.color;
+                meshRenderer.GetPropertyBlock(propBlock);
+                Material sharedMat = meshRenderer.sharedMaterial;
+                if (sharedMat != null)
+                {
+                    sharedMat.EnableKeyword("_EMISSION");
+                    if (sharedMat.HasProperty(BaseColorProp)) originalBaseColor = sharedMat.GetColor(BaseColorProp);
+                    else if (sharedMat.HasProperty(ColorProp)) originalBaseColor = sharedMat.GetColor(ColorProp);
+                    else originalBaseColor = Color.white;
+                }
+                else
+                {
+                    originalBaseColor = Color.white;
+                }
             }
         }
 
@@ -147,21 +164,47 @@ namespace Buca
             transform.DOKill();
             transform.DOPunchScale(new Vector3(punchScaleAmount, -punchScaleAmount, punchScaleAmount), 0.14f, 7, 0.6f);
 
-            // Flash visual feedback
-            if (blockMat != null)
-            {
-                blockMat.DOKill();
-                blockMat.DOColor(hitFlashColor, 0.06f).OnComplete(() =>
-                {
-                    blockMat.DOColor(originalColor, 0.22f);
-                });
-            }
+            // Pure solid white hit flash on the block
+            TriggerHitFlash(speedRatio);
 
             // Chain reaction: awaken immediately touching neighbor blocks with forward domino push
-            AwakenNeighborBlocks(combinedDir, totalForce);
+            AwakenNeighborBlocks(combinedDir, totalForce, speedRatio);
         }
 
-        private void AwakenNeighborBlocks(Vector3 pushDirection, float sourceForce)
+        public void TriggerHitFlash(float speedRatio)
+        {
+            if (meshRenderer == null) return;
+
+            if (flashTween != null && flashTween.IsActive())
+            {
+                flashTween.Kill();
+            }
+
+            // Pure 100% solid white target base color
+            Color targetFlashBase = Color.white;
+            // 4.0x Pure White HDR emission for brilliant Bloom shine
+            Color targetEmission = new Color(4.0f, 4.0f, 4.0f, 1.0f);
+
+            // Snappy arcade hit-flash duration (0.09s - 0.14s based on impact speed)
+            float fadeDuration = Mathf.Lerp(0.09f, 0.14f, Mathf.Clamp01(speedRatio));
+
+            float progress = 1f;
+            flashTween = DOTween.To(() => progress, x =>
+            {
+                progress = x;
+                Color currentBase = Color.Lerp(originalBaseColor, targetFlashBase, progress);
+                Color currentEmission = Color.Lerp(Color.black, targetEmission, progress);
+
+                meshRenderer.GetPropertyBlock(propBlock);
+                propBlock.SetColor(BaseColorProp, currentBase);
+                propBlock.SetColor(ColorProp, currentBase);
+                propBlock.SetColor(EmissionColorProp, currentEmission);
+                meshRenderer.SetPropertyBlock(propBlock);
+            }, 0f, fadeDuration)
+            .SetEase(Ease.OutQuad);
+        }
+
+        private void AwakenNeighborBlocks(Vector3 pushDirection, float sourceForce, float speedRatio)
         {
             Collider[] neighbors = Physics.OverlapSphere(transform.position, 1.5f);
             foreach (var col in neighbors)
@@ -185,6 +228,9 @@ namespace Buca
                             UnityEngine.Random.Range(-6f, 6f)
                         );
                         neighborBlock.rb.AddTorque(slightTorque, ForceMode.Impulse);
+
+                        // Neighbor subtle chain flash
+                        neighborBlock.TriggerHitFlash(speedRatio * 0.75f);
                     }
                 }
             }
@@ -200,6 +246,7 @@ namespace Buca
                 rb.isKinematic = false;
                 rb.useGravity = true;
                 isHit = true;
+                TriggerHitFlash(Mathf.Clamp01(impactSpeed / 15.0f));
             }
 
             // Block clatter sound feedback when tumbling and hitting ground/other blocks
@@ -220,6 +267,20 @@ namespace Buca
             transform.DOKill();
             transform.localScale = initialScale;
 
+            if (flashTween != null && flashTween.IsActive())
+            {
+                flashTween.Kill();
+            }
+
+            if (meshRenderer != null)
+            {
+                meshRenderer.GetPropertyBlock(propBlock);
+                propBlock.SetColor(BaseColorProp, originalBaseColor);
+                propBlock.SetColor(ColorProp, originalBaseColor);
+                propBlock.SetColor(EmissionColorProp, Color.black);
+                meshRenderer.SetPropertyBlock(propBlock);
+            }
+
             if (rb != null)
             {
                 rb.linearVelocity = Vector3.zero;
@@ -229,20 +290,14 @@ namespace Buca
 
             transform.position = initialPosition;
             transform.rotation = initialRotation;
-
-            if (blockMat != null)
-            {
-                blockMat.DOKill();
-                blockMat.color = originalColor;
-            }
         }
 
         private void OnDestroy()
         {
             transform.DOKill();
-            if (blockMat != null)
+            if (flashTween != null && flashTween.IsActive())
             {
-                blockMat.DOKill();
+                flashTween.Kill();
             }
         }
     }
