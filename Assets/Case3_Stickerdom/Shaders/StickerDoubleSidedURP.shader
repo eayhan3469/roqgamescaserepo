@@ -3,9 +3,10 @@ Shader "Custom/StickerDoubleSidedURP"
     Properties
     {
         _MainTex ("Sprite Texture", 2D) = "white" {}
+        _BaseMap ("Base Map", 2D) = "white" {}
         _Color ("Tint Color", Color) = (1, 1, 1, 1)
         _BackSideColor ("Backside Adhesive Color", Color) = (0.90, 0.91, 0.93, 1.0)
-        _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.1
+        _Cutoff ("Alpha Cutoff", Range(0, 1)) = 0.05
         _ShineProgress ("Shine Ray Progress", Range(-0.5, 1.5)) = -0.5
         _ShineColor ("Shine Ray Color", Color) = (1.0, 1.0, 1.0, 0.85)
     }
@@ -32,9 +33,9 @@ Shader "Custom/StickerDoubleSidedURP"
             Name "DoubleSidedPass"
 
             HLSLPROGRAM
+            #pragma target 3.0
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 2.0
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -75,12 +76,14 @@ Shader "Custom/StickerDoubleSidedURP"
                 return output;
             }
 
-            float4 frag(Varyings input, bool isFrontFace : SV_IsFrontFace) : SV_Target
+            float4 frag(Varyings input, FRONT_FACE_TYPE isFrontFace : FRONT_FACE_SEMANTIC) : SV_Target
             {
                 float4 texCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, input.uv);
                 if (texCol.a < _Cutoff) discard;
 
-                if (isFrontFace)
+                bool isFront = IS_FRONT_VFACE(isFrontFace, true, false);
+
+                if (isFront)
                 {
                     // Front side: colorful sticker graphic
                     float3 frontRgb = texCol.rgb * _Color.rgb;
@@ -117,5 +120,5 @@ Shader "Custom/StickerDoubleSidedURP"
             ENDHLSL
         }
     }
-    FallBack "Sprites/Default"
+    FallBack "Universal Render Pipeline/Unlit"
 }

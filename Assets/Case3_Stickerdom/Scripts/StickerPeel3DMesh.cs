@@ -40,6 +40,7 @@ namespace Stickerdom
         private bool isInitialized = false;
 
         private static readonly int PropMainTex = Shader.PropertyToID("_MainTex");
+        private static readonly int PropColor = Shader.PropertyToID("_Color");
         private static readonly int PropBackSideColor = Shader.PropertyToID("_BackSideColor");
         private static readonly int PropShineProgress = Shader.PropertyToID("_ShineProgress");
 
@@ -91,9 +92,19 @@ namespace Stickerdom
             meshFilter = meshHolder.AddComponent<MeshFilter>();
             meshRenderer = meshHolder.AddComponent<MeshRenderer>();
 
-            Shader shader = Shader.Find("Custom/StickerDoubleSidedURP") ?? Shader.Find("Universal Render Pipeline/2D/Sprite-Unlit-Default");
+            Material baseMat = Resources.Load<Material>("Mat_StickerDoubleSided");
+            Shader shader = (baseMat != null && baseMat.shader != null) ? baseMat.shader : Shader.Find("Custom/StickerDoubleSidedURP");
+            if (shader == null)
+            {
+                shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
+            }
+
             dynamicMat = new Material(shader);
+            dynamicMat.name = $"Mat_{gameObject.name}_Instance";
             dynamicMat.SetTexture(PropMainTex, sprite.texture);
+            if (dynamicMat.HasProperty("_BaseMap")) dynamicMat.SetTexture("_BaseMap", sprite.texture);
+            dynamicMat.mainTexture = sprite.texture;
+            dynamicMat.SetColor(PropColor, spriteRenderer.color);
             dynamicMat.SetColor(PropBackSideColor, backSideColor);
             dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
             meshRenderer.material = dynamicMat;
@@ -111,21 +122,29 @@ namespace Stickerdom
             baseUVs = new Vector2[numVerts];
             baseTriangles = new int[res * res * 6];
 
+            Vector4 uvRect = UnityEngine.Sprites.DataUtility.GetInnerUV(sprite);
+            float minU = uvRect.x;
+            float minV = uvRect.y;
+            float maxU = uvRect.z;
+            float maxV = uvRect.w;
+
             int vertIdx = 0;
             for (int y = 0; y <= res; y++)
             {
                 float normY = (float)y / res;
                 float posY = Mathf.Lerp(-halfH, halfH, normY);
+                float uvY = Mathf.Lerp(minV, maxV, normY);
 
                 for (int x = 0; x <= res; x++)
                 {
                     float normX = (float)x / res;
                     float posX = Mathf.Lerp(-halfW, halfW, normX);
+                    float uvX = Mathf.Lerp(minU, maxU, normX);
 
                     baseVertices[vertIdx] = new Vector3(posX, posY, 0f);
                     workingVertices[vertIdx] = baseVertices[vertIdx];
                     workingColors[vertIdx] = new Color(0f, 0f, 0f, 1f);
-                    baseUVs[vertIdx] = new Vector2(normX, normY);
+                    baseUVs[vertIdx] = new Vector2(uvX, uvY);
                     vertIdx++;
                 }
             }
