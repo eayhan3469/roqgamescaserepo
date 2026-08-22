@@ -388,32 +388,44 @@ namespace Buca
         {
             if (isLaunched || discTransform == null) return;
 
-#if ENABLE_INPUT_SYSTEM
             Vector2 screenPos = Vector2.zero;
             bool pointerDown = false;
             bool pointerHeld = false;
             bool pointerUp = false;
 
-            if (Mouse.current != null)
+#if ENABLE_INPUT_SYSTEM
+            if (Touchscreen.current != null)
+            {
+                var touch = Touchscreen.current.primaryTouch;
+                screenPos = touch.position.ReadValue();
+                pointerDown = touch.press.wasPressedThisFrame;
+                pointerHeld = touch.press.isPressed;
+                pointerUp = touch.press.wasReleasedThisFrame;
+            }
+
+            if (!pointerDown && !pointerHeld && !pointerUp && Mouse.current != null)
             {
                 screenPos = Mouse.current.position.ReadValue();
                 pointerDown = Mouse.current.leftButton.wasPressedThisFrame;
                 pointerHeld = Mouse.current.leftButton.isPressed;
                 pointerUp = Mouse.current.leftButton.wasReleasedThisFrame;
             }
-
-            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
-            {
-                screenPos = Touchscreen.current.primaryTouch.position.ReadValue();
-                pointerDown = Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
-                pointerHeld = Touchscreen.current.primaryTouch.press.isPressed;
-                pointerUp = Touchscreen.current.primaryTouch.press.wasReleasedThisFrame;
-            }
 #else
-            Vector2 screenPos = Input.mousePosition;
-            bool pointerDown = Input.GetMouseButtonDown(0);
-            bool pointerHeld = Input.GetMouseButton(0);
-            bool pointerUp = Input.GetMouseButtonUp(0);
+            if (Input.touchCount > 0)
+            {
+                Touch t = Input.GetTouch(0);
+                screenPos = t.position;
+                pointerDown = t.phase == TouchPhase.Began;
+                pointerHeld = t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary;
+                pointerUp = t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled;
+            }
+            else
+            {
+                screenPos = Input.mousePosition;
+                pointerDown = Input.GetMouseButtonDown(0);
+                pointerHeld = Input.GetMouseButton(0);
+                pointerUp = Input.GetMouseButtonUp(0);
+            }
 #endif
 
             if (pointerDown)

@@ -10,7 +10,7 @@ Shader "Examples/StencilDepthAwareMask"
         Tags
         {
             "RenderType" = "Opaque"
-            "Queue" = "Geometry-1"
+            "Queue" = "Geometry+1"
             "RenderPipeline" = "UniversalPipeline"
         }
 
@@ -19,7 +19,7 @@ Shader "Examples/StencilDepthAwareMask"
             Name "MaskPass"
             ColorMask 0
             Cull Off
-            ZWrite On
+            ZWrite Off
             ZTest LEqual
 
             Stencil
