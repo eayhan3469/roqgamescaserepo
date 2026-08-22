@@ -5,38 +5,50 @@ namespace Buca
 {
     public class BucaDiscTrailEffect : MonoBehaviour
     {
-        [Header("Core Ribbon Trail (Sharp Inner Glow)")]
-        [SerializeField] private float coreWidth = 1.15f;
-        [SerializeField] private float coreLifetime = 0.28f;
-        [SerializeField] private Color coreColorStart = new Color(1.0f, 1.0f, 1.0f, 0.95f);
-        [SerializeField] private Color coreColorEnd = new Color(0.15f, 0.85f, 1.0f, 0.0f);
+        [Header("Single Unified Streaked Trail Settings")]
+        [Tooltip("Full width of the unified trail at the disc base.")]
+        [SerializeField] private float trailWidth = 1.16f;
 
-        [Header("Aura Ribbon Trail (Soft Outer Ambient Glow)")]
-        [SerializeField] private float auraWidth = 1.65f;
-        [SerializeField] private float auraLifetime = 0.38f;
-        [SerializeField] private Color auraColorStart = new Color(0.15f, 0.85f, 1.0f, 0.45f);
-        [SerializeField] private Color auraColorEnd = new Color(0.0f, 0.45f, 1.0f, 0.0f);
+        [Tooltip("Lifetime / length of the trail.")]
+        [SerializeField] private float trailLifetime = 0.22f;
 
-        [Header("Spark Particle Slipstream (Soft Glow Embers)")]
-        [SerializeField] private float particlesPerMeter = 16f;
-        [SerializeField] private float particleLifetime = 0.42f;
-        [SerializeField] private float particleStartSize = 0.22f;
-        [SerializeField] private Color particleColorStart = new Color(0.40f, 0.95f, 1.0f, 0.95f);
-        [SerializeField] private Color particleColorEnd = new Color(1.0f, 0.85f, 0.20f, 0.0f);
+        [Header("Warm Translucent Golden Embers")]
+        [SerializeField] private float particlesPerMeter = 10f;
+        [SerializeField] private float particleLifetime = 0.32f;
+        [SerializeField] private float particleStartSize = 0.15f;
+        [SerializeField] private Color particleColorStart = new Color(1.0f, 0.90f, 0.45f, 0.85f);
+        [SerializeField] private Color particleColorEnd = new Color(1.0f, 0.50f, 0.05f, 0.00f);
 
         [Header("Material Customization (Optional)")]
         [SerializeField] private Material customTrailMaterial;
         [SerializeField] private Material customParticleMaterial;
 
         private Transform trailAnchor;
-        private TrailRenderer coreTrail;
-        private TrailRenderer auraTrail;
+        private TrailRenderer mainTrail;
         private ParticleSystem slipstreamPs;
         private ParticleSystem wallSparkPs;
         private Rigidbody rb;
 
+        private static Material sharedStreakedTrailMat;
         private static Material sharedSoftCircleMat;
         private static Material sharedSoftStarMat;
+
+        public static Material GetOrCreateStreakedTrailMaterial()
+        {
+            if (sharedStreakedTrailMat == null)
+            {
+                sharedStreakedTrailMat = Resources.Load<Material>("PFX_BucaStreakedTrail");
+
+                if (sharedStreakedTrailMat == null)
+                {
+                    Shader shader = Shader.Find("Buca/StreakedTrail")
+                                 ?? Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                                 ?? Shader.Find("Sprites/Default");
+                    sharedStreakedTrailMat = new Material(shader) { name = "PFX_ProceduralStreakedTrail" };
+                }
+            }
+            return sharedStreakedTrailMat;
+        }
 
         public static Material GetOrCreateSoftCircleMaterial()
         {
@@ -83,85 +95,62 @@ namespace Buca
             trailAnchor.position = new Vector3(transform.position.x, 0.08f, transform.position.z);
             trailAnchor.rotation = Quaternion.Euler(90f, 0f, 0f);
 
-            SetupCoreTrail();
-            SetupAuraTrail();
+            SetupMainTrail();
             SetupSlipstreamParticles();
             SetupWallSparkParticles();
 
             SetEmitting(false);
         }
 
-        private void SetupCoreTrail()
+        private void SetupMainTrail()
         {
-            GameObject coreGo = new GameObject("VFX_CoreTrail");
-            coreGo.transform.SetParent(trailAnchor);
-            coreGo.transform.localPosition = Vector3.zero;
-            coreGo.transform.localRotation = Quaternion.identity;
+            GameObject trailGo = new GameObject("VFX_UnifiedStreakedTrail");
+            trailGo.transform.SetParent(trailAnchor);
+            trailGo.transform.localPosition = Vector3.zero;
+            trailGo.transform.localRotation = Quaternion.identity;
 
-            coreTrail = coreGo.AddComponent<TrailRenderer>();
-            coreTrail.time = coreLifetime;
-            coreTrail.minVertexDistance = 0.06f;
-            coreTrail.autodestruct = false;
-            coreTrail.emitting = false;
-            coreTrail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            coreTrail.receiveShadows = false;
-            coreTrail.alignment = LineAlignment.TransformZ;
+            mainTrail = trailGo.AddComponent<TrailRenderer>();
+            mainTrail.time = trailLifetime;
+            mainTrail.minVertexDistance = 0.03f;
+            mainTrail.autodestruct = false;
+            mainTrail.emitting = false;
+            mainTrail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            mainTrail.receiveShadows = false;
+            mainTrail.alignment = LineAlignment.TransformZ;
 
+            // Single unified width curve (wide at puck, gently tapering at tail)
             AnimationCurve curve = new AnimationCurve();
-            curve.AddKey(0f, coreWidth);
-            curve.AddKey(0.40f, coreWidth * 0.85f);
-            curve.AddKey(0.75f, coreWidth * 0.50f);
-            curve.AddKey(1f, 0.05f);
-            coreTrail.widthCurve = curve;
+            curve.AddKey(0f, trailWidth);
+            curve.AddKey(0.30f, trailWidth * 0.92f);
+            curve.AddKey(0.65f, trailWidth * 0.72f);
+            curve.AddKey(1f, trailWidth * 0.38f);
+            mainTrail.widthCurve = curve;
 
             Gradient grad = new Gradient();
             grad.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(coreColorStart, 0f), new GradientColorKey(coreColorEnd, 1f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(coreColorStart.a, 0f), new GradientAlphaKey(coreColorEnd.a, 1f) }
+                new GradientColorKey[]
+                {
+                    new GradientColorKey(Color.white, 0f),
+                    new GradientColorKey(new Color(1.0f, 0.85f, 0.40f), 0.5f),
+                    new GradientColorKey(new Color(1.0f, 0.45f, 0.05f), 1f)
+                },
+                new GradientAlphaKey[]
+                {
+                    new GradientAlphaKey(1.0f, 0f),
+                    new GradientAlphaKey(0.85f, 0.5f),
+                    new GradientAlphaKey(0.0f, 1f)
+                }
             );
-            coreTrail.colorGradient = grad;
+            mainTrail.colorGradient = grad;
 
-            coreTrail.material = customTrailMaterial != null ? customTrailMaterial : GetOrCreateSoftCircleMaterial();
-        }
-
-        private void SetupAuraTrail()
-        {
-            GameObject auraGo = new GameObject("VFX_AuraTrail");
-            auraGo.transform.SetParent(trailAnchor);
-            auraGo.transform.localPosition = new Vector3(0f, -0.01f, 0f);
-            auraGo.transform.localRotation = Quaternion.identity;
-
-            auraTrail = auraGo.AddComponent<TrailRenderer>();
-            auraTrail.time = auraLifetime;
-            auraTrail.minVertexDistance = 0.06f;
-            auraTrail.autodestruct = false;
-            auraTrail.emitting = false;
-            auraTrail.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            auraTrail.receiveShadows = false;
-            auraTrail.alignment = LineAlignment.TransformZ;
-
-            AnimationCurve curve = new AnimationCurve();
-            curve.AddKey(0f, auraWidth);
-            curve.AddKey(0.45f, auraWidth * 0.80f);
-            curve.AddKey(0.80f, auraWidth * 0.40f);
-            curve.AddKey(1f, 0.08f);
-            auraTrail.widthCurve = curve;
-
-            Gradient grad = new Gradient();
-            grad.SetKeys(
-                new GradientColorKey[] { new GradientColorKey(auraColorStart, 0f), new GradientColorKey(auraColorEnd, 1f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(auraColorStart.a, 0f), new GradientAlphaKey(auraColorEnd.a, 1f) }
-            );
-            auraTrail.colorGradient = grad;
-
-            auraTrail.material = customTrailMaterial != null ? customTrailMaterial : GetOrCreateSoftCircleMaterial();
+            mainTrail.material = customTrailMaterial != null ? customTrailMaterial : GetOrCreateStreakedTrailMaterial();
         }
 
         private void SetupSlipstreamParticles()
         {
             GameObject psGo = new GameObject("VFX_SlipstreamParticles");
             psGo.transform.SetParent(trailAnchor);
-            psGo.transform.localPosition = new Vector3(0f, 0.02f, 0f);
+            psGo.transform.localPosition = Vector3.zero;
             psGo.transform.localRotation = Quaternion.identity;
 
             slipstreamPs = psGo.AddComponent<ParticleSystem>();
@@ -171,11 +160,11 @@ namespace Buca
             main.duration = 1.0f;
             main.loop = true;
             main.startLifetime = particleLifetime;
-            main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.8f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.1f, 0.6f);
             main.startSize = new ParticleSystem.MinMaxCurve(particleStartSize * 0.6f, particleStartSize * 1.3f);
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.playOnAwake = false;
-            main.maxParticles = 150;
+            main.maxParticles = 120;
 
             var emission = slipstreamPs.emission;
             emission.rateOverTime = 0f;
@@ -183,14 +172,14 @@ namespace Buca
 
             var shape = slipstreamPs.shape;
             shape.shapeType = ParticleSystemShapeType.Circle;
-            shape.radius = 0.55f;
+            shape.radius = 0.45f;
 
             var colorOverLifetime = slipstreamPs.colorOverLifetime;
             colorOverLifetime.enabled = true;
             Gradient grad = new Gradient();
             grad.SetKeys(
                 new GradientColorKey[] { new GradientColorKey(particleColorStart, 0f), new GradientColorKey(particleColorEnd, 1f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0.8f, 0.5f), new GradientAlphaKey(0f, 1f) }
+                new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0.7f, 0.5f), new GradientAlphaKey(0f, 1f) }
             );
             colorOverLifetime.color = grad;
 
@@ -198,13 +187,13 @@ namespace Buca
             sizeOverLifetime.enabled = true;
             AnimationCurve sizeCurve = new AnimationCurve();
             sizeCurve.AddKey(0f, 1f);
-            sizeCurve.AddKey(1f, 0.05f);
+            sizeCurve.AddKey(1f, 0.1f);
             sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1f, sizeCurve);
 
             var renderer = psGo.GetComponent<ParticleSystemRenderer>();
             renderer.material = customParticleMaterial != null ? customParticleMaterial : GetOrCreateSoftStarMaterial();
             renderer.minParticleSize = 0f;
-            renderer.maxParticleSize = 0.5f;
+            renderer.maxParticleSize = 0.4f;
         }
 
         private void SetupWallSparkParticles()
@@ -249,8 +238,7 @@ namespace Buca
 
         public void SetEmitting(bool active)
         {
-            if (coreTrail != null) coreTrail.emitting = active;
-            if (auraTrail != null) auraTrail.emitting = active;
+            if (mainTrail != null) mainTrail.emitting = active;
 
             if (slipstreamPs != null)
             {
@@ -271,8 +259,7 @@ namespace Buca
         public void ClearTrails()
         {
             SetEmitting(false);
-            if (coreTrail != null) coreTrail.Clear();
-            if (auraTrail != null) auraTrail.Clear();
+            if (mainTrail != null) mainTrail.Clear();
             if (slipstreamPs != null) slipstreamPs.Clear();
             if (wallSparkPs != null) wallSparkPs.Clear();
         }
@@ -292,7 +279,6 @@ namespace Buca
 
         private void LateUpdate()
         {
-            // Keep trail anchor strictly in horizontal XZ ground plane (y = 0.08m above floor) and isolate from puck spin
             if (trailAnchor != null)
             {
                 Vector3 p = transform.position;
@@ -300,11 +286,10 @@ namespace Buca
                 trailAnchor.rotation = Quaternion.Euler(90f, 0f, 0f);
             }
 
-            // Dynamically scale trail opacity and particle rate with current movement speed
             if (rb != null && !rb.isKinematic)
             {
                 float speed = rb.linearVelocity.magnitude;
-                if (speed < 0.5f && coreTrail != null && coreTrail.emitting)
+                if (speed < 0.4f && mainTrail != null && mainTrail.emitting)
                 {
                     SetEmitting(false);
                 }

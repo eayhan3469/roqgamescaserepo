@@ -89,9 +89,9 @@ namespace Buca
                 {
                     dynamicFriction = 0.0f,
                     staticFriction = 0.0f,
-                    bounciness = 0.85f,
+                    bounciness = 0.15f,
                     frictionCombine = PhysicsMaterialCombine.Minimum,
-                    bounceCombine = PhysicsMaterialCombine.Maximum
+                    bounceCombine = PhysicsMaterialCombine.Minimum
                 };
                 mc.material = trackMat;
             }

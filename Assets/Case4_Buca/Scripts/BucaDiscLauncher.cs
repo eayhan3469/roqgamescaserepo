@@ -62,9 +62,9 @@ namespace Buca
         [SerializeField] private float spinDeceleration = 320.0f;
 
         [Header("PhysX Bounce & Friction Properties")]
-        [SerializeField] private float dynamicFriction = 0.05f;
-        [SerializeField] private float staticFriction = 0.05f;
-        [SerializeField] private float bounciness = 0.75f;
+        [SerializeField] private float dynamicFriction = 0.0f;
+        [SerializeField] private float staticFriction = 0.0f;
+        [SerializeField] private float bounciness = 0.15f;
         [SerializeField] private float linearDamping = 0.15f;
 
         [Header("Reset Delay")]
@@ -90,11 +90,10 @@ namespace Buca
         private float maxAllowedSpeed = 0f;
         private Vector3 preCollisionVelocity = Vector3.zero;
 
-        // Dedicated visual & physical spin integration
-        private float currentVisualAngleY = 0f;
+        // Visual rolling spin physics
         private float currentSpinSpeedY = 0f;
+        private float currentVisualAngleY = 0f;
 
-        // Procedural Cone / Triangle Mesh indicator
         private MeshFilter aimMeshFilter;
         private MeshRenderer aimMeshRenderer;
         private Mesh aimMesh;
@@ -110,30 +109,20 @@ namespace Buca
 
         private void Awake()
         {
-            if (Instance == null) Instance = this;
-            else if (Instance != this) Destroy(this);
-
+            Instance = this;
             mainCam = Camera.main;
-
-            FindAndSetupDisc();
-            SetupPhysXMaterials();
-            SetupAimVisualizers();
+            groundPlane = new Plane(Vector3.up, new Vector3(0f, 0.08f, 0f));
         }
 
         private void Start()
         {
-            if (discTransform != null)
-            {
-                discTransform.SetParent(null, true);
-
-                spawnPosition = discTransform.position;
-                spawnRotation = discTransform.rotation;
-                currentVisualAngleY = spawnRotation.eulerAngles.y;
-                groundPlane = new Plane(Vector3.up, spawnPosition);
-            }
+            SetupDiscComponents();
+            SetupPhysXMaterials();
+            SetupAimVisualizers();
+            ResetDisc();
         }
 
-        private void FindAndSetupDisc()
+        private void SetupDiscComponents()
         {
             if (discTransform == null)
             {
@@ -164,6 +153,10 @@ namespace Buca
             {
                 discTransform.gameObject.AddComponent<BucaDiscCollisionRelay>();
             }
+
+            spawnPosition = discTransform.position;
+            spawnRotation = discTransform.rotation;
+            currentVisualAngleY = spawnRotation.eulerAngles.y;
 
             // Attach visual polish trail & particle slipstream effect
             trailEffect = discTransform.GetComponent<BucaDiscTrailEffect>();
@@ -205,8 +198,8 @@ namespace Buca
                 dynamicFriction = dynamicFriction,
                 staticFriction = staticFriction,
                 bounciness = bounciness,
-                frictionCombine = PhysicsMaterialCombine.Average,
-                bounceCombine = PhysicsMaterialCombine.Multiply
+                frictionCombine = PhysicsMaterialCombine.Minimum,
+                bounceCombine = PhysicsMaterialCombine.Minimum
             };
             discCollider.material = puckPhysMat;
 
@@ -223,8 +216,8 @@ namespace Buca
                 dynamicFriction = dynamicFriction,
                 staticFriction = staticFriction,
                 bounciness = bounciness,
-                frictionCombine = PhysicsMaterialCombine.Average,
-                bounceCombine = PhysicsMaterialCombine.Multiply
+                frictionCombine = PhysicsMaterialCombine.Minimum,
+                bounceCombine = PhysicsMaterialCombine.Minimum
             };
 
             MeshRenderer[] renderers = FindObjectsOfType<MeshRenderer>(true);
@@ -737,26 +730,18 @@ namespace Buca
 
         public void OnDiscCollisionStay(Collision collision)
         {
-            // Do NOT re-add spin every continuous frame while sliding!
+            // Natural PhysX rolling and damping
         }
 
         /// <summary>
-        /// Applies a clean rotational spin kick calculated to complete 1.5 - 2 turns on hard hits,
-        /// and smoothly decelerate to a complete stop over 1 - 2 seconds.
+        /// Adds visual rotational spin roll, spark VFX, and audio feedback on wall impacts.
         /// </summary>
         private void ProcessWallImpactSpin(Collision collision, bool isObstacle = false)
         {
             if (collision.contactCount == 0 || discRb == null || !isLaunched) return;
             if (collision.gameObject.name.ToLower().Contains("plane")) return;
 
-            // 1. Natural kinetic energy loss upon impact (absorb 8% per bounce)
-            maxAllowedSpeed *= 0.92f;
-            if (discRb.linearVelocity.magnitude > maxAllowedSpeed)
-            {
-                discRb.linearVelocity = discRb.linearVelocity.normalized * maxAllowedSpeed;
-            }
-
-            // 2. Find the contact point
+            // Find the contact point
             ContactPoint contact = collision.GetContact(0);
             Vector3 contactPoint = contact.point;
 
@@ -766,27 +751,22 @@ namespace Buca
             if (outwardNormal.sqrMagnitude < 0.001f) return;
             outwardNormal.Normalize();
 
-            // Extract movement direction before bounce
-            Vector3 incomingVel = preCollisionVelocity.sqrMagnitude > 0.5f ? preCollisionVelocity : discRb.linearVelocity;
+            // Extract movement direction
+            Vector3 incomingVel = discRb.linearVelocity.sqrMagnitude > 0.1f ? discRb.linearVelocity : preCollisionVelocity;
             incomingVel.y = 0f;
             float speed = incomingVel.magnitude;
             if (speed < 0.2f) return;
 
             Vector3 moveDir = incomingVel / speed;
 
-            // Cross product:
-            // Invert sign to match physical surface friction roll (Clockwise on left wall, Counter-Clockwise on right wall)
+            // Cross product roll spin
             float crossY = Vector3.Cross(moveDir, outwardNormal).y;
             float sideSign = -Mathf.Sign(crossY);
 
-            // Clean speed ratio (scales from 0.25 on soft hits up to 1.0 on max hits)
             float speedRatio = Mathf.Clamp(speed / 20.0f, 0.25f, 1.0f);
-
-            // Glancing grazing factor
             float glancingFactor = 0.4f + 0.6f * Mathf.Clamp01(Mathf.Abs(crossY));
             float spinImpact = wallImpactSpinSpeed * speedRatio * glancingFactor;
 
-            // Add single-hit spin kick, naturally capped
             currentSpinSpeedY += sideSign * spinImpact;
             currentSpinSpeedY = Mathf.Clamp(currentSpinSpeedY, -maxSpinSpeedCap, maxSpinSpeedCap);
 
