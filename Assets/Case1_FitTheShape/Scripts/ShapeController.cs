@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -44,24 +45,12 @@ namespace FitTheShape
         [Tooltip("Fast snappy plunge straight down into the hole ('TAK!' oturma).")]
         [SerializeField] private float snapPlungeDuration = 0.09f;
 
-        [Tooltip("Height above hole for overhead hover alignment.")]
-        [SerializeField] private float overheadHoverHeight = 0.70f;
-
-        [Tooltip("Scale multiplier during the mid-air peak.")]
-        [SerializeField] private float peakScaleMultiplier = 1.2f;
-
         [Header("Pneumatic Sinking & Flush Plug Settings")]
         [Tooltip("Height above the hole the shape lands at first (embossed look on impact).")]
         [SerializeField] private float embossedLandingOffset = 0.12f;
 
-        [Tooltip("Thickness scale on Y when touching down in the slot (embossed 3D look).")]
-        [SerializeField] private float embossedThickness = 0.35f;
-
-        [Tooltip("Thickness scale on Y when fully seated flush into the hole.")]
-        [SerializeField] private float flushPlugThickness = 0.12f;
-
         [Tooltip("Duration of the pneumatic sinking motion into the hole.")]
-        [SerializeField] private float sinkDuration = 0.28f;
+        [SerializeField] private float sinkDuration = 0.20f;
 
         [Tooltip("Easing curve for the pneumatic sinking motion.")]
         [SerializeField] private Ease sinkEase = Ease.OutQuad;
@@ -86,6 +75,7 @@ namespace FitTheShape
         private Vector3 originalScale;
         private Sequence activeSequence;
         private GameObject activeTrailInstance;
+        private static Material neonFlashMaterial;
 
         public Transform TargetHole
         {
@@ -97,47 +87,10 @@ namespace FitTheShape
             }
         }
 
-        public Transform FirstAnchor
-        {
-            get => firstAnchor;
-            set => firstAnchor = value;
-        }
-
-        public Transform LastAnchor
-        {
-            get => lastAnchor;
-            set => lastAnchor = value;
-        }
-
-        public Transform DeckPedestal
-        {
-            get => deckPedestal;
-            set => deckPedestal = value;
-        }
-
         private void Awake()
         {
             shapeCollider = GetComponent<Collider>();
             originalScale = transform.localScale;
-            ResolveAnchors();
-            ResolvePedestal();
-
-            if (starBurstVfxPrefab == null)
-            {
-                starBurstVfxPrefab = Resources.Load<GameObject>("MiniShapeBurst");
-            }
-            if (flightTrailPrefab == null)
-            {
-                flightTrailPrefab = Resources.Load<GameObject>("FlightTrailDust");
-            }
-            if (insertionSparksPrefab == null)
-            {
-                insertionSparksPrefab = Resources.Load<GameObject>("InsertionSparks");
-            }
-        }
-
-        private void OnValidate()
-        {
             ResolveAnchors();
             ResolvePedestal();
         }
@@ -273,11 +226,11 @@ namespace FitTheShape
             rotSeq.Append(transform.DORotate(targetRot.eulerAngles, flightToHoverDuration * 0.35f, RotateMode.Fast).SetEase(Ease.OutQuad));
             activeSequence.Join(rotSeq);
 
-            // Boyut ölçeklemesi (Kesinlikle incelme/yassılaşma yok, daima tam ve tok 3D kalınlığını korur)
-            Vector3 peakScale = originalScale * peakScaleMultiplier;
+            // 🤹 SQUASH & STRETCH (Aşama 1: Fırlarken dikey esneme -> Havada tok doğal boyutuna kavuşma)
+            Vector3 launchStretch = new Vector3(originalScale.x * 0.90f, originalScale.y * 1.22f, originalScale.z * 0.90f);
             Sequence scaleSeq = DOTween.Sequence();
-            scaleSeq.Append(transform.DOScale(peakScale, flightToHoverDuration * 0.45f).SetEase(Ease.OutQuad));
-            scaleSeq.Append(transform.DOScale(originalScale, flightToHoverDuration * 0.55f).SetEase(Ease.InQuad));
+            scaleSeq.Append(transform.DOScale(launchStretch, flightToHoverDuration * 0.35f).SetEase(Ease.OutQuad));
+            scaleSeq.Append(transform.DOScale(originalScale, flightToHoverDuration * 0.65f).SetEase(Ease.InOutQuad));
             activeSequence.Join(scaleSeq);
 
             // AŞAMA 2: Uçuş bitip deliğin tam üstüne gelindiğinde kısa bir an bekleme (Anticipation)
@@ -295,7 +248,7 @@ namespace FitTheShape
                 }
             });
 
-            // 5. Yuva Ağzına İlk Temas Anı (1. Adım: İlk Çarpma -> Particle & Ripple Anında Patlar) -> (2. Adım: İçeri Süzülüp Düzleşir)
+            // 5. Yuva Ağzına İlk Temas Anı (1. Adım: İlk Çarpma -> Particle, Squash, Flash & Ripple) -> (2. Adım: İçeri Süzülüp Düzleşir)
             activeSequence.OnComplete(() =>
             {
                 // Gölge objesini kapat
@@ -335,6 +288,23 @@ namespace FitTheShape
 
                     StopFlightTrail();
 
+                    // 🤹 SQUASH & STRETCH (Aşama 2: Çarpma anında tok basılma ve anında yaylanma)
+                    Vector3 impactSquash = new Vector3(localShapeScale.x * 1.15f, localShapeScale.y * 0.78f, localShapeScale.z * 1.15f);
+                    transform.DOScale(impactSquash, 0.05f).SetEase(Ease.OutQuad).OnComplete(() =>
+                    {
+                        transform.DOScale(localShapeScale, 0.08f).SetEase(Ease.OutBack, 1.4f);
+                    });
+
+                    // 💡 Şeklin rengini al ve YUVADA NEON RENK PATLAMASI (Flash) oluştur
+                    Color shapeColor = Color.yellow;
+                    Renderer rend = GetComponent<Renderer>();
+                    if (rend != null && rend.sharedMaterial != null)
+                    {
+                        if (rend.sharedMaterial.HasProperty("_BaseColor")) shapeColor = rend.sharedMaterial.GetColor("_BaseColor");
+                        else if (rend.sharedMaterial.HasProperty("_Color")) shapeColor = rend.sharedMaterial.color;
+                    }
+                    SpawnSegmentNeonFlash(embossedLandingPos, lastAnchor != null ? lastAnchor.up : Vector3.up, shapeColor);
+
                     // 🌟 Şekil deliğe girmeye başladığı tam bu anda Hole ve Hole-Cap objelerini kapat!
                     HideHoleCutout(parentSeg);
 
@@ -371,6 +341,82 @@ namespace FitTheShape
                     });
                 }
             });
+        }
+
+        /// <summary>
+        /// Yuvaya oturma anında şeklin renginde parlak bir neon halka patlaması oluşturur.
+        /// </summary>
+        private void SpawnSegmentNeonFlash(Vector3 spawnPos, Vector3 normalDir, Color flashColor)
+        {
+            GameObject flashGo = new GameObject("VFX_SegmentNeonFlash");
+            flashGo.transform.position = spawnPos + normalDir * 0.04f;
+            flashGo.transform.rotation = Quaternion.LookRotation(normalDir);
+
+            ParticleSystem ps = flashGo.AddComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+
+            var main = ps.main;
+            main.loop = false;
+            main.duration = 0.28f;
+            main.startLifetime = 0.26f;
+            main.startSpeed = 0.05f;
+            main.startSize = 0.40f;
+            main.simulationSpace = ParticleSystemSimulationSpace.World;
+            main.playOnAwake = false;
+
+            var emission = ps.emission;
+            emission.enabled = false;
+
+            var shape = ps.shape;
+            shape.enabled = false;
+
+            var colorOverLifetime = ps.colorOverLifetime;
+            colorOverLifetime.enabled = true;
+            Gradient grad = new Gradient();
+            grad.SetKeys(
+                new GradientColorKey[] {
+                    new GradientColorKey(Color.white, 0.0f),
+                    new GradientColorKey(flashColor, 0.35f),
+                    new GradientColorKey(flashColor, 1.0f)
+                },
+                new GradientAlphaKey[] {
+                    new GradientAlphaKey(1.0f, 0.0f),
+                    new GradientAlphaKey(0.85f, 0.40f),
+                    new GradientAlphaKey(0.0f, 1.0f)
+                }
+            );
+            colorOverLifetime.color = grad;
+
+            var sizeOverLifetime = ps.sizeOverLifetime;
+            sizeOverLifetime.enabled = true;
+            AnimationCurve sizeCurve = new AnimationCurve();
+            sizeCurve.AddKey(0.0f, 0.6f);
+            sizeCurve.AddKey(0.50f, 1.8f);
+            sizeCurve.AddKey(1.0f, 2.4f);
+            sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1.0f, sizeCurve);
+
+            if (neonFlashMaterial == null)
+            {
+                Material circleMat = Resources.Load<Material>("Mat_Particle_Circle");
+                if (circleMat != null)
+                {
+                    neonFlashMaterial = circleMat;
+                }
+                else
+                {
+                    Shader pShader = Shader.Find("Universal Render Pipeline/Particles/Unlit") 
+                                  ?? Shader.Find("Particles/Standard Unlit") 
+                                  ?? Shader.Find("Mobile/Particles/Alpha Blended");
+                    neonFlashMaterial = new Material(pShader);
+                }
+            }
+
+            var psRenderer = flashGo.GetComponent<ParticleSystemRenderer>();
+            psRenderer.renderMode = ParticleSystemRenderMode.Billboard;
+            psRenderer.sharedMaterial = neonFlashMaterial;
+
+            ps.Emit(1);
+            Destroy(flashGo, 0.40f);
         }
 
         private void HideHoleCutout(Transform segmentRoot)

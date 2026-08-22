@@ -80,6 +80,13 @@ namespace FitTheShape
             return src;
         }
 
+        private int comboIndex = 0;
+        private float lastImpactTime = -10f;
+        private const float comboResetDuration = 2.2f;
+
+        // Musical diatonic scale multipliers: Do (1.00), Re (1.122), Mi (1.260), Fa (1.335), Sol (1.498), La (1.682), Ti (1.888), High-Do (2.00)
+        private static readonly float[] pitchLadder = new float[] { 1.000f, 1.122f, 1.260f, 1.335f, 1.498f, 1.682f, 1.888f, 2.000f };
+
         public void PlayLaunchSound()
         {
             if (whooshLaunchClip == null) return;
@@ -94,7 +101,19 @@ namespace FitTheShape
             if (snapImpactClip == null) return;
             if (snapSource == null) InitializeSources();
 
-            snapSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+            // Combo pitch progression
+            if (Time.time - lastImpactTime < comboResetDuration)
+            {
+                comboIndex++;
+            }
+            else
+            {
+                comboIndex = 0;
+            }
+            lastImpactTime = Time.time;
+
+            float currentPitch = pitchLadder[Mathf.Min(comboIndex, pitchLadder.Length - 1)];
+            snapSource.pitch = currentPitch;
             snapSource.PlayOneShot(snapImpactClip, impactVolume);
         }
 
@@ -108,14 +127,15 @@ namespace FitTheShape
         }
 
         /// <summary>
-        /// Plays the magical success sparkle sound on an isolated channel strictly locked at 1.0 pitch.
+        /// Plays the magical success sparkle sound on an isolated channel with matching harmonic pitch.
         /// </summary>
         public void PlaySuccessSound()
         {
             if (successSparkleClip == null) return;
             if (sparkleSource == null) InitializeSources();
 
-            sparkleSource.pitch = 1.0f; // Strictly locked, zero drift
+            float currentPitch = pitchLadder[Mathf.Min(comboIndex, pitchLadder.Length - 1)];
+            sparkleSource.pitch = currentPitch;
             sparkleSource.PlayOneShot(successSparkleClip, sparkleVolume);
         }
     }
