@@ -1334,6 +1334,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5028548274325848675, guid: e00f100b1b6d1fa4e8f633773584a211, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3231,6 +3235,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5316437349915439538, guid: f29caca4546fa6747998ee131b984b7f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3267,12 +3275,17 @@ MonoBehaviour:
   targetHole: {fileID: 2023199372}
   firstAnchor: {fileID: 1827178030}
   lastAnchor: {fileID: 646554842}
-  slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
   flightDuration: 0.42
   peakScaleMultiplier: 1.2
   flightEase: 7
+  randomizeSpinAxis: 1
   spinEase: 7
+  embossedLandingOffset: 0.15
+  embossedThickness: 0.28
+  flushPlugThickness: 0.12
+  sinkDuration: 0.28
+  sinkEase: 9
   starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
   flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
   insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
@@ -5498,10 +5511,10 @@ MonoBehaviour:
   m_RendererIndex: -1
   m_VolumeLayerMask:
     serializedVersion: 2
-    m_Bits: 1
-  m_VolumeTrigger: {fileID: 0}
+    m_Bits: 4294967295
+  m_VolumeTrigger: {fileID: 1297003750}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -6714,13 +6727,16 @@ MonoBehaviour:
   snapImpactClip: {fileID: 8300000, guid: 97c0df8d2b118b643b99518f68b4dc58, type: 3}
   resonanceWobbleClip: {fileID: 8300000, guid: 6390e9e56aadc7d48b089e4fdb9d1572, type: 3}
   successSparkleClip: {fileID: 8300000, guid: e32343c8645bd3149904fea2a6d9b6b7, type: 3}
-  sfxSource: {fileID: 1483402402}
-  minPitch: 0.95
-  maxPitch: 1.05
+  launchSource: {fileID: 0}
+  snapSource: {fileID: 0}
+  wobbleSource: {fileID: 0}
+  sparkleSource: {fileID: 0}
   launchVolume: 0.3
   impactVolume: 0.8
   wobbleVolume: 0.1
   sparkleVolume: 0.1
+  minPitch: 0.95
+  maxPitch: 1.05
 --- !u!82 &1483402402
 AudioSource:
   m_ObjectHideFlags: 0
@@ -7384,6 +7400,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1115312850}
     m_Modifications:
+    - target: {fileID: 2218590610468068495, guid: aa2cb8ebce4b12f4fb6044e6b54b80b7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5545981397468321620, guid: aa2cb8ebce4b12f4fb6044e6b54b80b7, type: 3}
       propertyPath: m_Name
       value: Shape_Hexagon
@@ -7476,12 +7496,17 @@ MonoBehaviour:
   targetHole: {fileID: 1468114981}
   firstAnchor: {fileID: 1402091381}
   lastAnchor: {fileID: 146348107}
-  slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
   flightDuration: 0.42
   peakScaleMultiplier: 1.2
   flightEase: 7
+  randomizeSpinAxis: 1
   spinEase: 7
+  embossedLandingOffset: 0.15
+  embossedThickness: 0.28
+  flushPlugThickness: 0.12
+  sinkDuration: 0.28
+  sinkEase: 9
   starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
   flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
   insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
@@ -7781,6 +7806,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shape_Round
       objectReference: {fileID: 0}
+    - target: {fileID: 7734269404181751011, guid: 076b2e37e3b76074eabdef665e61bfe5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7817,12 +7846,17 @@ MonoBehaviour:
   targetHole: {fileID: 1925763814}
   firstAnchor: {fileID: 464612545}
   lastAnchor: {fileID: 319623626}
-  slotDepthOffset: 0.15
   arcLiftTowardsCamera: 3
   flightDuration: 0.42
   peakScaleMultiplier: 1.2
   flightEase: 7
+  randomizeSpinAxis: 1
   spinEase: 7
+  embossedLandingOffset: 0.15
+  embossedThickness: 0.28
+  flushPlugThickness: 0.12
+  sinkDuration: 0.28
+  sinkEase: 9
   starBurstVfxPrefab: {fileID: 8768278108749928987, guid: 9b50e969ce50f8340b8d62d1ac2633d8, type: 3}
   flightTrailPrefab: {fileID: 7151926928739264523, guid: 384e514903202334e9ef80ce514e22f7, type: 3}
   insertionSparksPrefab: {fileID: 7253741667531317479, guid: 0ca6edc943224ca4bbd2feae7a07cca0, type: 3}
@@ -8484,9 +8518,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2100199905}
     m_Modifications:
+    - target: {fileID: 328009746013876448, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1858566224807498376, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4164250320087883790, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5197700333042483868, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -8552,6 +8594,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6520319612282428007, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6838202641392927227, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7135240679394909602, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
       propertyPath: m_Mesh
       value: 
@@ -8572,6 +8622,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 1ac125b49c291f048b00896557d6db2e, type: 2}
+    - target: {fileID: 8269348700497778878, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9179,6 +9233,77 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6371146750105926131, guid: 5c44bc22f023b4a36b87e16c656406d4, type: 3}
   m_PrefabInstance: {fileID: 1997795472}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1999999001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1999999002}
+  - component: {fileID: 1999999003}
+  - component: {fileID: 1999999004}
+  m_Layer: 0
+  m_Name: '[Global Volume]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1999999002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999999001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1999999003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999999001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FitTheShape::FitTheShapePostProcessing
+  postExposure: 0.12
+  contrast: 14
+  saturation: 28
+  bloomIntensity: 0.55
+  bloomThreshold: 0.95
+  bloomScatter: 0.7
+  vignetteIntensity: 0.18
+  vignetteSmoothness: 0.45
+  useAcesTonemapping: 1
+--- !u!114 &1999999004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999999001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 1
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 0}
 --- !u!1 &2006577824
 GameObject:
   m_ObjectHideFlags: 0
@@ -10330,3 +10455,4 @@ SceneRoots:
   - {fileID: 2133974887}
   - {fileID: 2006577828}
   - {fileID: 1483402403}
+  - {fileID: 1999999002}

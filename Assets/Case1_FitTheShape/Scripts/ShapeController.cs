@@ -21,15 +21,22 @@ namespace FitTheShape
         [Tooltip("Last flight anchor (FrontAnchor_LastTrans) for final insertion/fit.")]
         [SerializeField] private Transform lastAnchor;
 
-        [Tooltip("Inward offset so the shape sits snugly inside the hole without sticking out.")]
-        [SerializeField] private float slotDepthOffset = 0.12f;
+        [Header("Deck Pedestal Spring Feedback")]
+        [Tooltip("Optional reference to the pedestal/button under this shape. Auto-finds closest DeckSlot if null.")]
+        [SerializeField] private Transform deckPedestal;
+
+        [Tooltip("How much the button pedestal depresses down on tap.")]
+        [SerializeField] private float pedestalPunchDepth = 0.14f;
+
+        [Tooltip("Duration of the springy button press recoil.")]
+        [SerializeField] private float pedestalPunchDuration = 0.25f;
 
         [Header("Continuous Fluid Flight & Spin Settings")]
         [Tooltip("Height of the parabolic arc towards the camera to clear all drum segments.")]
         [SerializeField] private float arcLiftTowardsCamera = 3.0f;
 
-        [Tooltip("Total duration of the continuous fluid flight from deck to hole.")]
-        [SerializeField] private float flightDuration = 0.42f;
+        [Tooltip("Total duration of the continuous fluid flight from deck to hole entrance.")]
+        [SerializeField] private float flightDuration = 0.40f;
 
         [Tooltip("Scale multiplier during the mid-air peak.")]
         [SerializeField] private float peakScaleMultiplier = 1.2f;
@@ -37,8 +44,28 @@ namespace FitTheShape
         [Tooltip("Easing curve for the continuous flight path.")]
         [SerializeField] private Ease flightEase = Ease.InOutQuad;
 
-        [Tooltip("Easing curve for the mid-air local Y spin.")]
+        [Header("Dynamic Flight Spin Variety")]
+        [Tooltip("Randomly pick between Y-spin (XZ plane) and Z/X flips (XY plane).")]
+        [SerializeField] private bool randomizeSpinAxis = true;
+
+        [Tooltip("Easing curve for the mid-air spin.")]
         [SerializeField] private Ease spinEase = Ease.InOutQuad;
+
+        [Header("Pneumatic Sinking & Flush Plug Settings")]
+        [Tooltip("Height above the hole the shape lands at first (embossed look on impact).")]
+        [SerializeField] private float embossedLandingOffset = 0.12f;
+
+        [Tooltip("Thickness scale on Y when touching down in the slot (embossed 3D look).")]
+        [SerializeField] private float embossedThickness = 0.35f;
+
+        [Tooltip("Thickness scale on Y when fully seated flush into the hole.")]
+        [SerializeField] private float flushPlugThickness = 0.12f;
+
+        [Tooltip("Duration of the pneumatic sinking motion into the hole.")]
+        [SerializeField] private float sinkDuration = 0.28f;
+
+        [Tooltip("Easing curve for the pneumatic sinking motion.")]
+        [SerializeField] private Ease sinkEase = Ease.OutQuad;
 
         [Header("Golden Star VFX & Polish Feedback")]
         [Tooltip("Golden star particle burst prefab instantiated on landing.")]
@@ -83,34 +110,10 @@ namespace FitTheShape
             set => lastAnchor = value;
         }
 
-        public GameObject StarBurstVfxPrefab
+        public Transform DeckPedestal
         {
-            get => starBurstVfxPrefab;
-            set => starBurstVfxPrefab = value;
-        }
-
-        public GameObject FlightTrailPrefab
-        {
-            get => flightTrailPrefab;
-            set => flightTrailPrefab = value;
-        }
-
-        public GameObject InsertionSparksPrefab
-        {
-            get => insertionSparksPrefab;
-            set => insertionSparksPrefab = value;
-        }
-
-        public float FlightDuration
-        {
-            get => flightDuration;
-            set => flightDuration = value;
-        }
-
-        public float ArcLiftTowardsCamera
-        {
-            get => arcLiftTowardsCamera;
-            set => arcLiftTowardsCamera = value;
+            get => deckPedestal;
+            set => deckPedestal = value;
         }
 
         private void Awake()
@@ -118,6 +121,7 @@ namespace FitTheShape
             shapeCollider = GetComponent<Collider>();
             originalScale = transform.localScale;
             ResolveAnchors();
+            ResolvePedestal();
 
             if (starBurstVfxPrefab == null)
             {
@@ -136,6 +140,7 @@ namespace FitTheShape
         private void OnValidate()
         {
             ResolveAnchors();
+            ResolvePedestal();
         }
 
         public void ResolveAnchors()
@@ -156,6 +161,35 @@ namespace FitTheShape
             }
         }
 
+        public void ResolvePedestal()
+        {
+            if (deckPedestal != null) return;
+
+            GameObject deck = GameObject.Find("Deck");
+            if (deck != null)
+            {
+                float minDist = float.MaxValue;
+                Transform closestSlot = null;
+                for (int i = 0; i < deck.transform.childCount; i++)
+                {
+                    Transform child = deck.transform.GetChild(i);
+                    if (child.name.StartsWith("DeckSlot"))
+                    {
+                        float d = Vector3.Distance(transform.position, child.position);
+                        if (d < minDist)
+                        {
+                            minDist = d;
+                            closestSlot = child;
+                        }
+                    }
+                }
+                if (closestSlot != null && minDist < 2.5f)
+                {
+                    deckPedestal = closestSlot;
+                }
+            }
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
             TriggerFitSequence();
@@ -172,6 +206,7 @@ namespace FitTheShape
             isTriggered = true;
 
             ResolveAnchors();
+            ResolvePedestal();
 
             if (lastAnchor == null)
             {
@@ -182,6 +217,14 @@ namespace FitTheShape
             if (shapeCollider != null)
             {
                 shapeCollider.enabled = false;
+            }
+
+            // 0. Deck Pedestal Spring Button Reaction (Yaylı Buton Basış Geri Tepmesi)
+            if (deckPedestal != null)
+            {
+                deckPedestal.DOKill();
+                deckPedestal.DOPunchPosition(Vector3.down * pedestalPunchDepth, pedestalPunchDuration, 6, 0.5f);
+                deckPedestal.DOPunchScale(new Vector3(0.08f, -0.15f, 0.08f), pedestalPunchDuration, 6, 0.5f);
             }
 
             // 1. Audio: Whoosh / Launch Sound
@@ -196,72 +239,170 @@ namespace FitTheShape
             activeSequence = DOTween.Sequence();
 
             Vector3 startPos = transform.position;
-            Vector3 sunkenTargetPos = lastAnchor.position - (lastAnchor.up * slotDepthOffset);
+            Vector3 embossedLandingPos = lastAnchor.position + (lastAnchor.up * embossedLandingOffset);
+            Vector3 flushSeatedPos = lastAnchor.position;
 
             StartFlightTrail();
 
             Camera mainCam = Camera.main;
             Vector3 toCameraDir = mainCam != null ? -mainCam.transform.forward : new Vector3(0f, 0.94f, -0.34f);
             
-            Vector3 arcGuidePos = firstAnchor != null ? firstAnchor.position : Vector3.Lerp(startPos, sunkenTargetPos, 0.5f);
+            Vector3 arcGuidePos = firstAnchor != null ? firstAnchor.position : Vector3.Lerp(startPos, embossedLandingPos, 0.5f);
             Vector3 arcMidPoint = Vector3.Lerp(startPos, arcGuidePos, 0.6f) + toCameraDir * arcLiftTowardsCamera;
 
             Vector3[] continuousPath = new Vector3[] {
                 startPos,
                 arcMidPoint,
-                sunkenTargetPos
+                embossedLandingPos
             };
 
-            // 1. Kesintisiz Akıcı Uçuş
+            // 1. Kesintisiz Akıcı Uçuş (Yuva Ağzına Kadar)
             activeSequence.Append(transform.DOPath(continuousPath, flightDuration, PathType.CatmullRom).SetEase(flightEase));
 
-            // 2. Havada Uçarken SADECE Kendi Local Y Ekseninde 1 Tam Tur (360°) Spin
-            activeSequence.Join(transform.DORotate(new Vector3(0f, 360f, 0f), flightDuration, RotateMode.LocalAxisAdd).SetEase(spinEase));
+            // 2. Dinamik 3D Spin Çeşitliliği (XZ vs XY Düzlemleri)
+            Vector3 spinAngles = new Vector3(0f, 360f, 0f);
+            if (randomizeSpinAxis)
+            {
+                int spinType = UnityEngine.Random.Range(0, 3);
+                if (spinType == 0)
+                {
+                    float yDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
+                    spinAngles = new Vector3(0f, yDir, 0f);
+                }
+                else if (spinType == 1)
+                {
+                    float zDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
+                    spinAngles = new Vector3(0f, 0f, zDir);
+                }
+                else
+                {
+                    float yDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
+                    float zDir = UnityEngine.Random.value > 0.5f ? 360f : -360f;
+                    spinAngles = new Vector3(0f, yDir, zDir);
+                }
+            }
 
-            // 3. Havada hafif scale büyümesi ve inişte tam orijinal scale'e oturması
+            activeSequence.Join(transform.DORotate(spinAngles, flightDuration, RotateMode.LocalAxisAdd).SetEase(spinEase));
+
+            // 3. Havada Boyut Standardizasyonu
+            float uniformBase = Mathf.Max(originalScale.x, originalScale.z);
+            Vector3 peakNormalizedScale = new Vector3(uniformBase, uniformBase, uniformBase) * peakScaleMultiplier;
+            Vector3 worldEmbossedScale = new Vector3(uniformBase, embossedThickness, uniformBase);
+
             Sequence scaleSeq = DOTween.Sequence();
-            scaleSeq.Append(transform.DOScale(originalScale * peakScaleMultiplier, flightDuration * 0.45f).SetEase(Ease.OutQuad));
-            scaleSeq.Append(transform.DOScale(originalScale, flightDuration * 0.55f).SetEase(Ease.InQuad));
+            scaleSeq.Append(transform.DOScale(peakNormalizedScale, flightDuration * 0.45f).SetEase(Ease.OutQuad));
+            scaleSeq.Append(transform.DOScale(worldEmbossedScale, flightDuration * 0.55f).SetEase(Ease.InQuad));
             activeSequence.Join(scaleSeq);
 
-            // 4. Snap Sesini tam temas anından bir kare önce (0 gecikme hissi) tetikle
-            activeSequence.InsertCallback(Mathf.Max(0f, flightDuration - 0.02f), () =>
+            // 4. Snap Sesini tam yuva ağzına temas anından bir kare önce tetikle ("CUK!")
+            activeSequence.InsertCallback(Mathf.Max(0f, flightDuration - 0.015f), () =>
             {
                 if (FitTheShapeAudioManager.Instance != null)
                 {
                     FitTheShapeAudioManager.Instance.PlaySnapImpactSound();
-                    FitTheShapeAudioManager.Instance.PlaySuccessSound();
                 }
             });
 
-            // 5. Tam yuvasına indiğinde
+            // 5. Yuva Ağzına İlk Temas Anı (1. Adım: İlk Çarpma -> Particle & Ripple Anında Patlar) -> (2. Adım: İçeri Süzülüp Düzleşir)
             activeSequence.OnComplete(() =>
             {
-                transform.position = sunkenTargetPos;
-                transform.rotation = lastAnchor.rotation;
-                transform.localScale = originalScale;
-
-                StopFlightTrail();
-
-                // 1. Yuvaya giriş sürtünme kıvılcımı (Insertion Friction Sparks)
-                SpawnInsertionSparks(sunkenTargetPos);
-
-                // 2. Çok tonlu parlak sarı yıldızlar + minik kıvılcım tozları patlaması
-                SpawnStarBurstVfx(sunkenTargetPos);
-
-                if (sfxOnEntered != null)
+                // Gölge objesini kapat
+                foreach (Transform child in transform)
                 {
-                    sfxOnEntered.Play();
+                    if (child.name.ToLower().Contains("shadow"))
+                    {
+                        child.gameObject.SetActive(false);
+                    }
                 }
 
-                // Dalgayı şekil referansıyla birlikte başlat
-                if (WheelReactor.Instance != null)
-                {
-                    WheelReactor.Instance.TriggerReaction(lastAnchor, transform);
-                }
+                // Segment objesine bağla (böylece gelecekteki tüm Ripple dalgalarında segment ile %100 kilitli hareket eder)
+                Transform parentSeg = targetHole != null && targetHole.name.Contains("Segment_") 
+                    ? targetHole 
+                    : (lastAnchor != null ? lastAnchor.parent : targetHole);
 
-                OnShapeEntered?.Invoke();
+                if (parentSeg != null)
+                {
+                    transform.SetParent(parentSeg, true);
+
+                    // Segment'in asimetrik (non-uniform) scale'ini (0.87, 1.47, 1.47) ters çarpanla (inverse) dengele!
+                    // Böylece dünya koordinatlarında şekil %100 kusursuz 1:1 simetrik kalır, ASLA STRETCH OLMAZ!
+                    Vector3 pLossy = parentSeg.lossyScale;
+                    float invX = pLossy.x > 0.001f ? 1f / pLossy.x : 1f;
+                    float invY = pLossy.y > 0.001f ? 1f / pLossy.y : 1f;
+                    float invZ = pLossy.z > 0.001f ? 1f / pLossy.z : 1f;
+
+                    float worldDiameter = Mathf.Max(originalScale.x, originalScale.z);
+                    Vector3 targetWorldEmbossed = new Vector3(worldDiameter, embossedThickness, worldDiameter);
+                    Vector3 targetWorldFlush = new Vector3(worldDiameter, flushPlugThickness, worldDiameter);
+
+                    Vector3 localEmbossedScale = new Vector3(targetWorldEmbossed.x * invX, targetWorldEmbossed.y * invY, targetWorldEmbossed.z * invZ);
+                    Vector3 localFlushScale = new Vector3(targetWorldFlush.x * invX, targetWorldFlush.y * invY, targetWorldFlush.z * invZ);
+
+                    Vector3 localEmbossedPos = parentSeg.InverseTransformPoint(embossedLandingPos);
+                    Vector3 localFlushPos = parentSeg.InverseTransformPoint(flushSeatedPos);
+                    Quaternion localRot = Quaternion.Inverse(parentSeg.rotation) * lastAnchor.rotation;
+
+                    transform.localPosition = localEmbossedPos;
+                    transform.localRotation = localRot;
+                    transform.localScale = localEmbossedScale;
+
+                    StopFlightTrail();
+
+                    // 🌟 Şekil deliğe girmeye başladığı tam bu anda Hole ve Hole-Cap objelerini kapat!
+                    HideHoleCutout(parentSeg);
+
+                    // 🌟 İLK ÇARPMA ANINDA TETİKLENEN EFEKTLER (Anında Reaksiyon):
+                    // 1. Sürtünme kıvılcımları
+                    SpawnInsertionSparks(embossedLandingPos);
+
+                    // 2. Çok tonlu parlak sarı yıldızlar patlaması
+                    SpawnStarBurstVfx(embossedLandingPos);
+
+                    // 3. Başarı parıltı sesi (Sparkle Chime)
+                    if (FitTheShapeAudioManager.Instance != null)
+                    {
+                        FitTheShapeAudioManager.Instance.PlaySuccessSound();
+                    }
+
+                    // 4. Çarktaki rezonans süspansiyon dalgası (Ripple)
+                    if (WheelReactor.Instance != null)
+                    {
+                        WheelReactor.Instance.TriggerReaction(lastAnchor, null);
+                    }
+
+                    // 🌟 2. AŞAMA: Segment'in içinde pürüzsüzce içeri süzülerek yüzeye kilitlenme
+                    transform.DOLocalMove(localFlushPos, sinkDuration).SetEase(sinkEase);
+                    transform.DOScale(localFlushScale, sinkDuration).SetEase(sinkEase).OnComplete(() =>
+                    {
+                        transform.localPosition = localFlushPos;
+                        transform.localRotation = localRot;
+                        transform.localScale = localFlushScale;
+
+                        OnShapeEntered?.Invoke();
+                    });
+                }
             });
+        }
+
+        private void HideHoleCutout(Transform segmentRoot)
+        {
+            if (segmentRoot == null) return;
+
+            Transform hole = segmentRoot.Find("Hole");
+            if (hole != null) hole.gameObject.SetActive(false);
+
+            Transform holeCap = segmentRoot.Find("Hole-Cap");
+            if (holeCap != null) holeCap.gameObject.SetActive(false);
+
+            for (int i = 0; i < segmentRoot.childCount; i++)
+            {
+                Transform child = segmentRoot.GetChild(i);
+                string cName = child.name.ToLower();
+                if (cName == "hole" || cName == "hole-cap" || cName.StartsWith("hole"))
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
         }
 
         private void StartFlightTrail()

@@ -20,10 +20,11 @@ namespace FitTheShape
         [Tooltip("Played for success / completion polish.")]
         [SerializeField] private AudioClip successSparkleClip;
 
-        [Header("Audio Source & Pitch Settings")]
-        [SerializeField] private AudioSource sfxSource;
-        [SerializeField] private float minPitch = 0.95f;
-        [SerializeField] private float maxPitch = 1.05f;
+        [Header("Dedicated Audio Sources")]
+        [SerializeField] private AudioSource launchSource;
+        [SerializeField] private AudioSource snapSource;
+        [SerializeField] private AudioSource wobbleSource;
+        [SerializeField] private AudioSource sparkleSource;
 
         [Header("Volume Controls")]
         [Range(0f, 1f)] [SerializeField] private float launchVolume = 0.85f;
@@ -31,11 +32,14 @@ namespace FitTheShape
         [Range(0f, 1f)] [SerializeField] private float wobbleVolume = 0.75f;
         [Range(0f, 1f)] [SerializeField] private float sparkleVolume = 0.90f;
 
+        [Header("Pitch Variation Settings")]
+        [SerializeField] private float minPitch = 0.96f;
+        [SerializeField] private float maxPitch = 1.04f;
+
         public AudioClip WhooshLaunchClip { get => whooshLaunchClip; set => whooshLaunchClip = value; }
         public AudioClip SnapImpactClip { get => snapImpactClip; set => snapImpactClip = value; }
         public AudioClip ResonanceWobbleClip { get => resonanceWobbleClip; set => resonanceWobbleClip = value; }
         public AudioClip SuccessSparkleClip { get => successSparkleClip; set => successSparkleClip = value; }
-        public AudioSource SfxSource { get => sfxSource; set => sfxSource = value; }
 
         private void Awake()
         {
@@ -49,61 +53,70 @@ namespace FitTheShape
                 return;
             }
 
-            if (sfxSource == null)
+            InitializeSources();
+        }
+
+        private void InitializeSources()
+        {
+            if (launchSource == null) launchSource = CreateDedicatedSource("LaunchSource");
+            if (snapSource == null) snapSource = CreateDedicatedSource("SnapSource");
+            if (wobbleSource == null) wobbleSource = CreateDedicatedSource("WobbleSource");
+            if (sparkleSource == null) sparkleSource = CreateDedicatedSource("SparkleSource");
+        }
+
+        private AudioSource CreateDedicatedSource(string name)
+        {
+            Transform existing = transform.Find(name);
+            if (existing != null && existing.TryGetComponent<AudioSource>(out var existingSrc))
             {
-                sfxSource = GetComponent<AudioSource>();
-                if (sfxSource == null)
-                {
-                    sfxSource = gameObject.AddComponent<AudioSource>();
-                }
+                return existingSrc;
             }
 
-            sfxSource.playOnAwake = false;
+            GameObject go = new GameObject(name);
+            go.transform.SetParent(transform, false);
+            AudioSource src = go.AddComponent<AudioSource>();
+            src.playOnAwake = false;
+            src.spatialBlend = 0f; // Pure 2D crisp stereo sound
+            return src;
         }
 
         public void PlayLaunchSound()
         {
-            PlayClipWithPitch(whooshLaunchClip, launchVolume, true);
+            if (whooshLaunchClip == null) return;
+            if (launchSource == null) InitializeSources();
+
+            launchSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
+            launchSource.PlayOneShot(whooshLaunchClip, launchVolume);
         }
 
         public void PlaySnapImpactSound()
         {
-            PlayClipWithPitch(snapImpactClip, impactVolume, true);
+            if (snapImpactClip == null) return;
+            if (snapSource == null) InitializeSources();
+
+            snapSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+            snapSource.PlayOneShot(snapImpactClip, impactVolume);
         }
 
         public void PlayWobbleSound()
         {
-            PlayClipWithPitch(resonanceWobbleClip, wobbleVolume, true);
+            if (resonanceWobbleClip == null) return;
+            if (wobbleSource == null) InitializeSources();
+
+            wobbleSource.pitch = UnityEngine.Random.Range(0.96f, 1.04f);
+            wobbleSource.PlayOneShot(resonanceWobbleClip, wobbleVolume);
         }
 
+        /// <summary>
+        /// Plays the magical success sparkle sound on an isolated channel strictly locked at 1.0 pitch.
+        /// </summary>
         public void PlaySuccessSound()
         {
-            PlayClipWithPitch(successSparkleClip, sparkleVolume, false);
-        }
+            if (successSparkleClip == null) return;
+            if (sparkleSource == null) InitializeSources();
 
-        private void PlayClipWithPitch(AudioClip clip, float volume, bool randomizePitch)
-        {
-            if (clip == null) return;
-
-            if (sfxSource == null)
-            {
-                sfxSource = GetComponent<AudioSource>();
-                if (sfxSource == null)
-                {
-                    sfxSource = gameObject.AddComponent<AudioSource>();
-                }
-            }
-
-            if (randomizePitch)
-            {
-                sfxSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
-            }
-            else
-            {
-                sfxSource.pitch = 1.0f;
-            }
-
-            sfxSource.PlayOneShot(clip, volume);
+            sparkleSource.pitch = 1.0f; // Strictly locked, zero drift
+            sparkleSource.PlayOneShot(successSparkleClip, sparkleVolume);
         }
     }
 }

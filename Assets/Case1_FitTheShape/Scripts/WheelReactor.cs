@@ -19,7 +19,7 @@ namespace FitTheShape
 
         [Header("Hybrid Shockwave: Center Inward + Ripple Outward")]
         [Tooltip("Inward depression depth at the epicenter hit block (Heavy physical thud).")]
-        [SerializeField] private float maxIndentDepth = 0.55f;
+        [SerializeField] private float maxIndentDepth = 0.08f;
 
         [Tooltip("Maximum outward pop height for immediate surrounding neighbor blocks.")]
         [SerializeField] private float maxOutwardPop = 0.35f;
