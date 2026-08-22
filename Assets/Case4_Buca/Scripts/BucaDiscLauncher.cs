@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 using DG.Tweening;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -17,16 +18,18 @@ namespace Buca
 
         [Header("Slingshot & Aim Settings")]
         [Tooltip("Maximum drag distance in world units to reach 100% power.")]
-        [SerializeField] private float maxDragDistance = 3.5f;
+        [SerializeField] private float maxDragDistance = 3.2f;
 
         [Tooltip("Distance from touch center below which the shot is CANCELLED.")]
         [SerializeField] private float cancelThresholdDistance = 0.45f;
 
-        [Tooltip("Maximum launch impulse force at 100% pull.")]
-        [SerializeField] private float maxLaunchForce = 34.0f;
+        [Tooltip("Maximum launch speed at 100% pull.")]
+        [FormerlySerializedAs("maxLaunchSpeed")]
+        [SerializeField] private float maxLaunchForce = 48.0f;
 
-        [Tooltip("Minimum launch impulse force.")]
-        [SerializeField] private float minLaunchForce = 8.0f;
+        [Tooltip("Minimum launch speed.")]
+        [FormerlySerializedAs("minLaunchSpeed")]
+        [SerializeField] private float minLaunchForce = 12.0f;
 
         [Tooltip("Base forward direction along the launch track.")]
         [SerializeField] private Vector3 baseForwardDir = new Vector3(0f, 0f, 1f);
@@ -156,7 +159,7 @@ namespace Buca
             discRb = discTransform.GetComponent<Rigidbody>();
             if (discRb == null) discRb = discTransform.gameObject.AddComponent<Rigidbody>();
 
-            discRb.mass = 1.0f;
+            discRb.mass = 1.5f;
             discRb.linearDamping = linearDamping;
             discRb.angularDamping = 0.1f;
             discRb.useGravity = false;
@@ -522,9 +525,14 @@ namespace Buca
             discRb.linearVelocity = Vector3.zero;
             discRb.angularVelocity = Vector3.zero;
 
-            Vector3 impulse = currentLaunchDir.normalized * launchForce;
+            Vector3 impulse = currentLaunchDir.normalized * (launchForce * (discRb != null ? discRb.mass : 1.0f));
             discRb.AddForce(impulse, ForceMode.Impulse);
-            preCollisionVelocity = impulse;
+            preCollisionVelocity = currentLaunchDir.normalized * launchForce;
+
+            if (BucaAudioManager.Instance != null)
+            {
+                BucaAudioManager.Instance.PlayLaunchSound(currentPowerRatio);
+            }
         }
 
         private void HideVisualizers()
@@ -567,18 +575,30 @@ namespace Buca
         /// </summary>
         public void OnDiscCollisionEnter(Collision collision)
         {
-            ProcessWallImpactSpin(collision);
-
-            // Block hit
+            // Block hit: Solid penetration with heavy momentum transfer
             if (collision.gameObject.TryGetComponent<BucaBlock>(out var block))
             {
                 Vector3 hitPoint = collision.contacts.Length > 0 ? collision.contacts[0].point : collision.transform.position;
-                block.HitByDisc(hitPoint, discRb != null ? discRb.linearVelocity : currentLaunchDir * maxLaunchForce, 1.2f);
+                Vector3 incomingVel = preCollisionVelocity.sqrMagnitude > 0.5f ? preCollisionVelocity : (discRb != null ? discRb.linearVelocity : currentLaunchDir * maxLaunchForce);
+
+                // Disc carries heavy momentum through lighter cubes
+                if (discRb != null)
+                {
+                    discRb.linearVelocity *= 0.85f;
+                    maxAllowedSpeed *= 0.85f;
+                }
+
+                block.HitByDisc(hitPoint, incomingVel, 1.25f);
             }
             // Obstacle hit
             else if (collision.gameObject.TryGetComponent<BucaObstacle>(out var obstacle))
             {
+                ProcessWallImpactSpin(collision);
                 obstacle.SendMessage("TriggerHitFeedback", SendMessageOptions.DontRequireReceiver);
+            }
+            else
+            {
+                ProcessWallImpactSpin(collision);
             }
         }
 
@@ -636,6 +656,11 @@ namespace Buca
             // Add single-hit spin kick, naturally capped
             currentSpinSpeedY += sideSign * spinImpact;
             currentSpinSpeedY = Mathf.Clamp(currentSpinSpeedY, -maxSpinSpeedCap, maxSpinSpeedCap);
+
+            if (BucaAudioManager.Instance != null)
+            {
+                BucaAudioManager.Instance.PlayWallBounceSound(speedRatio);
+            }
         }
     }
 

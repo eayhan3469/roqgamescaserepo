@@ -272,11 +272,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &215058580
 GameObject:
   m_ObjectHideFlags: 0
@@ -704,11 +706,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -999,11 +1003,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1284,11 +1290,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &635876060
 GameObject:
   m_ObjectHideFlags: 0
@@ -1442,11 +1450,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &637068267
 GameObject:
   m_ObjectHideFlags: 0
@@ -1600,11 +1610,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &802223021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1758,11 +1770,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &828740050
 GameObject:
   m_ObjectHideFlags: 0
@@ -1916,11 +1930,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &852308176
 GameObject:
   m_ObjectHideFlags: 0
@@ -2074,11 +2090,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &939309035
 GameObject:
   m_ObjectHideFlags: 0
@@ -2232,11 +2250,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1031677216
 GameObject:
   m_ObjectHideFlags: 0
@@ -2390,11 +2410,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1252873352
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,11 +2570,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1616681613
 GameObject:
   m_ObjectHideFlags: 0
@@ -2706,11 +2730,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1655283559
 GameObject:
   m_ObjectHideFlags: 0
@@ -2864,11 +2890,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1712404142
 GameObject:
   m_ObjectHideFlags: 0
@@ -3022,11 +3050,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1900000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -3194,8 +3224,8 @@ MonoBehaviour:
   discTransform: {fileID: 0}
   maxDragDistance: 3.2
   cancelThresholdDistance: 0.45
-  maxLaunchSpeed: 38
-  minLaunchSpeed: 8
+  maxLaunchForce: 48
+  minLaunchForce: 12
   baseForwardDir: {x: 0, y: 0, z: 1}
   maxAimAngle: 45
   aimLine: {fileID: 1900000003}
@@ -3219,6 +3249,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1900000012}
   - component: {fileID: 1900000013}
+  - component: {fileID: 1900000015}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3258,7 +3289,7 @@ MonoBehaviour:
   totalBlocks: 0
   knockedBlocks: 0
   isLevelCleared: 0
---- !u!114 &1900000014
+--- !u!114 &1900000015
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3267,16 +3298,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 1900000011}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5b42050a41761e4b85c18e11a3c7496, type: 3}
+  m_Script: {fileID: 11500000, guid: a7b42050a41761e4b85c18e11a3c7498, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlockManager
-  explosionForce: 32
-  explosionRadius: 4.5
-  upwardModifier: 1.8
-  velocityImpulseMultiplier: 1.4
-  cameraShakeDuration: 0.25
-  cameraShakeStrength: 0.35
-  cameraShakeVibrato: 22
+  m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaAudioManager
+  blockImpactClips: []
+  blockClatterClips: []
+  launchClip: {fileID: 0}
+  wallBounceClip: {fileID: 0}
+  victoryClip: {fileID: 0}
+  sfxSource: {fileID: 0}
+  clatterSource: {fileID: 0}
+  minPitch: 0.92
+  maxPitch: 1.12
+  masterVolume: 1
+  blockImpactVolume: 1
+  blockClatterVolume: 0.65
+  launchVolume: 0.8
+  wallBounceVolume: 0.6
+  victoryVolume: 1
+  isMuted: 0
 --- !u!1 &2070397713
 GameObject:
   m_ObjectHideFlags: 0
@@ -3430,11 +3470,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1b42050a41761e4b85c18e11a3c7492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Buca.BucaBlock
-  mass: 1.5
-  minImpactVelocity: 2
-  scatterImpulse: 18
-  upwardModifier: 1.2
-  hitFlashColor: {r: 1, g: 0.9, b: 0.4, a: 1}
+  mass: 0.85
+  minImpactVelocity: 1.2
+  scatterImpulse: 14
+  upwardModifier: 0.1
+  forwardMomentumRatio: 0.75
+  hitFlashColor: {r: 1, g: 0.95, b: 0.4, a: 1}
+  punchScaleAmount: 0.18
 --- !u!1 &1500000001
 GameObject:
   m_ObjectHideFlags: 0

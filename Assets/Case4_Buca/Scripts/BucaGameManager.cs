@@ -101,6 +101,11 @@ namespace Buca
             {
                 isLevelCleared = true;
                 Debug.Log($"[BucaGameManager] LEVEL CLEARED! Knocked {knockedBlocks}/{totalBlocks} blocks!");
+
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.PlayVictorySound();
+                }
             }
         }
 
