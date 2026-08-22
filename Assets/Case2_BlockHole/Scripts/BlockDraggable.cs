@@ -54,7 +54,7 @@ namespace BlockHole
         [SerializeField] private float holeDropDuration = 0.24f;
 
         [Tooltip("Y position down the hole shaft where impact occurs.")]
-        [SerializeField] private float dropDepthY = -0.75f;
+        [SerializeField] private float dropDepthY = -0.45f;
 
         [Tooltip("Easing curve for falling down the hole.")]
         [SerializeField] private Ease holeDropEase = Ease.InQuad;
@@ -64,11 +64,11 @@ namespace BlockHole
         [SerializeField] private BlockFractureEffect fractureEffect;
 
         [Header("Juice & Visual Feedback")]
-        [Tooltip("Slight height elevation during drag.")]
-        [SerializeField] private float dragLiftHeight = 0.08f;
+        [Tooltip("Height elevation during drag.")]
+        [SerializeField] private float dragLiftHeight = 0.40f;
 
         [Tooltip("Scale pulse multiplier when touched.")]
-        [SerializeField] private float touchScaleMultiplier = 1.03f;
+        [SerializeField] private float touchScaleMultiplier = 1.05f;
 
         [Header("Events")]
         [SerializeField] private UnityEvent onDragStarted;

@@ -2036,12 +2036,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: c2b10000c19c1ead00000000000000a3, type: 2}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.5118402
+      objectReference: {fileID: 0}
+    - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.03037208
+      value: 0.0295
       objectReference: {fileID: 0}
     - target: {fileID: 4918666422125016665, guid: 70f47e82744094116b5bc3cefd113483, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2147,7 +2151,7 @@ MonoBehaviour:
   isFilled: 0
   isHighlighted: 0
   isActiveVisual: {fileID: 246839759}
-  holeCloseInitialDelay: 0.48
+  holeCloseInitialDelay: 0.88
   tileStaggerInterval: 0.085
   onBlockEnteredHole:
     m_PersistentCalls:
@@ -3689,7 +3693,7 @@ MonoBehaviour:
   isFilled: 0
   isHighlighted: 0
   isActiveVisual: {fileID: 462414044}
-  holeCloseInitialDelay: 0.48
+  holeCloseInitialDelay: 0.88
   tileStaggerInterval: 0.085
   onBlockEnteredHole:
     m_PersistentCalls:
@@ -9342,10 +9346,10 @@ MonoBehaviour:
   swayResetDuration: 0.2
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
-  dropDepthY: -1.2
+  dropDepthY: -0.45
   holeDropEase: 5
   fractureEffect: {fileID: 1296097192}
-  dragLiftHeight: 0.08
+  dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
     m_PersistentCalls:
@@ -9393,11 +9397,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
   fracturedPrefab: {fileID: 6802182622958221233, guid: baa0817e4c3bc4fe195352b4a24922fb, type: 3}
-  minBurstDistance: 0.22
-  maxBurstDistance: 0.48
-  burstDuration: 0.18
-  shrinkDelay: 0.08
-  shrinkDuration: 0.2
+  largeChunkSize: 0.46
+  mediumChunkSize: 0.26
+  smallChipSize: 0.11
+  minPopHeight: 0.55
+  maxPopHeight: 1.1
+  shapeOverflowMultiplier: 1.35
+  popUpDuration: 0.22
+  moundHoverDuration: 0.08
+  fallDownDuration: 0.32
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
@@ -11665,10 +11673,10 @@ MonoBehaviour:
   swayResetDuration: 0.2
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
-  dropDepthY: -1.2
+  dropDepthY: -0.45
   holeDropEase: 5
   fractureEffect: {fileID: 1613842030}
-  dragLiftHeight: 0.08
+  dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
     m_PersistentCalls:
@@ -11716,11 +11724,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
   fracturedPrefab: {fileID: 8852618802286154136, guid: 6450c5b8876c84d43978727b161952ca, type: 3}
-  minBurstDistance: 0.22
-  maxBurstDistance: 0.48
-  burstDuration: 0.18
-  shrinkDelay: 0.08
-  shrinkDuration: 0.2
+  largeChunkSize: 0.46
+  mediumChunkSize: 0.26
+  smallChipSize: 0.11
+  minPopHeight: 0.55
+  maxPopHeight: 1.1
+  shapeOverflowMultiplier: 1.35
+  popUpDuration: 0.22
+  moundHoverDuration: 0.08
+  fallDownDuration: 0.32
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
@@ -14020,10 +14032,10 @@ MonoBehaviour:
   swayResetDuration: 0.2
   autoCaptureDistance: 0.45
   holeDropDuration: 0.3
-  dropDepthY: -1.2
+  dropDepthY: -0.45
   holeDropEase: 5
   fractureEffect: {fileID: 1825520758}
-  dragLiftHeight: 0.08
+  dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
     m_PersistentCalls:
@@ -14071,11 +14083,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
   fracturedPrefab: {fileID: 8858990628142384719, guid: 5fcd841e985139d46a748e9525d0a527, type: 3}
-  minBurstDistance: 0.22
-  maxBurstDistance: 0.48
-  burstDuration: 0.18
-  shrinkDelay: 0.08
-  shrinkDuration: 0.2
+  largeChunkSize: 0.46
+  mediumChunkSize: 0.26
+  smallChipSize: 0.11
+  minPopHeight: 0.55
+  maxPopHeight: 1.1
+  shapeOverflowMultiplier: 1.35
+  popUpDuration: 0.22
+  moundHoverDuration: 0.08
+  fallDownDuration: 0.32
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
@@ -14811,7 +14827,7 @@ MonoBehaviour:
   isFilled: 0
   isHighlighted: 0
   isActiveVisual: {fileID: 1911025619}
-  holeCloseInitialDelay: 0.48
+  holeCloseInitialDelay: 0.88
   tileStaggerInterval: 0.085
   onBlockEnteredHole:
     m_PersistentCalls:

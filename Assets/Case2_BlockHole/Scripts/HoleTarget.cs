@@ -40,7 +40,7 @@ namespace BlockHole
 
         [Header("Staggered Hole Close Timings")]
         [Tooltip("Delay after block impact before floor tiles start rising (waits for debris to finish).")]
-        [SerializeField] private float holeCloseInitialDelay = 0.48f;
+        [SerializeField] private float holeCloseInitialDelay = 0.88f;
 
         [Tooltip("Stagger interval between each rising floor tile (tık-tık-tık effect).")]
         [SerializeField] private float tileStaggerInterval = 0.085f;

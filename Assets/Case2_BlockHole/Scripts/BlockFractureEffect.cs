@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -9,25 +10,41 @@ namespace BlockHole
         [Header("Fracture Configuration")]
         [SerializeField] private GameObject fracturedPrefab;
 
-        [Tooltip("Burst outward distance for pieces from the shape center.")]
-        [SerializeField] private float minBurstDistance = 0.22f;
-        [SerializeField] private float maxBurstDistance = 0.45f;
+        [Header("Varied Chunk Sizes (İrili Ufaklı Parça Boyutları)")]
+        [SerializeField] private float largeChunkSize = 0.55f;
+        [SerializeField] private float mediumChunkSize = 0.36f;
+        [SerializeField] private float smallChipSize = 0.20f;
 
-        [Tooltip("Duration of outward crack explosion.")]
-        [SerializeField] private float burstDuration = 0.18f;
+        [Header("Tactile Pop & Hop (Videodaki Gibi Doğal Zıplama)")]
+        [Tooltip("Upward pop height above the hole mouth.")]
+        [SerializeField] private float minPopHeight = 0.35f;
+        [SerializeField] private float maxPopHeight = 0.65f;
 
-        [Tooltip("Delay before chunks start shrinking away.")]
-        [SerializeField] private float shrinkDelay = 0.08f;
+        [Tooltip("Duration of the upward pop.")]
+        [SerializeField] private float popDuration = 0.18f;
 
-        [Tooltip("Duration of chunk shrink animation.")]
-        [SerializeField] private float shrinkDuration = 0.20f;
+        [Tooltip("Duration of the fall back down into the hole.")]
+        [SerializeField] private float fallDuration = 0.26f;
 
-        [Header("Juice & Shake")]
-        [SerializeField] private float cameraShakeDuration = 0.18f;
-        [SerializeField] private float cameraShakeStrength = 0.15f;
+        [Header("Outside Floor Stray Pieces (Dışarıda Kalan Parçalar)")]
+        [Tooltip("Fraction of pieces that bounce onto the outside floor.")]
+        [Range(0.10f, 0.35f)]
+        [SerializeField] private float outsidePieceRatio = 0.20f;
+
+        [Tooltip("Distance outside the hole rim for stray floor pieces.")]
+        [SerializeField] private float outsideScatterDist = 0.55f;
+
+        [Tooltip("Time stray pieces sit on the floor before fading away.")]
+        [SerializeField] private float floorStayDuration = 0.35f;
+
+        [Tooltip("Duration of the smooth fade/dissolve on the floor.")]
+        [SerializeField] private float floorFadeDuration = 0.28f;
+
+        [Header("Juice & Camera Micro-Shake")]
+        [SerializeField] private float cameraShakeDuration = 0.14f;
+        [SerializeField] private float cameraShakeStrength = 0.12f;
         [SerializeField] private int cameraShakeVibrato = 16;
 
-        private static GameObject dustSystemPrefab;
         private static Material smoothDustMaterial;
 
         public GameObject FracturedPrefab { get => fracturedPrefab; set => fracturedPrefab = value; }
@@ -36,7 +53,7 @@ namespace BlockHole
         {
             if (fracturedPrefab == null) return;
 
-            // 1. Seamless 1:1 instantiation at the exact position and rotation of the intact block
+            // 1. Instantiate the fractured model at the shallow bottom of the hole cup
             GameObject fracturedInstance = Instantiate(fracturedPrefab, spawnPos, spawnRot);
             fracturedInstance.SetActive(true);
 
@@ -62,7 +79,7 @@ namespace BlockHole
                 }
             }
 
-            // Disable physics for deterministic DOTween crack burst
+            // Disable physics for deterministic, clean DOTween animations
             var rbs = fracturedInstance.GetComponentsInChildren<Rigidbody>(true);
             foreach (var rb in rbs)
             {
@@ -76,115 +93,162 @@ namespace BlockHole
                 col.enabled = false;
             }
 
-            // 3. Compute Center of Mass of the fractured pieces to burst outward from the shape's true center
-            Vector3 centerOfMass = Vector3.zero;
             int childCount = fracturedInstance.transform.childCount;
             if (childCount == 0) return;
 
+            // 3. Collect child transforms and record initial local positions
+            List<Transform> allChildren = new List<Transform>(childCount);
+            List<Vector3> initialLocalPositions = new List<Vector3>(childCount);
             foreach (Transform child in fracturedInstance.transform)
             {
-                centerOfMass += child.localPosition;
+                allChildren.Add(child);
+                initialLocalPositions.Add(child.localPosition);
             }
-            centerOfMass /= childCount;
 
-            // 4. Animate pieces cracking open cleanly with subtle, tight burst
-            foreach (Transform child in fracturedInstance.transform)
+            // 4. Select a few small stray pieces that bounce outside onto the adjacent floor tiles
+            int strayCount = Mathf.Clamp(Mathf.RoundToInt(childCount * outsidePieceRatio), 2, 4);
+            HashSet<int> strayIndices = new HashSet<int>();
+            while (strayIndices.Count < strayCount && strayIndices.Count < childCount)
             {
+                strayIndices.Add(UnityEngine.Random.Range(0, childCount));
+            }
+
+            // 5. Animate pieces: Natural pop/hop and fall back down, stray pieces settle on floor and fade away
+            for (int i = 0; i < childCount; i++)
+            {
+                Transform child = allChildren[i];
+                Vector3 initialLocalPos = initialLocalPositions[i];
                 child.gameObject.SetActive(true);
-                child.localScale = Vector3.one;
 
-                Vector3 fromCenter = child.localPosition - centerOfMass;
-                Vector3 outwardDir = fromCenter.sqrMagnitude > 0.001f ? fromCenter.normalized : UnityEngine.Random.insideUnitSphere.normalized;
-                
-                // Subtle upward bias and clean outward crack
-                outwardDir = (outwardDir * 0.75f + Vector3.up * 0.60f + UnityEngine.Random.insideUnitSphere * 0.18f).normalized;
+                // Varied Size Distribution (İrili Ufaklı Parçalar)
+                MeshFilter mf = child.GetComponent<MeshFilter>();
+                Vector3 unscaledBounds = mf != null && mf.sharedMesh != null ? mf.sharedMesh.bounds.size : Vector3.one;
+                float maxDim = Mathf.Max(unscaledBounds.x, unscaledBounds.y, unscaledBounds.z);
+                if (maxDim < 0.05f) maxDim = 1.0f;
 
-                float burstDist = UnityEngine.Random.Range(minBurstDistance, maxBurstDistance);
-                Vector3 burstTargetPos = child.localPosition + outwardDir * burstDist;
-                Vector3 fallTargetPos = burstTargetPos + Vector3.down * UnityEngine.Random.Range(0.20f, 0.40f);
+                float targetSize;
+                int sizeMod = i % 4;
+                if (sizeMod == 0) targetSize = UnityEngine.Random.Range(largeChunkSize * 0.90f, largeChunkSize * 1.15f);
+                else if (sizeMod == 3) targetSize = UnityEngine.Random.Range(smallChipSize * 0.85f, smallChipSize * 1.20f);
+                else targetSize = UnityEngine.Random.Range(mediumChunkSize * 0.85f, mediumChunkSize * 1.15f);
+
+                float scaleFactor = targetSize / maxDim;
+                child.localScale = Vector3.one * scaleFactor;
 
                 Sequence pieceSeq = DOTween.Sequence();
                 pieceSeq.SetTarget(child);
 
-                // Phase 1: Cracks burst outward cleanly
-                pieceSeq.Append(child.DOLocalMove(burstTargetPos, burstDuration).SetEase(Ease.OutQuad));
-                pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 90f, burstDuration, RotateMode.FastBeyond360));
+                float popHeight = UnityEngine.Random.Range(minPopHeight, maxPopHeight);
+                float curPopDuration = popDuration + UnityEngine.Random.Range(-0.02f, 0.02f);
 
-                // Phase 2: Sinks down into the shaft
-                pieceSeq.Append(child.DOLocalMove(fallTargetPos, 0.16f).SetEase(Ease.InQuad));
-                pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 120f, 0.16f, RotateMode.FastBeyond360));
+                if (strayIndices.Contains(i))
+                {
+                    // STRAY FLOOR PIECE: Pops up, lands on the adjacent floor tile, stays briefly, and smoothly fades away
+                    Vector2 randDir = UnityEngine.Random.insideUnitCircle.normalized;
+                    Vector3 floorOffset = new Vector3(randDir.x, 0f, randDir.y) * outsideScatterDist;
+                    Vector3 apexPos = initialLocalPos + floorOffset * 0.5f + Vector3.up * popHeight;
+                    Vector3 floorLandingPos = initialLocalPos + floorOffset;
+                    floorLandingPos.y = 0.05f; // Settled on floor surface
 
-                // Phase 3: Shrinks away smoothly
-                pieceSeq.Insert(shrinkDelay, child.DOScale(Vector3.zero, shrinkDuration).SetEase(Ease.InBack));
+                    // Phase 1: Pop up
+                    pieceSeq.Append(child.DOLocalMove(apexPos, curPopDuration).SetEase(Ease.OutQuad));
+                    pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 90f, curPopDuration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad));
+
+                    // Phase 2: Land on floor
+                    pieceSeq.Append(child.DOLocalMove(floorLandingPos, curPopDuration).SetEase(Ease.InQuad));
+                    pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 60f, curPopDuration, RotateMode.FastBeyond360).SetEase(Ease.InQuad));
+
+                    // Phase 3: Sit on floor
+                    pieceSeq.AppendInterval(floorStayDuration);
+
+                    // Phase 4: Smoothly shrink & fade away into the floor
+                    pieceSeq.Append(child.DOScale(Vector3.zero, floorFadeDuration).SetEase(Ease.InQuad));
+                    pieceSeq.Join(child.DOLocalMoveY(0f, floorFadeDuration).SetEase(Ease.InQuad));
+                }
+                else
+                {
+                    // IN-HOLE PIECE: Pops up slightly in place, and falls straight back down into the hole shaft
+                    Vector3 apexPos = initialLocalPos + Vector3.up * popHeight + UnityEngine.Random.insideUnitSphere * 0.04f;
+                    Vector3 fallTargetPos = initialLocalPos + Vector3.down * 0.85f;
+                    float curFallDuration = fallDuration + UnityEngine.Random.Range(-0.02f, 0.03f);
+
+                    // Phase 1: Natural pop up
+                    pieceSeq.Append(child.DOLocalMove(apexPos, curPopDuration).SetEase(Ease.OutQuad));
+                    pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 60f, curPopDuration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad));
+
+                    // Phase 2: Fall back down into the hole
+                    pieceSeq.Append(child.DOLocalMove(fallTargetPos, curFallDuration).SetEase(Ease.InQuad));
+                    pieceSeq.Join(child.DOLocalRotate(UnityEngine.Random.insideUnitSphere * 90f, curFallDuration, RotateMode.FastBeyond360).SetEase(Ease.InQuad));
+                    pieceSeq.Join(child.DOScale(Vector3.zero, curFallDuration * 0.85f).SetEase(Ease.InQuad));
+                }
             }
 
-            // 5. Spawn small, subtle, smooth dust puffs right from the breaking chunks
-            SpawnSmoothChunkDust(fracturedInstance.transform, blockColor);
+            // 6. Spawn subtle soft dust puffs at impact
+            SpawnSubtleDust(spawnPos, blockColor);
 
-            // 6. Subtle camera micro-shake
+            // 7. Subtle camera micro-shake
             if (Camera.main != null)
             {
                 Camera.main.DOComplete();
                 Camera.main.DOShakePosition(cameraShakeDuration, cameraShakeStrength, cameraShakeVibrato);
             }
 
-            Destroy(fracturedInstance, burstDuration + shrinkDuration + 0.15f);
+            // 8. Cleanup after stray floor pieces have finished fading
+            float totalLifetime = (popDuration * 2) + floorStayDuration + floorFadeDuration + 0.15f;
+            Destroy(fracturedInstance, totalLifetime);
         }
 
         /// <summary>
-        /// Kırılan parçaların tam konumlarından ufak ufak çıkan pürüzsüz ve yumuşak toz pufcukları.
+        /// Kırılma anında bloğun renginde çıkan tatlı, hafif toz pufcukları.
         /// </summary>
-        private void SpawnSmoothChunkDust(Transform fracturedRoot, Color blockColor)
+        private void SpawnSubtleDust(Vector3 holeCenter, Color blockColor)
         {
-            if (fracturedRoot == null) return;
+            GameObject vfxGo = new GameObject("VFX_SubtleDust");
+            vfxGo.transform.position = holeCenter + Vector3.up * 0.10f;
 
-            GameObject dustGo = new GameObject("VFX_SmoothChunkDust");
-            dustGo.transform.position = fracturedRoot.position;
-
-            ParticleSystem ps = dustGo.AddComponent<ParticleSystem>();
+            ParticleSystem ps = vfxGo.AddComponent<ParticleSystem>();
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
             var main = ps.main;
             main.loop = false;
-            main.duration = 0.50f;
-            main.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.55f);
-            main.startSpeed = new ParticleSystem.MinMaxCurve(0.15f, 0.40f);
-            main.startSize = new ParticleSystem.MinMaxCurve(0.14f, 0.26f);
+            main.duration = 0.40f;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.25f, 0.40f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 1.6f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.10f, 0.20f);
             main.simulationSpace = ParticleSystemSimulationSpace.World;
             main.playOnAwake = false;
-            main.gravityModifier = -0.05f; // Gentle upward dust drift
+            main.gravityModifier = -0.05f;
 
             var emission = ps.emission;
             emission.enabled = false;
 
             var shape = ps.shape;
-            shape.enabled = false;
+            shape.shapeType = ParticleSystemShapeType.Box;
+            shape.scale = new Vector3(0.8f, 0.1f, 0.8f);
 
-            // Soft alpha fade curve for smooth dust
             var colorOverLifetime = ps.colorOverLifetime;
             colorOverLifetime.enabled = true;
             Gradient grad = new Gradient();
             grad.SetKeys(
                 new GradientColorKey[] {
                     new GradientColorKey(Color.white, 0.0f),
-                    new GradientColorKey(Color.Lerp(blockColor, Color.white, 0.4f), 0.35f),
-                    new GradientColorKey(blockColor, 1.0f)
+                    new GradientColorKey(blockColor, 0.40f),
+                    new GradientColorKey(Color.Lerp(blockColor, Color.black, 0.20f), 1.0f)
                 },
                 new GradientAlphaKey[] {
                     new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(0.55f, 0.20f),
+                    new GradientAlphaKey(0.65f, 0.25f),
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );
             colorOverLifetime.color = grad;
 
-            // Size expanding smoothly like soft dust puff
             var sizeOverLifetime = ps.sizeOverLifetime;
             sizeOverLifetime.enabled = true;
             AnimationCurve sizeCurve = new AnimationCurve();
-            sizeCurve.AddKey(0.0f, 0.35f);
-            sizeCurve.AddKey(0.40f, 1.15f);
-            sizeCurve.AddKey(1.0f, 1.45f);
+            sizeCurve.AddKey(0.0f, 0.6f);
+            sizeCurve.AddKey(0.50f, 1.1f);
+            sizeCurve.AddKey(1.0f, 1.3f);
             sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1.0f, sizeCurve);
 
             if (smoothDustMaterial == null)
@@ -203,30 +267,13 @@ namespace BlockHole
                 }
             }
 
-            var psRenderer = dustGo.GetComponent<ParticleSystemRenderer>();
+            var psRenderer = vfxGo.GetComponent<ParticleSystemRenderer>();
             psRenderer.renderMode = ParticleSystemRenderMode.Billboard;
             psRenderer.sharedMaterial = smoothDustMaterial;
 
-            // Emit 1-2 small soft puffs from each chunk's position
-            foreach (Transform child in fracturedRoot)
-            {
-                if (child == null) continue;
-                Vector3 chunkPos = child.position + UnityEngine.Random.insideUnitSphere * 0.04f;
-                Vector3 driftVel = (UnityEngine.Random.insideUnitSphere * 0.18f) + (Vector3.up * UnityEngine.Random.Range(0.20f, 0.45f));
+            ps.Emit(12);
 
-                ParticleSystem.EmitParams emitParams = new ParticleSystem.EmitParams
-                {
-                    position = chunkPos,
-                    velocity = driftVel,
-                    startColor = Color.Lerp(blockColor, Color.white, 0.35f),
-                    startSize = UnityEngine.Random.Range(0.14f, 0.26f),
-                    startLifetime = UnityEngine.Random.Range(0.35f, 0.55f)
-                };
-
-                ps.Emit(emitParams, 1);
-            }
-
-            Destroy(dustGo, 0.8f);
+            Destroy(vfxGo, 0.6f);
         }
     }
 }
