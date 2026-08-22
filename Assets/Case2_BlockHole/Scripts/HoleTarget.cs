@@ -99,6 +99,17 @@ namespace BlockHole
 
             // Cache child particles (including VacumTile)
             allChildParticles = GetComponentsInChildren<ParticleSystem>(true);
+            if (allChildParticles != null)
+            {
+                foreach (var ps in allChildParticles)
+                {
+                    if (ps != null && ps.gameObject.name != "EdgeGlowParticles")
+                    {
+                        ps.gameObject.SetActive(true);
+                        ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    }
+                }
+            }
 
             // Setup Crisp Neon Edge Glow
             if (edgeGlow == null)
@@ -165,7 +176,7 @@ namespace BlockHole
             {
                 foreach (var ps in allChildParticles)
                 {
-                    if (ps != null && ps != edgeGlow.GetComponent<ParticleSystem>())
+                    if (ps != null && ps.gameObject.name != "EdgeGlowParticles")
                     {
                         if (active)
                         {
