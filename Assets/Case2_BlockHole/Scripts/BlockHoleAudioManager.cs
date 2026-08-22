@@ -225,7 +225,29 @@ namespace BlockHole
 
         public void PlayVictorySound()
         {
-            // Disabled for now per user request
+            if (victoryClip == null) return;
+            PlayClipWithPitch(victoryClip, 1.0f, false);
+        }
+
+        public void PlayTilePopSound(float pitch = 1.0f)
+        {
+            if (pickupClips != null && pickupClips.Length > 0)
+            {
+                AudioClip clip = pickupClips[0];
+                if (sfxSource != null)
+                {
+                    sfxSource.pitch = pitch;
+                    sfxSource.PlayOneShot(clip, pickupVolume * masterVolume);
+                }
+            }
+            else if (snapBackClip != null)
+            {
+                if (sfxSource != null)
+                {
+                    sfxSource.pitch = pitch;
+                    sfxSource.PlayOneShot(snapBackClip, snapBackVolume * masterVolume);
+                }
+            }
         }
 
         private void PlayClipWithPitch(AudioClip clip, float volume, bool randomizePitch)

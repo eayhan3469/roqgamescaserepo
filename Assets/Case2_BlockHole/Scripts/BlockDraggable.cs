@@ -412,9 +412,14 @@ namespace BlockHole
                     fractureEffect.TriggerFracture(transform.position, transform.rotation, blockPrimaryMaterial);
                 }
 
-                // 2. Complete hole event and schedule destroy
+                // 2. Complete hole event, notify GridManager, and schedule destroy
                 hole.OnBlockDropped(this);
                 onDroppedInHole?.Invoke();
+
+                if (GridManager.Instance != null)
+                {
+                    GridManager.Instance.OnBlockSwallowed(this);
+                }
 
                 Destroy(gameObject, 0.8f);
             });

@@ -225,5 +225,17 @@ namespace BlockHole
                 }
             });
         }
+
+        public void ResetHole()
+        {
+            isFilled = false;
+            gameObject.SetActive(true);
+            transform.DOKill();
+            transform.localScale = Vector3.zero;
+            transform.DOScale(Vector3.one, 0.35f).SetEase(Ease.OutBack, 1.4f);
+
+            InitializeVisuals();
+            SetHighlight(false, true);
+        }
     }
 }
