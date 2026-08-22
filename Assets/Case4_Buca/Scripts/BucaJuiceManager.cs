@@ -205,7 +205,7 @@ namespace Buca
             shape.radius = 0.1f;
 
             var renderer = go.GetComponent<ParticleSystemRenderer>();
-            renderer.material = new Material(Shader.Find("Sprites/Default"));
+            renderer.material = BucaDiscTrailEffect.GetOrCreateSoftStarMaterial();
 
             return go;
         }

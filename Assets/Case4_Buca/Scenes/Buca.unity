@@ -3229,10 +3229,11 @@ MonoBehaviour:
   baseForwardDir: {x: 0, y: 0, z: 1}
   maxAimAngle: 45
   aimLine: {fileID: 1900000003}
-  minIndicatorLength: 1.2
-  maxIndicatorLength: 5.5
-  indicatorColorLow: {r: 0.2, g: 0.85, b: 1, a: 0.95}
-  indicatorColorHigh: {r: 1, g: 0.85, b: 0.2, a: 1}
+  minIndicatorLength: 1.4
+  maxIndicatorLength: 6.2
+  baseConeWidth: 0.95
+  indicatorColorLow: {r: 0.15, g: 0.85, b: 1, a: 0.85}
+  indicatorColorHigh: {r: 1, g: 0.8, b: 0.15, a: 1}
   touchOriginRing: {fileID: 0}
   ringRadius: 0.65
   ringActiveColor: {r: 0.3, g: 0.9, b: 1, a: 0.85}

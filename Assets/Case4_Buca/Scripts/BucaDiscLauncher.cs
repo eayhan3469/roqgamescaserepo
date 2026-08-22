@@ -34,12 +34,13 @@ namespace Buca
         [Tooltip("Base forward direction along the launch track.")]
         [SerializeField] private Vector3 baseForwardDir = new Vector3(0f, 0f, 1f);
 
-        [Header("Forward Aim Indicator (At Disc)")]
+        [Header("Forward Aim Indicator (Pure Triangle)")]
         [SerializeField] private LineRenderer aimLine;
-        [SerializeField] private float minIndicatorLength = 1.2f;
-        [SerializeField] private float maxIndicatorLength = 5.5f;
-        [SerializeField] private Color indicatorColorLow = new Color(0.2f, 0.85f, 1.0f, 0.95f);
-        [SerializeField] private Color indicatorColorHigh = new Color(1.0f, 0.85f, 0.2f, 1.0f);
+        [SerializeField] private float minIndicatorLength = 1.4f;
+        [SerializeField] private float maxIndicatorLength = 6.2f;
+        [SerializeField] private float baseConeWidth = 0.95f;
+        [SerializeField] private Color indicatorColorLow = new Color(0.15f, 0.85f, 1.0f, 0.85f);
+        [SerializeField] private Color indicatorColorHigh = new Color(1.0f, 0.80f, 0.15f, 1.0f);
 
         [Header("Touch Pivot Ring (At Touch Origin)")]
         [SerializeField] private LineRenderer touchOriginRing;
@@ -80,6 +81,7 @@ namespace Buca
         private Vector3 dragStartWorldPos;
         private Vector3 currentLaunchDir = Vector3.forward;
         private float currentPowerRatio = 0f;
+        private float displayedElasticPower = 0f;
         private Camera mainCam;
         private float resetTimer = 0f;
         private Plane groundPlane;
@@ -91,6 +93,14 @@ namespace Buca
         // Dedicated visual & physical spin integration
         private float currentVisualAngleY = 0f;
         private float currentSpinSpeedY = 0f;
+
+        // Procedural Cone / Triangle Mesh indicator
+        private MeshFilter aimMeshFilter;
+        private MeshRenderer aimMeshRenderer;
+        private Mesh aimMesh;
+
+        // Visual Polish Trail & Slipstream effect
+        private BucaDiscTrailEffect trailEffect;
 
         public bool IsAiming => isAiming;
         public bool IsLaunched => isLaunched;
@@ -107,8 +117,7 @@ namespace Buca
 
             FindAndSetupDisc();
             SetupPhysXMaterials();
-            SetupAimLine();
-            SetupTouchVisualizers();
+            SetupAimVisualizers();
         }
 
         private void Start()
@@ -154,6 +163,13 @@ namespace Buca
             if (discTransform.GetComponent<BucaDiscCollisionRelay>() == null)
             {
                 discTransform.gameObject.AddComponent<BucaDiscCollisionRelay>();
+            }
+
+            // Attach visual polish trail & particle slipstream effect
+            trailEffect = discTransform.GetComponent<BucaDiscTrailEffect>();
+            if (trailEffect == null)
+            {
+                trailEffect = discTransform.gameObject.AddComponent<BucaDiscTrailEffect>();
             }
 
             discRb = discTransform.GetComponent<Rigidbody>();
@@ -230,6 +246,34 @@ namespace Buca
             }
         }
 
+        private void SetupAimVisualizers()
+        {
+            SetupAimMesh();
+            SetupAimLine();
+            SetupTouchVisualizers();
+        }
+
+        private void SetupAimMesh()
+        {
+            if (aimMeshFilter == null)
+            {
+                GameObject meshGo = new GameObject("AimConeIndicator");
+                meshGo.transform.SetParent(transform);
+                aimMeshFilter = meshGo.AddComponent<MeshFilter>();
+                aimMeshRenderer = meshGo.AddComponent<MeshRenderer>();
+
+                aimMesh = new Mesh { name = "AimConeMesh" };
+                aimMesh.MarkDynamic();
+                aimMeshFilter.mesh = aimMesh;
+
+                Material mat = new Material(Shader.Find("Sprites/Default"));
+                aimMeshRenderer.material = mat;
+                aimMeshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                aimMeshRenderer.receiveShadows = false;
+                aimMeshRenderer.enabled = false;
+            }
+        }
+
         private void SetupAimLine()
         {
             if (aimLine == null)
@@ -238,17 +282,11 @@ namespace Buca
                 if (aimLine == null) aimLine = gameObject.AddComponent<LineRenderer>();
             }
 
-            aimLine.positionCount = 3;
+            aimLine.positionCount = 2;
             aimLine.useWorldSpace = true;
             aimLine.enabled = false;
-
-            AnimationCurve widthCurve = new AnimationCurve();
-            widthCurve.AddKey(0f, 0.28f);
-            widthCurve.AddKey(0.75f, 0.22f);
-            widthCurve.AddKey(0.85f, 0.40f);
-            widthCurve.AddKey(1f, 0.02f);
-            aimLine.widthCurve = widthCurve;
-            aimLine.widthMultiplier = 1.0f;
+            aimLine.startWidth = 0.08f;
+            aimLine.endWidth = 0.04f;
 
             Material lineMat = new Material(Shader.Find("Sprites/Default"));
             aimLine.material = lineMat;
@@ -276,6 +314,11 @@ namespace Buca
         private void Update()
         {
             HandleInput();
+
+            if (isAiming && !isCanceling && currentPowerRatio > 0.01f)
+            {
+                UpdateAimIndicator(displayedElasticPower, currentLaunchDir);
+            }
 
             if (isLaunched && discTransform != null)
             {
@@ -405,6 +448,7 @@ namespace Buca
             isCanceling = true;
             dragStartWorldPos = worldPoint;
             currentPowerRatio = 0f;
+            displayedElasticPower = 0f;
             currentLaunchDir = baseForwardDir.normalized;
 
             discTransform.position = spawnPosition;
@@ -414,6 +458,7 @@ namespace Buca
             DrawOriginRing(dragStartWorldPos, ringCancelColor);
 
             if (aimLine != null) aimLine.enabled = false;
+            if (aimMeshRenderer != null) aimMeshRenderer.enabled = false;
         }
 
         private void UpdateAiming(Vector3 currentWorldPos)
@@ -428,10 +473,12 @@ namespace Buca
             {
                 isCanceling = true;
                 currentPowerRatio = 0f;
+                displayedElasticPower = 0f;
 
                 DrawOriginRing(dragStartWorldPos, ringCancelColor);
 
                 if (aimLine != null) aimLine.enabled = false;
+                if (aimMeshRenderer != null) aimMeshRenderer.enabled = false;
 
                 discTransform.rotation = spawnRotation;
                 currentVisualAngleY = spawnRotation.eulerAngles.y;
@@ -443,6 +490,10 @@ namespace Buca
             float effectiveDrag = dragDist - cancelThresholdDistance;
             currentPowerRatio = Mathf.Clamp01(effectiveDrag / (maxDragDistance - cancelThresholdDistance));
 
+            // Elastic tension easing curve (eases in smoothly, resists near max like rubber)
+            float elasticTarget = 1f - Mathf.Pow(1f - currentPowerRatio, 2.0f);
+            displayedElasticPower = Mathf.Lerp(displayedElasticPower, elasticTarget, Time.deltaTime * 24.0f);
+
             // Full 360 aim: pulling backwards aims forward
             Vector3 aimVector = -dragVector;
             currentLaunchDir = aimVector.normalized;
@@ -452,11 +503,7 @@ namespace Buca
 
             DrawOriginRing(dragStartWorldPos, ringActiveColor);
 
-            if (aimLine != null)
-            {
-                aimLine.enabled = true;
-                UpdateAimIndicator(currentPowerRatio, currentLaunchDir);
-            }
+            UpdateAimIndicator(displayedElasticPower, currentLaunchDir);
         }
 
         private void DrawOriginRing(Vector3 center, Color color)
@@ -478,26 +525,78 @@ namespace Buca
             }
         }
 
-        private void UpdateAimIndicator(float powerRatio, Vector3 direction)
+        private void UpdateAimIndicator(float elasticPower, Vector3 direction)
         {
-            if (aimLine == null || !aimLine.enabled) return;
+            UpdateAimMesh(elasticPower, direction);
+            UpdateAimSpineLine(elasticPower, direction);
+        }
 
-            float lineLength = Mathf.Lerp(minIndicatorLength, maxIndicatorLength, powerRatio);
+        private void UpdateAimMesh(float elasticPower, Vector3 direction)
+        {
+            if (aimMesh == null || aimMeshRenderer == null) return;
+            aimMeshRenderer.enabled = true;
 
-            Vector3 startPos = spawnPosition + direction * 0.45f;
-            startPos.y = spawnPosition.y + 0.12f;
+            float length = Mathf.Lerp(minIndicatorLength, maxIndicatorLength, elasticPower);
+            float baseW = Mathf.Lerp(0.50f, baseConeWidth, elasticPower);
 
-            Vector3 midPos = startPos + direction * (lineLength * 0.72f);
-            Vector3 tipPos = startPos + direction * lineLength;
+            Vector3 startPos = spawnPosition + direction * 0.40f;
+            startPos.y = spawnPosition.y + 0.035f;
 
-            aimLine.positionCount = 3;
+            Vector3 right = Vector3.Cross(Vector3.up, direction).normalized;
+
+            // 3-Vertex Pure Geometric Triangle Wedge (Düz Üçgen)
+            Vector3[] vertices = new Vector3[3];
+            // Base at puck (Left and Right)
+            vertices[0] = startPos - right * (baseW * 0.5f);
+            vertices[1] = startPos + right * (baseW * 0.5f);
+            // Apex / Pointed Tip (Forward)
+            vertices[2] = startPos + direction * length;
+
+            int[] triangles = new int[]
+            {
+                0, 2, 1
+            };
+
+            Vector2[] uvs = new Vector2[]
+            {
+                new Vector2(0f, 0f),
+                new Vector2(1f, 0f),
+                new Vector2(0.5f, 1.0f)
+            };
+
+            Color currentColor = Color.Lerp(indicatorColorLow, indicatorColorHigh, elasticPower);
+
+            Color[] colors = new Color[3];
+            colors[0] = new Color(currentColor.r, currentColor.g, currentColor.b, 0.45f);
+            colors[1] = new Color(currentColor.r, currentColor.g, currentColor.b, 0.45f);
+            colors[2] = Color.Lerp(currentColor, Color.white, 0.75f); // Bright luminous apex tip
+
+            aimMesh.Clear();
+            aimMesh.vertices = vertices;
+            aimMesh.triangles = triangles;
+            aimMesh.uv = uvs;
+            aimMesh.colors = colors;
+            aimMesh.RecalculateNormals();
+        }
+
+        private void UpdateAimSpineLine(float elasticPower, Vector3 direction)
+        {
+            if (aimLine == null) return;
+            aimLine.enabled = true;
+
+            float length = Mathf.Lerp(minIndicatorLength, maxIndicatorLength, elasticPower);
+            Vector3 startPos = spawnPosition + direction * 0.42f;
+            startPos.y = spawnPosition.y + 0.045f;
+            Vector3 tipPos = startPos + direction * length;
+
+            aimLine.positionCount = 2;
             aimLine.SetPosition(0, startPos);
-            aimLine.SetPosition(1, midPos);
-            aimLine.SetPosition(2, tipPos);
+            aimLine.SetPosition(1, tipPos);
 
-            Color activeColor = Color.Lerp(indicatorColorLow, indicatorColorHigh, powerRatio);
-            aimLine.startColor = activeColor;
-            aimLine.endColor = new Color(activeColor.r, activeColor.g, activeColor.b, 0.95f);
+            Color activeColor = Color.Lerp(indicatorColorLow, indicatorColorHigh, elasticPower);
+            Color spineColor = Color.Lerp(activeColor, Color.white, 0.65f);
+            aimLine.startColor = new Color(spineColor.r, spineColor.g, spineColor.b, 0.35f);
+            aimLine.endColor = new Color(spineColor.r, spineColor.g, spineColor.b, 0.95f);
         }
 
         private void ReleaseAndLaunch()
@@ -529,6 +628,12 @@ namespace Buca
             discRb.AddForce(impulse, ForceMode.Impulse);
             preCollisionVelocity = currentLaunchDir.normalized * launchForce;
 
+            if (trailEffect != null)
+            {
+                trailEffect.ClearTrails();
+                trailEffect.SetEmitting(true);
+            }
+
             if (BucaAudioManager.Instance != null)
             {
                 BucaAudioManager.Instance.PlayLaunchSound(currentPowerRatio);
@@ -538,6 +643,7 @@ namespace Buca
         private void HideVisualizers()
         {
             if (aimLine != null) aimLine.enabled = false;
+            if (aimMeshRenderer != null) aimMeshRenderer.enabled = false;
             if (touchOriginRing != null) touchOriginRing.enabled = false;
         }
 
@@ -548,11 +654,17 @@ namespace Buca
             isCanceling = false;
             resetTimer = 0f;
             currentPowerRatio = 0f;
+            displayedElasticPower = 0f;
             currentSpinSpeedY = 0f;
             maxAllowedSpeed = 0f;
             preCollisionVelocity = Vector3.zero;
 
             HideVisualizers();
+
+            if (trailEffect != null)
+            {
+                trailEffect.ClearTrails();
+            }
 
             if (discRb != null)
             {
@@ -656,6 +768,11 @@ namespace Buca
             // Add single-hit spin kick, naturally capped
             currentSpinSpeedY += sideSign * spinImpact;
             currentSpinSpeedY = Mathf.Clamp(currentSpinSpeedY, -maxSpinSpeedCap, maxSpinSpeedCap);
+
+            if (trailEffect != null)
+            {
+                trailEffect.TriggerWallBounceSpark(contactPoint, outwardNormal);
+            }
 
             if (BucaAudioManager.Instance != null)
             {
