@@ -8,6 +8,9 @@
 [Uu]serSettings/
 [Mm]emoryCaptures/
 [Rr]ecordings/
+.utmp/
+[Uu]tmp/
+.gradle/
 
 # IDE / OS
 .idea/
