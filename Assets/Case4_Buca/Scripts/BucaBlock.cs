@@ -261,6 +261,60 @@ namespace Buca
             }
         }
 
+        /// <summary>
+        /// Sci-fi warp / teleport dissolve: stretches vertically like a beam, flashes cyan/white, and implodes into a warp vortex.
+        /// </summary>
+        public void TriggerWarpDissolve(float delay, Action onComplete = null)
+        {
+            DOVirtual.DelayedCall(delay, () =>
+            {
+                if (this == null || gameObject == null) return;
+
+                transform.DOKill();
+
+                // Stop physics so block freezes in position for warp
+                if (rb != null)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = true;
+                }
+
+                // Spawn Warp Vortex VFX at block center
+                if (BucaJuiceManager.Instance != null)
+                {
+                    BucaJuiceManager.Instance.SpawnBlockWarpVFX(transform.position);
+                }
+
+                // Warp whoosh sound
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.PlayBlockWarpSound();
+                }
+
+                // Warp flash: turns glowing cyan-white
+                TriggerHitFlash(1.0f);
+
+                // Subtle horizontal expansion (enlemesine genişleme) + slight squash, then snappy implosion into 0
+                Vector3 horizontalExpand = new Vector3(initialScale.x * 1.35f, initialScale.y * 0.75f, initialScale.z * 1.35f);
+
+                Sequence warpSeq = DOTween.Sequence();
+                warpSeq.Append(transform.DOScale(horizontalExpand, 0.10f).SetEase(Ease.OutQuad));
+                warpSeq.Append(transform.DOScale(Vector3.zero, 0.12f).SetEase(Ease.InBack));
+                warpSeq.OnComplete(() =>
+                {
+                    if (meshRenderer != null) meshRenderer.enabled = false;
+                    if (boxCollider != null) boxCollider.enabled = false;
+                    onComplete?.Invoke();
+                });
+            });
+        }
+
+        public void TriggerPopDissolve(float delay, Action onComplete = null)
+        {
+            TriggerWarpDissolve(delay, onComplete);
+        }
+
         public void ResetBlock()
         {
             isHit = false;
@@ -274,11 +328,17 @@ namespace Buca
 
             if (meshRenderer != null)
             {
+                meshRenderer.enabled = true;
                 meshRenderer.GetPropertyBlock(propBlock);
                 propBlock.SetColor(BaseColorProp, originalBaseColor);
                 propBlock.SetColor(ColorProp, originalBaseColor);
                 propBlock.SetColor(EmissionColorProp, Color.black);
                 meshRenderer.SetPropertyBlock(propBlock);
+            }
+
+            if (boxCollider != null)
+            {
+                boxCollider.enabled = true;
             }
 
             if (rb != null)

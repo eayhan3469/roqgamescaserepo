@@ -304,6 +304,24 @@ namespace Buca
         }
 
         /// <summary>
+        /// Plays a fast sci-fi whoosh / warp sound when a block teleports away.
+        /// </summary>
+        public void PlayBlockWarpSound()
+        {
+            AudioClip clip = launchClip != null ? launchClip : obstacleDeflectClip;
+            if (clip == null) return;
+            PlayClipWithPitch(clatterSource, clip, 0.45f, true, 1.4f, 1.8f);
+        }
+
+        /// <summary>
+        /// Plays a cute bubble/sparkle pop sound when a block dissolves.
+        /// </summary>
+        public void PlayBlockPopSound()
+        {
+            PlayBlockWarpSound();
+        }
+
+        /// <summary>
         /// Plays victory fanfare sound on a dedicated audio channel with locked 1.0 pitch.
         /// </summary>
         public void PlayVictorySound()

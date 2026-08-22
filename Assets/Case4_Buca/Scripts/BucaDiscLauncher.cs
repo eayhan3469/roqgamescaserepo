@@ -342,11 +342,20 @@ namespace Buca
                     discRb.MoveRotation(targetRot);
                 }
 
-                // Auto reset when stopped or timeout
-                resetTimer += Time.deltaTime;
-                if (resetTimer > autoResetDelay || (resetTimer > 1.5f && discRb != null && discRb.linearVelocity.magnitude < 0.25f))
+                // Auto reset when stopped or timeout (prevent early reset if level is cleared and victory celebration is playing)
+                bool isCleared = BucaGameManager.Instance != null && BucaGameManager.Instance.IsLevelCleared;
+                if (!isCleared)
                 {
-                    ResetDisc();
+                    resetTimer += Time.deltaTime;
+                    if (resetTimer > autoResetDelay || (resetTimer > 1.5f && discRb != null && discRb.linearVelocity.magnitude < 0.25f))
+                    {
+                        ResetDisc();
+                    }
+                }
+                else if (discRb != null && discRb.linearVelocity.magnitude > 0.02f)
+                {
+                    // Smoothly glide to a stop during victory sequence
+                    discRb.linearVelocity = Vector3.Lerp(discRb.linearVelocity, Vector3.zero, Time.deltaTime * 3.5f);
                 }
             }
         }
