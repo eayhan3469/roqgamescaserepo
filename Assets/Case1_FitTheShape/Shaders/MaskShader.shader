@@ -9,8 +9,8 @@ Shader "Examples/StencilDepthAwareMask"
     {
         Tags
         {
-            "RenderType" = "Opaque"
-            "Queue" = "Geometry+1"
+            "RenderType" = "Transparent"
+            "Queue" = "Transparent-100"
             "RenderPipeline" = "UniversalPipeline"
         }
 
@@ -21,15 +21,6 @@ Shader "Examples/StencilDepthAwareMask"
             Cull Off
             ZWrite Off
             ZTest LEqual
-
-            Stencil
-            {
-                Ref [_StencilID]
-                Comp Always
-                Pass Replace
-                Fail Keep
-                ZFail Keep
-            }
 
             HLSLPROGRAM
             #pragma target 2.0
@@ -56,6 +47,7 @@ Shader "Examples/StencilDepthAwareMask"
 
             float4 frag(Varyings input) : SV_Target
             {
+                discard;
                 return 0;
             }
             ENDHLSL
