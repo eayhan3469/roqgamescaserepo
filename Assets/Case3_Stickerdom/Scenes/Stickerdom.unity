@@ -1214,9 +1214,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 32
-  peelAngle: 45
+  peelProgress: 0
+  creaseColor: {r: 0, g: 0, b: 0, a: 1}
+  peakColor: {r: 1, g: 1, b: 1, a: 1}
+  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
+  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
+  creasePosition: 0.05
+  peakPosition: 0.2
+  dipPosition: 0.4
+  apexGlossIntensity: 0.75
+  invertGradientDirection: 0
   rollRadius: 0.38
+  peelAngle: 45
+  gridResolution: 32
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
 --- !u!1 &1306484379
 GameObject:
@@ -1937,9 +1947,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 32
-  peelAngle: 45
+  peelProgress: 0
+  creaseColor: {r: 0, g: 0, b: 0, a: 1}
+  peakColor: {r: 1, g: 1, b: 1, a: 1}
+  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
+  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
+  creasePosition: 0.05
+  peakPosition: 0.2
+  dipPosition: 0.4
+  apexGlossIntensity: 0.75
+  invertGradientDirection: 0
   rollRadius: 0.38
+  peelAngle: 68
+  gridResolution: 32
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
 --- !u!1 &1700000001
 GameObject:
@@ -2003,7 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c82050a41761e4b85c18e11a3c7493, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerLevelManager
-  drawPile: {fileID: 9213445708212093506}
+  drawPile: {fileID: 0}
   waitingStickersRoot: {fileID: 2005150150}
   pageSheet: {fileID: 740737550}
   initialStickers: []
@@ -2533,9 +2553,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 32
-  peelAngle: 45
-  rollRadius: 0.38
+  peelProgress: 0
+  creaseColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
+  peakColor: {r: 1, g: 1, b: 1, a: 1}
+  midDipColor: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
+  endToneColor: {r: 1, g: 1, b: 1, a: 1}
+  creasePosition: 0.249
+  peakPosition: 0.438
+  dipPosition: 0.609
+  apexGlossIntensity: 0.28
+  invertGradientDirection: 0
+  rollRadius: 0.2
+  peelAngle: 184
+  gridResolution: 36
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
 --- !u!1 &2100000001
 GameObject:
@@ -2721,9 +2751,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b28c2050a41761e4b85c18e11a3c7482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
-  gridResolution: 32
-  peelAngle: 45
+  peelProgress: 0
+  creaseColor: {r: 0, g: 0, b: 0, a: 1}
+  peakColor: {r: 1, g: 1, b: 1, a: 1}
+  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
+  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
+  creasePosition: 0.05
+  peakPosition: 0.2
+  dipPosition: 0.4
+  apexGlossIntensity: 0.75
+  invertGradientDirection: 0
   rollRadius: 0.38
+  peelAngle: 45
+  gridResolution: 32
   backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

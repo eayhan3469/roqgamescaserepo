@@ -30,10 +30,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _PeelAngle: 45
+    - _PeelAngle: 0
     - _PeelProgress: 0
-    - _RollRadius: 0.12
+    - _RollRadius: 0.165
     - _ShadowIntensity: 0.6
+    - _ShadowStrength: 1
+    - _ShadowWidth: 0.2
     - _ShineProgress: -0.5
     m_Colors:
     - _BackSideColor: {r: 0.92, g: 0.92, b: 0.92, a: 1}

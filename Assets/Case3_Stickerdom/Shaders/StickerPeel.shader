@@ -4,11 +4,12 @@ Shader "Custom/StickerPeel"
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint Color", Color) = (1, 1, 1, 1)
-        _BackSideColor ("Backside Adhesive Color", Color) = (0.93, 0.93, 0.94, 1.0)
+        _BackSideColor ("Backside Base Tint", Color) = (0.95, 0.95, 0.95, 1.0)
         _PeelProgress ("Peel Progress", Range(0.0, 1.2)) = 0.0
         _PeelAngle ("Peel Angle (Degrees)", Range(0, 360)) = 45.0
         _RollRadius ("Roll / Crease Width", Range(0.01, 0.4)) = 0.10
-        _ShadowIntensity ("Crease & Drop Shadow", Range(0, 1)) = 0.55
+        _ShadowWidth ("Crease Shadow Width", Range(0.01, 0.2)) = 0.08
+        _ShadowStrength ("Crease Shadow Strength", Range(0.0, 1.0)) = 0.45
     }
 
     SubShader
@@ -35,7 +36,7 @@ Shader "Custom/StickerPeel"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 2.0
+            #pragma target 3.0
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -62,7 +63,8 @@ Shader "Custom/StickerPeel"
                 float _PeelProgress;
                 float _PeelAngle;
                 float _RollRadius;
-                float _ShadowIntensity;
+                float _ShadowWidth;
+                float _ShadowStrength;
             CBUFFER_END
 
             Varyings vert(Attributes input)
@@ -77,8 +79,7 @@ Shader "Custom/StickerPeel"
             float4 frag(Varyings input) : SV_Target
             {
                 float2 uv = input.uv;
-
-                // 1. If no peel, render normal sprite
+                
                 if (_PeelProgress <= 0.001)
                 {
                     float4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv) * input.color;
@@ -86,74 +87,72 @@ Shader "Custom/StickerPeel"
                     return col;
                 }
 
-                // 2. Compute Peel Direction Vector & Corner Origin
                 float rad = radians(_PeelAngle);
                 float2 dir = float2(cos(rad), sin(rad));
+                float2 origin = float2(dir.x > 0.0 ? 0.0 : 1.0, dir.y > 0.0 ? 0.0 : 1.0);
+                
+                float d = dot(uv - origin, dir);
+                float r = max(_RollRadius, 0.01);
+                float foldLine = _PeelProgress * 1.5;
 
-                // Find the starting corner (the corner furthest in the negative peel direction)
-                float2 origin = float2(
-                    dir.x > 0.0 ? 0.0 : 1.0,
-                    dir.y > 0.0 ? 0.0 : 1.0
-                );
-
-                // Projection distance from origin along peel direction
-                float dist = dot(uv - origin, dir);
-
-                // Max distance across the [0,1] quad in this direction
-                float2 oppositeCorner = float2(1.0 - origin.x, 1.0 - origin.y);
-                float maxDist = max(dot(oppositeCorner - origin, dir), 0.001);
-
-                // Crease fold line advances with _PeelProgress (0 to 1.1)
-                float foldLine = _PeelProgress * maxDist;
-
-                // 3. CHECK A: Pixels lying ahead of the fold line (dist >= foldLine)
-                if (dist >= foldLine)
+                // 1. Unpeeled Flat Region (With Crease Under-Shadow / AO)
+                if (d < foldLine)
                 {
-                    // Check if the curled flap from behind the fold line has folded over onto this pixel!
-                    float flapDist = dist - foldLine;
-                    float2 uvOrig = uv - 2.0 * flapDist * dir;
-
-                    // If uvOrig is within sprite bounds and has alpha:
-                    if (uvOrig.x >= 0.0 && uvOrig.x <= 1.0 && uvOrig.y >= 0.0 && uvOrig.y <= 1.0)
-                    {
-                        float4 flapSample = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uvOrig);
-
-                        // If flap sample is solid sticker pixel:
-                        if (flapSample.a >= 0.05)
-                        {
-                            // Render Curled Adhesive Backside
-                            // Subtle cylinder lighting highlight near crease ridge
-                            float curlHighlight = saturate(1.0 - flapDist / max(_RollRadius, 0.03));
-                            float3 backRgb = _BackSideColor.rgb * lerp(0.85, 1.08, curlHighlight);
-
-                            // Subtle metallic/paper sheen along the curl edge
-                            backRgb += float3(0.18, 0.18, 0.20) * (curlHighlight * curlHighlight);
-
-                            return float4(backRgb, flapSample.a * _BackSideColor.a * input.color.a);
-                        }
-                    }
-
-                    // If no curled flap covers this pixel, render the flat Front Side
                     float4 frontCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv) * input.color;
                     if (frontCol.a < 0.05) discard;
 
-                    // Contact drop shadow cast by the approaching fold crease
-                    float shadowDist = dist - foldLine;
-                    if (shadowDist < _RollRadius * 1.8)
+                    // Apply drop shadow beneath the lifted paper near the fold line
+                    float shadowDist = foldLine - d;
+                    if (shadowDist < _ShadowWidth)
                     {
-                        float shadowFactor = 1.0 - (shadowDist / (_RollRadius * 1.8));
-                        frontCol.rgb *= lerp(1.0, 1.0 - _ShadowIntensity * 0.7, shadowFactor * shadowFactor);
+                        float shadowFactor = smoothstep(0.0, _ShadowWidth, shadowDist);
+                        float shadowMultiplier = lerp(1.0 - _ShadowStrength, 1.0, shadowFactor);
+                        frontCol.rgb *= shadowMultiplier;
                     }
 
                     return frontCol;
                 }
+                
+                // 2. Curled Region (Cylindrical Roll with Depth Gradient)
+                float delta = d - foldLine;
+                if (delta <= PI * r)
+                {
+                    float theta = delta / r;
+                    float2 curlUV = uv - dir * (delta - sin(theta) * r);
+
+                    if (curlUV.x < 0.0 || curlUV.x > 1.0 || curlUV.y < 0.0 || curlUV.y > 1.0)
+                        discard;
+
+                    float4 sampleCol = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, curlUV);
+                    if (sampleCol.a < 0.05) discard;
+
+                    // Cylindrical light gradient:
+                    // - Base of crease (theta ~ 0) is darker ambient occlusion (0.58)
+                    // - Top crest (theta ~ PI/2 to PI) gets full bright specular highlight
+                    float aoGradient = smoothstep(0.0, 1.2, theta);
+                    float shade = lerp(0.58, 1.0, aoGradient);
+                    float crestHighlight = pow(saturate(sin(theta)), 3.0) * 0.25;
+
+                    float4 outCol = _BackSideColor;
+                    outCol.rgb = (outCol.rgb * shade) + crestHighlight;
+                    outCol.a = sampleCol.a;
+
+                    return outCol * input.color;
+                }
                 else
                 {
-                    // 4. CHECK B: Pixels behind the fold line (dist < foldLine)
-                    // The sticker has been lifted and peeled away from this spot!
-                    // Discard so the background / notebook page underneath is visible
-                    discard;
-                    return float4(0, 0, 0, 0);
+                    // 3. Flipped Backside Region (Past cylinder)
+                    float2 backUV = uv - dir * (2.0 * delta - PI * r);
+                    if (backUV.x < 0.0 || backUV.x > 1.0 || backUV.y < 0.0 || backUV.y > 1.0)
+                        discard;
+
+                    float4 backSample = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, backUV);
+                    if (backSample.a < 0.05) discard;
+
+                    float4 flatBack = _BackSideColor;
+                    flatBack.rgb *= 0.95;
+                    flatBack.a = backSample.a;
+                    return flatBack * input.color;
                 }
             }
             ENDHLSL

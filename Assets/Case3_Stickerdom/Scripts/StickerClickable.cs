@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -202,6 +204,7 @@ namespace Stickerdom
             }
 
             isFlying = true;
+            transform.DOKill();
 
             // 1. Disable collider immediately to prevent duplicate clicks
             if (col2D != null)
@@ -239,9 +242,9 @@ namespace Stickerdom
             // 4. Calculate corner peel tilt
             float chosenAngle = peelMesh3D != null ? peelMesh3D.PickRandomCornerAngle() : 45f;
             float rad = chosenAngle * Mathf.Deg2Rad;
-            Vector3 peelTiltAngles = new Vector3(-Mathf.Sin(rad) * peelTiltStrength, Mathf.Cos(rad) * peelTiltStrength, -6f);
+            Vector3 peelTiltAngles = new Vector3(-Mathf.Sin(rad) * peelTiltStrength, Mathf.Cos(rad) * peelTiltStrength, -8f);
 
-            // 5. Construct Sequence: 3D Peel Off -> Flight (Rolled in Air) -> 3D Reverse Stick On Landing
+            // 5. Construct Tactile Sequence: 3D Peel Off -> Parabolic Flight -> 3D Reverse Stick
             Vector3 targetPos = targetGhostSlot.TargetPosition;
             Vector3 targetRotEuler = targetGhostSlot.transform.eulerAngles;
             Vector3 targetScale = targetGhostSlot.TargetScale;
@@ -249,12 +252,13 @@ namespace Stickerdom
             Sequence masterSequence = DOTween.Sequence();
             masterSequence.SetTarget(transform);
 
-            // PHASE 1: SÖKÜLME (0 -> 1) - Silky Smooth 3D corner curl with Ease.InOutSine (0.46s)
+            // PHASE 1: DİREKT, JUICY VE DOĞAL 3D SÖKÜLME (0 -> 1)
             if (peelMesh3D != null)
             {
                 masterSequence.Append(peelMesh3D.AnimatePeelOff(peelDuration));
             }
-            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.InOutSine));
+            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.OutCubic));
+            masterSequence.Join(transform.DOLocalMoveZ(initialLocalPos.z - 0.25f, peelDuration).SetEase(Ease.OutQuad));
 
             // PHASE 2: UÇUŞ (0.55s) - Play Fly Swoosh & arc flight to target slot
             masterSequence.AppendCallback(() =>
