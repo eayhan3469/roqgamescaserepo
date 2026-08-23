@@ -43,3 +43,7 @@ mono_crash.*
 *.unitypackage
 *.app
 .superpowers/
+
+# MCP for Unity playtest screenshots
+/Assets/Screenshots/
+/Assets/Screenshots.meta

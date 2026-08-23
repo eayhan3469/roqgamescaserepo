@@ -7219,13 +7219,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d7f8b65c39e9df4e9d5b51bcb2f1483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockHolePostProcessing
-  bloomIntensity: 0.65
-  bloomThreshold: 0.96
-  bloomScatter: 0.75
-  postExposure: 0.15
-  contrast: 16
-  saturation: 30
-  vignetteIntensity: 0.2
+  antialiasingMode: 2
+  antialiasingQuality: 2
+  enableDithering: 1
+  bloomIntensity: 0.3
+  bloomThreshold: 1.02
+  bloomScatter: 0.6
+  bloomTint: {r: 1, g: 0.98, b: 0.92, a: 1}
+  postExposure: 0.12
+  contrast: 14
+  saturation: 26
+  vignetteIntensity: 0.14
+  vignetteSmoothness: 0.45
   useAcesTonemapping: 1
 --- !u!114 &998877665
 MonoBehaviour:
@@ -12919,10 +12924,10 @@ MonoBehaviour:
   m_VolumeTrigger: {fileID: 1734165573}
   m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 1
-  m_Antialiasing: 0
+  m_Antialiasing: 2
   m_AntialiasingQuality: 2
   m_StopNaN: 0
-  m_Dithering: 0
+  m_Dithering: 1
   m_ClearDepth: 1
   m_AllowXRRendering: 1
   m_AllowHDROutput: 1
