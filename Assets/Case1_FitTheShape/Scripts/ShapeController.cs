@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using DG.Tweening;
 
@@ -71,11 +72,18 @@ namespace FitTheShape
         [SerializeField] private UnityEvent OnShapeEntered;
 
         private bool isTriggered = false;
+        private bool isSeated = false;
         private Collider shapeCollider;
         private Vector3 originalScale;
+        private Vector3 initialDeckPosition;
+        private Quaternion initialDeckRotation;
+        private Transform initialParent;
         private Sequence activeSequence;
         private GameObject activeTrailInstance;
         private static Material neonFlashMaterial;
+        private static List<ShapeController> allTrackedShapes = new List<ShapeController>();
+
+        public bool IsSeated => isSeated;
 
         public Transform TargetHole
         {
@@ -89,14 +97,85 @@ namespace FitTheShape
 
         private void Awake()
         {
-            shapeCollider = GetComponent<Collider>();
+            EnsureCollider();
             originalScale = transform.localScale;
+            initialDeckPosition = transform.position;
+            initialDeckRotation = transform.rotation;
+            initialParent = transform.parent;
+
+            if (!allTrackedShapes.Contains(this))
+            {
+                allTrackedShapes.Add(this);
+            }
+
             ResolveAnchors();
             ResolvePedestal();
         }
 
+        private void Start()
+        {
+            EnsureCollider();
+            ResolveAnchors();
+            ResolvePedestal();
+        }
+
+        private void EnsureCollider()
+        {
+            if (shapeCollider == null)
+            {
+                shapeCollider = GetComponent<Collider>();
+            }
+
+            if (shapeCollider == null)
+            {
+                MeshFilter mf = GetComponent<MeshFilter>();
+                if (mf != null && mf.sharedMesh != null)
+                {
+                    MeshCollider mc = gameObject.AddComponent<MeshCollider>();
+                    mc.convex = true;
+                    shapeCollider = mc;
+                }
+                else
+                {
+                    shapeCollider = gameObject.AddComponent<BoxCollider>();
+                }
+            }
+            else
+            {
+                shapeCollider.enabled = true;
+            }
+        }
+
         public void ResolveAnchors()
         {
+            if (targetHole == null)
+            {
+                // Auto-find matching column segment on Drum by closest X coordinate
+                GameObject drum = GameObject.Find("Drum");
+                if (drum != null)
+                {
+                    float minDist = float.MaxValue;
+                    Transform closestSeg = null;
+                    for (int i = 0; i < drum.transform.childCount; i++)
+                    {
+                        Transform child = drum.transform.GetChild(i);
+                        if (child.name.StartsWith("Segment_") && child.name.EndsWith("_r0"))
+                        {
+                            float dx = Mathf.Abs(transform.position.x - child.position.x);
+                            if (dx < minDist)
+                            {
+                                minDist = dx;
+                                closestSeg = child;
+                            }
+                        }
+                    }
+                    if (closestSeg != null)
+                    {
+                        targetHole = closestSeg;
+                    }
+                }
+            }
+
             if (targetHole == null) return;
 
             Transform searchRoot = targetHole.name.Contains("Segment_") ? targetHole : targetHole.parent;
@@ -135,9 +214,44 @@ namespace FitTheShape
                         }
                     }
                 }
-                if (closestSlot != null && minDist < 2.5f)
+                if (closestSlot != null && minDist < 3.5f)
                 {
                     deckPedestal = closestSlot;
+                }
+            }
+        }
+
+        private void Update()
+        {
+            if (isTriggered) return;
+
+            bool pointerPressed = false;
+            Vector2 screenPos = Vector2.zero;
+
+            if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+            {
+                pointerPressed = true;
+                screenPos = Touchscreen.current.primaryTouch.position.ReadValue();
+            }
+            else if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                pointerPressed = true;
+                screenPos = Mouse.current.position.ReadValue();
+            }
+
+            if (pointerPressed)
+            {
+                Camera cam = Camera.main;
+                if (cam != null)
+                {
+                    Ray ray = cam.ScreenPointToRay(screenPos);
+                    if (Physics.Raycast(ray, out RaycastHit hit))
+                    {
+                        if (hit.transform == transform || hit.transform.IsChildOf(transform))
+                        {
+                            TriggerFitSequence();
+                        }
+                    }
                 }
             }
         }
@@ -162,7 +276,9 @@ namespace FitTheShape
 
             if (lastAnchor == null)
             {
-                Debug.LogWarning($"[ShapeController] Missing lastAnchor on '{gameObject.name}'! TargetHole: {targetHole?.name}", this);
+                string holeName = targetHole != null ? targetHole.name : "null";
+                Debug.LogWarning($"[ShapeController] Missing lastAnchor on '{gameObject.name}'! TargetHole: {holeName}", this);
+                isTriggered = false;
                 return;
             }
 
@@ -336,11 +452,156 @@ namespace FitTheShape
                         // Şekil deliği doldurup oturduktan sonra Hole objesini kapat ve yüzeyin DÜMDÜZ kalmasını sağla
                         HideHoleCutout(parentSeg);
                         gameObject.SetActive(false);
+                        isSeated = true;
 
                         OnShapeEntered?.Invoke();
+
+                        // 🏆 Tüm şekiller deliklerine oturdu mu kontrol et
+                        CheckAllShapesSeated();
                     });
                 }
             });
+        }
+
+        /// <summary>
+        /// Tüm aktif şekiller oturduğunda tekerlekleri sıra sıra döndürüp oyunu sıfırlayan ana döngü.
+        /// </summary>
+        public static void CheckAllShapesSeated()
+        {
+            // Sahnede aktif kullanılan tüm şekilleri filtrele
+            List<ShapeController> activeShapes = new List<ShapeController>();
+            foreach (var shape in allTrackedShapes)
+            {
+                if (shape != null && shape.gameObject != null)
+                {
+                    activeShapes.Add(shape);
+                }
+            }
+
+            if (activeShapes.Count == 0) return;
+
+            bool allSeated = true;
+            foreach (var shape in activeShapes)
+            {
+                if (!shape.isSeated)
+                {
+                    allSeated = false;
+                    break;
+                }
+            }
+
+            if (allSeated)
+            {
+                // 1. Tüm şekiller tamamlandı - Başarı tamamlama sesi
+                if (FitTheShapeAudioManager.Instance != null)
+                {
+                    FitTheShapeAudioManager.Instance.PlaySuccessSound();
+                }
+
+                // 2. Kısa bir zafer anı (0.45s) sonrası çarklar sıra sıra dönsün
+                DOVirtual.DelayedCall(0.45f, () =>
+                {
+                    if (WheelReactor.Instance != null)
+                    {
+                        WheelReactor.Instance.SpinAllColumnsSequence(
+                            onHalfway: () =>
+                            {
+                                // Çarklar dönerken delikleri tekrar açık hale getir
+                                RestoreAllHoleCutouts();
+
+                                // Şekilleri yuvalarında (Deck) pop-in animasyonuyla spawnla
+                                foreach (var shape in activeShapes)
+                                {
+                                    if (shape != null)
+                                    {
+                                        shape.RespawnOnDeck();
+                                    }
+                                }
+                            },
+                            onComplete: () =>
+                            {
+                                // Çarkın dönüşü tamamen bitince şekilleri tekrar tıklanabilir yap
+                                foreach (var shape in activeShapes)
+                                {
+                                    if (shape != null)
+                                    {
+                                        shape.ResetClickableState();
+                                    }
+                                }
+
+                                // Çark durdu - Hazır sesi
+                                if (FitTheShapeAudioManager.Instance != null)
+                                {
+                                    FitTheShapeAudioManager.Instance.PlayLaunchSound();
+                                }
+                            }
+                        );
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Şekli Deck üzerindeki başlangıç yuvasına geri döndürür ve pop-in animasyonuyla spawnlar.
+        /// </summary>
+        public void RespawnOnDeck()
+        {
+            activeSequence?.Kill();
+            transform.DOKill();
+
+            if (initialParent != null)
+            {
+                transform.SetParent(initialParent, true);
+            }
+            transform.position = initialDeckPosition;
+            transform.rotation = initialDeckRotation;
+            transform.localScale = Vector3.zero;
+            gameObject.SetActive(true);
+
+            // Pop-in bouncy scale animasyonu (0 -> normal boyut)
+            transform.DOScale(originalScale, 0.38f).SetEase(Ease.OutBack, 1.45f);
+
+            // Pedestal butonunda yaylanma geri tepmesi
+            if (deckPedestal != null)
+            {
+                deckPedestal.DOKill();
+                deckPedestal.DOPunchScale(new Vector3(0.08f, -0.15f, 0.08f), 0.28f, 6, 0.5f);
+            }
+        }
+
+        /// <summary>
+        /// Çark durduğunda şeklin tıklanabilirliğini yeniden aktifleştirir.
+        /// </summary>
+        public void ResetClickableState()
+        {
+            isTriggered = false;
+            isSeated = false;
+            EnsureCollider();
+            if (shapeCollider != null)
+            {
+                shapeCollider.enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Çark üzerindeki tüm delik objelerini yeniden görünür/açık hale getirir.
+        /// </summary>
+        public static void RestoreAllHoleCutouts()
+        {
+            GameObject drum = GameObject.Find("Drum");
+            if (drum != null)
+            {
+                Transform[] allTrans = drum.GetComponentsInChildren<Transform>(true);
+                foreach (Transform t in allTrans)
+                {
+                    if (t == null) continue;
+                    string cName = t.name.ToLower();
+                    if (cName.Contains("hole") && !cName.Contains("cap"))
+                    {
+                        t.gameObject.SetActive(true);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -390,42 +651,35 @@ namespace FitTheShape
             var sizeOverLifetime = ps.sizeOverLifetime;
             sizeOverLifetime.enabled = true;
             AnimationCurve sizeCurve = new AnimationCurve();
-            sizeCurve.AddKey(0.0f, 0.6f);
-            sizeCurve.AddKey(0.50f, 1.8f);
-            sizeCurve.AddKey(1.0f, 2.4f);
+            sizeCurve.AddKey(0.0f, 0.3f);
+            sizeCurve.AddKey(0.35f, 1.2f);
+            sizeCurve.AddKey(1.0f, 1.6f);
             sizeOverLifetime.size = new ParticleSystem.MinMaxCurve(1.0f, sizeCurve);
 
+            ParticleSystemRenderer psRenderer = flashGo.GetComponent<ParticleSystemRenderer>();
             if (neonFlashMaterial == null)
             {
-                Material circleMat = Resources.Load<Material>("Mat_Particle_Circle");
-                if (circleMat != null)
+                Shader unlitShader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color") ?? Shader.Find("Sprites/Default");
+                if (unlitShader != null)
                 {
-                    neonFlashMaterial = circleMat;
-                }
-                else
-                {
-                    Shader pShader = Shader.Find("Universal Render Pipeline/Particles/Unlit") 
-                                  ?? Shader.Find("Particles/Standard Unlit") 
-                                  ?? Shader.Find("Mobile/Particles/Alpha Blended");
-                    neonFlashMaterial = new Material(pShader);
+                    neonFlashMaterial = new Material(unlitShader);
                 }
             }
-
-            var psRenderer = flashGo.GetComponent<ParticleSystemRenderer>();
-            psRenderer.renderMode = ParticleSystemRenderMode.Billboard;
-            psRenderer.sharedMaterial = neonFlashMaterial;
+            if (neonFlashMaterial != null)
+            {
+                psRenderer.sharedMaterial = neonFlashMaterial;
+            }
 
             ps.Emit(1);
-            Destroy(flashGo, 0.40f);
+            Destroy(flashGo, 0.45f);
         }
 
         private void HideHoleCutout(Transform segmentRoot)
         {
             if (segmentRoot == null) return;
 
-            // Segment ve altındaki tüm Hole / Hole-Cap objelerini eksiksiz bulup kapat
-            Transform[] allTrans = segmentRoot.GetComponentsInChildren<Transform>(true);
-            foreach (Transform t in allTrans)
+            Transform[] allChildren = segmentRoot.GetComponentsInChildren<Transform>(true);
+            foreach (Transform t in allChildren)
             {
                 if (t == null) continue;
                 string cName = t.name.ToLower();
@@ -511,6 +765,7 @@ namespace FitTheShape
 
         private void OnDestroy()
         {
+            allTrackedShapes.Remove(this);
             activeSequence?.Kill();
             if (activeTrailInstance != null)
             {

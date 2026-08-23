@@ -45,6 +45,25 @@ namespace FitTheShape
         [Tooltip("Overshoot multiplier for the elastic return.")]
         [SerializeField] private float springOvershoot = 1.35f;
 
+        [Header("Game Reset & Column Spin Settings (Yaylanarak Güç Alma & Dönüş)")]
+        [Tooltip("Geriye yaylanarak güç toplama açısı (Anticipation angle in degrees).")]
+        [SerializeField] private float anticipationAngle = -28f;
+
+        [Tooltip("Geriye güç toplama süresi (Anticipation windup duration).")]
+        [SerializeField] private float anticipationDuration = 0.20f;
+
+        [Tooltip("Ana 360 derece hızlı fırlama ve dönüş süresi.")]
+        [SerializeField] private float columnSpinDuration = 0.50f;
+
+        [Tooltip("Yerine otururken hafif aşma açısı (Settle overshoot angle).")]
+        [SerializeField] private float settleOvershootAngle = 8f;
+
+        [Tooltip("Yerine elastik oturma süresi (Elastic settle duration).")]
+        [SerializeField] private float settleDuration = 0.22f;
+
+        [Tooltip("Sütunlar arası ardışık başlama gecikmesi (Stagger delay).")]
+        [SerializeField] private float columnStaggerDelay = 0.09f;
+
         [Header("Feedback Hooks")]
         [Tooltip("Optional particle system played at the moment of impact.")]
         [SerializeField] private ParticleSystem impactParticles;
@@ -101,6 +120,11 @@ namespace FitTheShape
             InitializeGrid();
         }
 
+        private Transform[] columnPivots = new Transform[5];
+        private Sequence activeSpinSequence;
+
+        public Transform[] ColumnPivots => columnPivots;
+
         public void InitializeGrid()
         {
             if (isInitialized && allWheelBlocks.Count == 75) return;
@@ -121,11 +145,24 @@ namespace FitTheShape
 
             for (int c = 0; c < 5; c++)
             {
+                Transform colPivot = wheelRoot.Find($"ColumnPivot_{c}");
+                if (colPivot == null)
+                {
+                    GameObject colGo = new GameObject($"ColumnPivot_{c}");
+                    colPivot = colGo.transform;
+                    colPivot.SetParent(wheelRoot, false);
+                    colPivot.localPosition = Vector3.zero;
+                    colPivot.localRotation = Quaternion.identity;
+                    colPivot.localScale = Vector3.one;
+                }
+                columnPivots[c] = colPivot;
+
                 for (int r = 0; r < 15; r++)
                 {
-                    Transform seg = wheelRoot.Find($"Segment_c{c}_r{r}");
+                    Transform seg = wheelRoot.Find($"Segment_c{c}_r{r}") ?? colPivot.Find($"Segment_c{c}_r{r}");
                     if (seg != null)
                     {
+                        seg.SetParent(colPivot, true);
                         grid[c, r] = seg;
                         allWheelBlocks.Add(seg);
                         blockGridCoords[seg] = new Vector2Int(c, r);
@@ -135,6 +172,78 @@ namespace FitTheShape
             }
 
             isInitialized = true;
+        }
+
+        /// <summary>
+        /// Tüm çark sütunlarını sıra sıra hızlıca 360 derece döndüren ve oyunu sıfırlayan animasyon dizisi.
+        /// </summary>
+        public void SpinAllColumnsSequence(Action onHalfway = null, Action onComplete = null)
+        {
+            if (!isInitialized || allWheelBlocks.Count == 0)
+            {
+                InitializeGrid();
+            }
+
+            activeSpinSequence?.Kill();
+            activeSpinSequence = DOTween.Sequence();
+
+            float singleColTotalTime = anticipationDuration + columnSpinDuration + settleDuration;
+            float totalDuration = singleColTotalTime + (4 * columnStaggerDelay);
+
+            if (FitTheShapeAudioManager.Instance != null)
+            {
+                FitTheShapeAudioManager.Instance.PlayLaunchSound();
+            }
+
+            for (int c = 0; c < 5; c++)
+            {
+                Transform colPivot = columnPivots[c];
+                if (colPivot == null) continue;
+
+                float startTime = c * columnStaggerDelay;
+                colPivot.DOKill();
+                colPivot.localRotation = Quaternion.identity;
+
+                // 🎡 YAYLANARAK GÜÇ ALMA VE DÖNÜŞ DİZİSİ:
+                Sequence colSeq = DOTween.Sequence();
+                colSeq.SetTarget(colPivot);
+
+                // 1. AŞAMA (Windup / Anticipation): Geriye yaylanarak gerilme ve güç toplama
+                colSeq.Append(colPivot.DOLocalRotate(new Vector3(anticipationAngle, 0f, 0f), anticipationDuration, RotateMode.LocalAxisAdd)
+                    .SetEase(Ease.OutQuad));
+
+                // 2. AŞAMA (Powerful Fast Spin): Güçlü ve patlayıcı bir ivmeyle 360 derece ileri fırlama
+                colSeq.Append(colPivot.DOLocalRotate(new Vector3(360f - anticipationAngle + settleOvershootAngle, 0f, 0f), columnSpinDuration, RotateMode.LocalAxisAdd)
+                    .SetEase(Ease.InCubic));
+
+                // 3. AŞAMA (Elastic Settle): Yerine otururken tatlı bir yaylanma ile 0 derecede kilitlenme
+                colSeq.Append(colPivot.DOLocalRotate(Vector3.zero, settleDuration)
+                    .SetEase(Ease.OutBack, 1.6f));
+
+                colSeq.OnComplete(() =>
+                {
+                    colPivot.localRotation = Quaternion.identity;
+                });
+
+                activeSpinSequence.Insert(startTime, colSeq);
+            }
+
+            if (onHalfway != null)
+            {
+                activeSpinSequence.InsertCallback(totalDuration * 0.45f, () => onHalfway.Invoke());
+            }
+
+            activeSpinSequence.OnComplete(() =>
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    if (columnPivots[c] != null)
+                    {
+                        columnPivots[c].localRotation = Quaternion.identity;
+                    }
+                }
+                onComplete?.Invoke();
+            });
         }
 
         public void TriggerReaction(Transform hitTransform, Transform seatedShape = null)
