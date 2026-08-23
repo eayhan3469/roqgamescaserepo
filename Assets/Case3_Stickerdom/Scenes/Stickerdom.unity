@@ -1186,7 +1186,8 @@ MonoBehaviour:
   targetGhostSlot: {fileID: 636427988}
   peelMesh3D: {fileID: 1215549567}
   peelDuration: 0.46
-  peelTiltStrength: 14
+  peelTiltStrength: 0
+  randomizeCornerOnPeel: 0
   flightDuration: 0.55
   flightJumpPower: 1.6
   flightEase: 6
@@ -1217,17 +1218,19 @@ MonoBehaviour:
   peelProgress: 0
   creaseColor: {r: 0, g: 0, b: 0, a: 1}
   peakColor: {r: 1, g: 1, b: 1, a: 1}
-  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
-  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
-  creasePosition: 0.05
-  peakPosition: 0.2
-  dipPosition: 0.4
-  apexGlossIntensity: 0.75
+  midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
+  endToneColor: {r: 1, g: 1, b: 1, a: 1}
+  tipColor: {r: 1, g: 1, b: 1, a: 1}
+  creasePosition: 0.1
+  peakPosition: 0.31
+  dipPosition: 0.445
+  tailPosition: 0.619
+  apexGlossIntensity: 0.05
   invertGradientDirection: 0
-  rollRadius: 0.38
-  peelAngle: 45
-  gridResolution: 32
-  backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
+  rollRadius: 0.2
+  peelAngle: 184
+  gridResolution: 36
+  backSideColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1306484379
 GameObject:
   m_ObjectHideFlags: 0
@@ -1919,7 +1922,8 @@ MonoBehaviour:
   targetGhostSlot: {fileID: 264991239}
   peelMesh3D: {fileID: 1644672745}
   peelDuration: 0.46
-  peelTiltStrength: 14
+  peelTiltStrength: 0
+  randomizeCornerOnPeel: 0
   flightDuration: 0.55
   flightJumpPower: 1.6
   flightEase: 6
@@ -1950,17 +1954,19 @@ MonoBehaviour:
   peelProgress: 0
   creaseColor: {r: 0, g: 0, b: 0, a: 1}
   peakColor: {r: 1, g: 1, b: 1, a: 1}
-  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
-  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
-  creasePosition: 0.05
-  peakPosition: 0.2
-  dipPosition: 0.4
-  apexGlossIntensity: 0.75
+  midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
+  endToneColor: {r: 1, g: 1, b: 1, a: 1}
+  tipColor: {r: 1, g: 1, b: 1, a: 1}
+  creasePosition: 0.1
+  peakPosition: 0.31
+  dipPosition: 0.445
+  tailPosition: 0.619
+  apexGlossIntensity: 0.05
   invertGradientDirection: 0
-  rollRadius: 0.38
-  peelAngle: 68
-  gridResolution: 32
-  backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
+  rollRadius: 0.2
+  peelAngle: 184
+  gridResolution: 36
+  backSideColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1700000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2525,7 +2531,8 @@ MonoBehaviour:
   targetGhostSlot: {fileID: 367521629}
   peelMesh3D: {fileID: 2059011747}
   peelDuration: 0.46
-  peelTiltStrength: 14
+  peelTiltStrength: 0
+  randomizeCornerOnPeel: 0
   flightDuration: 0.55
   flightJumpPower: 1.6
   flightEase: 6
@@ -2554,19 +2561,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerPeel3DMesh
   peelProgress: 0
-  creaseColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
+  creaseColor: {r: 0, g: 0, b: 0, a: 1}
   peakColor: {r: 1, g: 1, b: 1, a: 1}
-  midDipColor: {r: 0.6886792, g: 0.6886792, b: 0.6886792, a: 1}
+  midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
   endToneColor: {r: 1, g: 1, b: 1, a: 1}
-  creasePosition: 0.249
-  peakPosition: 0.438
-  dipPosition: 0.609
-  apexGlossIntensity: 0.28
+  tipColor: {r: 1, g: 1, b: 1, a: 1}
+  creasePosition: 0.1
+  peakPosition: 0.31
+  dipPosition: 0.445
+  tailPosition: 0.619
+  apexGlossIntensity: 0.05
   invertGradientDirection: 0
   rollRadius: 0.2
   peelAngle: 184
   gridResolution: 36
-  backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
+  backSideColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2100000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2723,7 +2732,8 @@ MonoBehaviour:
   targetGhostSlot: {fileID: 2055223286}
   peelMesh3D: {fileID: 2100000006}
   peelDuration: 0.46
-  peelTiltStrength: 14
+  peelTiltStrength: 0
+  randomizeCornerOnPeel: 0
   flightDuration: 0.55
   flightJumpPower: 1.6
   flightEase: 6
@@ -2754,17 +2764,19 @@ MonoBehaviour:
   peelProgress: 0
   creaseColor: {r: 0, g: 0, b: 0, a: 1}
   peakColor: {r: 1, g: 1, b: 1, a: 1}
-  midDipColor: {r: 0.28, g: 0.3, b: 0.36, a: 1}
-  endToneColor: {r: 0.96, g: 0.96, b: 0.98, a: 1}
-  creasePosition: 0.05
-  peakPosition: 0.2
-  dipPosition: 0.4
-  apexGlossIntensity: 0.75
+  midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
+  endToneColor: {r: 1, g: 1, b: 1, a: 1}
+  tipColor: {r: 1, g: 1, b: 1, a: 1}
+  creasePosition: 0.1
+  peakPosition: 0.31
+  dipPosition: 0.445
+  tailPosition: 0.619
+  apexGlossIntensity: 0.05
   invertGradientDirection: 0
-  rollRadius: 0.38
-  peelAngle: 45
-  gridResolution: 32
-  backSideColor: {r: 0.92, g: 0.93, b: 0.95, a: 1}
+  rollRadius: 0.2
+  peelAngle: 184
+  gridResolution: 36
+  backSideColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -30,7 +30,10 @@ namespace Stickerdom
         [SerializeField] private float peelDuration = 0.46f;
 
         [Tooltip("Corner lift tilt angle strength in degrees.")]
-        [SerializeField] private float peelTiltStrength = 14.0f;
+        [SerializeField] private float peelTiltStrength = 0.0f;
+
+        [Tooltip("Randomize peel corner on each click (if false, uses the configured peelAngle).")]
+        [SerializeField] private bool randomizeCornerOnPeel = false;
 
         [Header("Flight Animation Settings")]
         [Tooltip("Duration of the flight while rolled in the air.")]
@@ -239,10 +242,15 @@ namespace Stickerdom
                 SpawnVFX(peelVfxPrefab, transform.position);
             }
 
-            // 4. Calculate corner peel tilt
-            float chosenAngle = peelMesh3D != null ? peelMesh3D.PickRandomCornerAngle() : 45f;
-            float rad = chosenAngle * Mathf.Deg2Rad;
-            Vector3 peelTiltAngles = new Vector3(-Mathf.Sin(rad) * peelTiltStrength, Mathf.Cos(rad) * peelTiltStrength, -8f);
+            // 4. Calculate corner peel angle
+            float chosenAngle = (peelMesh3D != null && randomizeCornerOnPeel)
+                ? peelMesh3D.PickRandomCornerAngle()
+                : (peelMesh3D != null ? peelMesh3D.PeelAngle : 45f);
+
+            if (peelMesh3D != null)
+            {
+                peelMesh3D.SetPeelAngle(chosenAngle);
+            }
 
             // 5. Construct Tactile Sequence: 3D Peel Off -> Parabolic Flight -> 3D Reverse Stick
             Vector3 targetPos = targetGhostSlot.TargetPosition;
@@ -257,8 +265,6 @@ namespace Stickerdom
             {
                 masterSequence.Append(peelMesh3D.AnimatePeelOff(peelDuration));
             }
-            masterSequence.Join(transform.DOLocalRotate(peelTiltAngles, peelDuration).SetEase(Ease.OutCubic));
-            masterSequence.Join(transform.DOLocalMoveZ(initialLocalPos.z - 0.25f, peelDuration).SetEase(Ease.OutQuad));
 
             // PHASE 2: UÇUŞ (0.55s) - Play Fly Swoosh & arc flight to target slot
             masterSequence.AppendCallback(() =>

@@ -30,19 +30,19 @@ namespace Stickerdom
         [SerializeField] private Color tipColor = Color.white;
 
         [Tooltip("1. Zemin temas çizgisi (Tam Siyah) genişliği/konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float creasePosition = 0.249f;
+        [Range(0.00f, 1.00f)] [SerializeField] private float creasePosition = 0.1f;
 
         [Tooltip("2. Tepe noktasının kanattaki konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float peakPosition = 0.438f;
+        [Range(0.00f, 1.00f)] [SerializeField] private float peakPosition = 0.31f;
 
         [Tooltip("3. Koyu gri çukurun kanattaki konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float dipPosition = 0.609f;
+        [Range(0.00f, 1.00f)] [SerializeField] private float dipPosition = 0.445f;
 
         [Tooltip("4. Gövde ara degrade bitiş konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float tailPosition = 0.70f;
+        [Range(0.00f, 1.00f)] [SerializeField] private float tailPosition = 0.619f;
 
         [Tooltip("Tepe noktasındaki parlama şiddeti.")]
-        [Range(0.0f, 3.0f)] [SerializeField] private float apexGlossIntensity = 0.28f;
+        [Range(0.0f, 3.0f)] [SerializeField] private float apexGlossIntensity = 0.05f;
 
         [Tooltip("Degrade yönünü tersine çevir (Gerektiğinde tek tıkla ters çevirebilirsiniz).")]
         [SerializeField] private bool invertGradientDirection = false;
@@ -52,7 +52,7 @@ namespace Stickerdom
         [Range(0.15f, 0.80f)] [SerializeField] private float rollRadius = 0.20f;
 
         [Tooltip("Direction angle in degrees from which the corner curls up.")]
-        [Range(0f, 360f)] [SerializeField] private float peelAngle = 45.0f;
+        [Range(0f, 360f)] [SerializeField] private float peelAngle = 184.0f;
 
         [Range(12, 64)] [SerializeField] private int gridResolution = 36;
 
@@ -116,6 +116,38 @@ namespace Stickerdom
             }
         }
 
+        private void Reset()
+        {
+            ResetToUserDefaults();
+        }
+
+        [ContextMenu("🔥 Ayarları Varsayılana Sıfırla (Reset To Dialed Defaults)")]
+        public void ResetToUserDefaults()
+        {
+            creasePosition = 0.17f;
+            peakPosition = 0.31f;
+            dipPosition = 0.445f;
+            tailPosition = 0.619f;
+            apexGlossIntensity = 0.05f;
+            rollRadius = 0.20f;
+            peelAngle = 184f;
+            gridResolution = 36;
+            creaseColor = Color.black;
+            peakColor = Color.white;
+            midDipColor = new Color(0.70f, 0.72f, 0.78f, 1.0f);
+            endToneColor = Color.white;
+            tipColor = Color.white;
+            backSideColor = Color.white;
+            invertGradientDirection = false;
+
+            ApplyMaterialProperties();
+            if (isInitialized)
+            {
+                RebuildGridMesh();
+                DeformMesh();
+            }
+        }
+
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -128,6 +160,7 @@ namespace Stickerdom
             ApplyMaterialProperties();
             if (isInitialized)
             {
+                RebuildGridMesh();
                 DeformMesh();
             }
         }
@@ -172,58 +205,70 @@ namespace Stickerdom
 
         private void BuildMesh()
         {
-            if (isInitialized || spriteRenderer == null || spriteRenderer.sprite == null) return;
+            if (spriteRenderer == null || spriteRenderer.sprite == null) return;
+
+            if (meshHolder == null)
+            {
+                // 1. Create Child GameObject for 3D Mesh
+                meshHolder = new GameObject($"{gameObject.name}_3DCurlMesh");
+                meshHolder.transform.SetParent(transform, false);
+                meshHolder.transform.localPosition = Vector3.zero;
+                meshHolder.transform.localRotation = Quaternion.identity;
+                meshHolder.transform.localScale = Vector3.one;
+
+                meshFilter = meshHolder.AddComponent<MeshFilter>();
+                meshRenderer = meshHolder.AddComponent<MeshRenderer>();
+
+                Material baseMat = Resources.Load<Material>("Mat_StickerDoubleSided");
+                Shader shader = (baseMat != null && baseMat.shader != null) ? baseMat.shader : Shader.Find("Custom/StickerDoubleSidedURP");
+                if (shader == null)
+                {
+                    shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
+                }
+
+                dynamicMat = new Material(shader);
+                dynamicMat.name = $"Mat_{gameObject.name}_Instance";
+                dynamicMat.SetTexture(PropMainTex, spriteRenderer.sprite.texture);
+                if (dynamicMat.HasProperty("_BaseMap")) dynamicMat.SetTexture("_BaseMap", spriteRenderer.sprite.texture);
+                dynamicMat.mainTexture = spriteRenderer.sprite.texture;
+                dynamicMat.SetColor(PropColor, spriteRenderer.color);
+                dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
+                ApplyMaterialProperties();
+
+                meshRenderer.material = dynamicMat;
+                meshRenderer.sortingOrder = spriteRenderer.sortingOrder;
+
+                // Disable original SpriteRenderer so the 3D curling mesh renders
+                spriteRenderer.enabled = false;
+            }
+
+            RebuildGridMesh();
+            isInitialized = true;
+        }
+
+        public void RebuildGridMesh()
+        {
+            if (spriteRenderer == null || spriteRenderer.sprite == null) return;
 
             Sprite sprite = spriteRenderer.sprite;
             Vector2 spriteSize = sprite.rect.size / sprite.pixelsPerUnit;
             float halfW = spriteSize.x * 0.5f;
             float halfH = spriteSize.y * 0.5f;
 
-            // 1. Create Child GameObject for 3D Mesh
-            meshHolder = new GameObject($"{gameObject.name}_3DCurlMesh");
-            meshHolder.transform.SetParent(transform, false);
-            meshHolder.transform.localPosition = Vector3.zero;
-            meshHolder.transform.localRotation = Quaternion.identity;
-            meshHolder.transform.localScale = Vector3.one;
-
-            meshFilter = meshHolder.AddComponent<MeshFilter>();
-            meshRenderer = meshHolder.AddComponent<MeshRenderer>();
-
-            Material baseMat = Resources.Load<Material>("Mat_StickerDoubleSided");
-            Shader shader = (baseMat != null && baseMat.shader != null) ? baseMat.shader : Shader.Find("Custom/StickerDoubleSidedURP");
-            if (shader == null)
-            {
-                shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Sprites/Default");
-            }
-
-            dynamicMat = new Material(shader);
-            dynamicMat.name = $"Mat_{gameObject.name}_Instance";
-            dynamicMat.SetTexture(PropMainTex, sprite.texture);
-            if (dynamicMat.HasProperty("_BaseMap")) dynamicMat.SetTexture("_BaseMap", sprite.texture);
-            dynamicMat.mainTexture = sprite.texture;
-            dynamicMat.SetColor(PropColor, spriteRenderer.color);
-            dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
-            ApplyMaterialProperties();
-
-            meshRenderer.material = dynamicMat;
-            meshRenderer.sortingOrder = spriteRenderer.sortingOrder;
-
-            // Disable original SpriteRenderer so the 3D curling mesh renders
-            spriteRenderer.enabled = false;
-
-            // 2. Subdivide Peel-Aligned Dual-Layer Grid Mesh (Front Sheet + Back Sheet)
-            // Izgara çizgileri katlanma açısına (peelAngle) tam paralel hizalanır; testere dişi / karelenme SIFIRA iner!
             int res = gridResolution;
             int singleVerts = (res + 1) * (res + 1);
             int totalVerts = singleVerts * 2;
             int singleTris = res * res * 6;
             int totalTris = singleTris * 2;
 
-            baseVertices = new Vector3[totalVerts];
-            workingVertices = new Vector3[totalVerts];
-            workingColors = new Color[totalVerts];
-            baseUVs = new Vector2[totalVerts];
-            baseTriangles = new int[totalTris];
+            if (baseVertices == null || baseVertices.Length != totalVerts)
+            {
+                baseVertices = new Vector3[totalVerts];
+                workingVertices = new Vector3[totalVerts];
+                workingColors = new Color[totalVerts];
+                baseUVs = new Vector2[totalVerts];
+                baseTriangles = new int[totalTris];
+            }
 
             Vector4 uvRect = UnityEngine.Sprites.DataUtility.GetInnerUV(sprite);
             float minU = uvRect.x;
@@ -256,13 +301,11 @@ namespace Stickerdom
             int vertIdx = 0;
             for (int y = 0; y <= res; y++)
             {
-                // y ekseni: peel direction (dir) boyunca ilerler (dMin -> dMax)
                 float normD = (float)y / res;
                 float dVal = Mathf.Lerp(dMin, dMax, normD);
 
                 for (int x = 0; x <= res; x++)
                 {
-                    // x ekseni: katlanma çizgisine (perp) paralel uzanır (perpMin -> perpMax)
                     float normP = (float)x / res;
                     float pVal = Mathf.Lerp(perpMin, perpMax, normP);
 
@@ -275,16 +318,14 @@ namespace Stickerdom
                     float uvY = Mathf.Lerp(minV, maxV, normY);
                     Vector2 uv = new Vector2(uvX, uvY);
 
-                    // 1. FRONT SHEET VERTICES (0 ... singleVerts-1)
                     baseVertices[vertIdx] = pos;
                     workingVertices[vertIdx] = pos;
-                    workingColors[vertIdx] = new Color(0f, 1f, 0f, 1f); // g=1.0, a=1.0
+                    workingColors[vertIdx] = new Color(0f, 1f, 0f, 1f);
                     baseUVs[vertIdx] = uv;
 
-                    // 2. BACK SHEET VERTICES (singleVerts ... totalVerts-1)
                     baseVertices[vertIdx + singleVerts] = pos;
                     workingVertices[vertIdx + singleVerts] = pos;
-                    workingColors[vertIdx + singleVerts] = new Color(0f, 0f, 0f, 0f); // a=0.0 (Invisible on table)
+                    workingColors[vertIdx + singleVerts] = new Color(0f, 0f, 0f, 0f);
                     baseUVs[vertIdx + singleVerts] = uv;
 
                     vertIdx++;
@@ -301,7 +342,6 @@ namespace Stickerdom
                     int i2 = (y + 1) * (res + 1) + x;
                     int i3 = i2 + 1;
 
-                    // 1. FRONT SHEET TRIANGLES (Clockwise)
                     baseTriangles[triIdx++] = i0;
                     baseTriangles[triIdx++] = i2;
                     baseTriangles[triIdx++] = i1;
@@ -310,7 +350,6 @@ namespace Stickerdom
                     baseTriangles[triIdx++] = i2;
                     baseTriangles[triIdx++] = i3;
 
-                    // 2. BACK SHEET TRIANGLES (Counter-Clockwise)
                     int b0 = i0 + singleVerts;
                     int b1 = i1 + singleVerts;
                     int b2 = i2 + singleVerts;
@@ -326,8 +365,13 @@ namespace Stickerdom
                 }
             }
 
-            deformedMesh = new Mesh();
-            deformedMesh.name = $"{gameObject.name}_DeformedMesh";
+            if (deformedMesh == null)
+            {
+                deformedMesh = new Mesh();
+                deformedMesh.name = $"{gameObject.name}_DeformedMesh";
+            }
+
+            deformedMesh.Clear();
             deformedMesh.vertices = workingVertices;
             deformedMesh.colors = workingColors;
             deformedMesh.uv = baseUVs;
@@ -335,8 +379,10 @@ namespace Stickerdom
             deformedMesh.RecalculateNormals();
             deformedMesh.RecalculateBounds();
 
-            meshFilter.mesh = deformedMesh;
-            isInitialized = true;
+            if (meshFilter != null)
+            {
+                meshFilter.mesh = deformedMesh;
+            }
         }
 
         public void UpdateSortingOrder(int order)
@@ -372,8 +418,7 @@ namespace Stickerdom
             float pMin = Mathf.Min(Mathf.Min(p00, p10), Mathf.Min(p01, p11));
             float span = Mathf.Max(pMax - pMin, 0.001f);
 
-            float dynamicR = Mathf.Max(rollRadius * Mathf.Lerp(0.72f, 1.18f, Mathf.Sqrt(currentPeelProgress)), 0.12f);
-            float R = dynamicR;
+            float R = Mathf.Max(rollRadius, 0.05f);
             float tCrease = currentPeelProgress;
             float maxCurledDist = tCrease * span;
 
@@ -426,25 +471,8 @@ namespace Stickerdom
                     // ARKA YÜZ: Kameraya bakan dış yapışkan yüzey (Z slightly in front by 0.002 to avoid z-fighting)
                     workingVertices[i + singleVerts] = new Vector3(curledPos.x, curledPos.y, curledPos.z - 0.002f);
 
-                    // u Koordinatı (Siyah -> Net Beyaz -> Koyu Gri -> Beyaza Geniş Degrade):
-                    // 1. alpha: 0 -> 0.50*PI (Zemin temas kenarından tepeye: TAM SİYAH -> NET BEYAZ TEPE)
-                    // 2. alpha: 0.50*PI -> PI (Tepe sırtından iniş: NET BEYAZ -> KOYU GRİ)
-                    // 3. alpha > PI (Kanat gövdesi: KOYU GRİDEN BEYAZA GENİŞ GRADIENT)
-                    float u;
-                    if (alpha <= 0.50f * Mathf.PI)
-                    {
-                        u = Mathf.Lerp(0.0f, 0.20f, alpha / (0.50f * Mathf.PI));
-                    }
-                    else if (alpha <= Mathf.PI)
-                    {
-                        u = Mathf.Lerp(0.20f, 0.40f, (alpha - 0.50f * Mathf.PI) / (0.50f * Mathf.PI));
-                    }
-                    else
-                    {
-                        float flapLen = Mathf.Max(maxCurledDist - Mathf.PI * R, 0.001f);
-                        float flapDist = curlDist - Mathf.PI * R;
-                        u = Mathf.Lerp(0.40f, 1.0f, Mathf.Clamp01(flapDist / flapLen));
-                    }
+                    // u Koordinatı (Doğrusal ve birebir kanat boyu eşleme):
+                    float u = maxCurledDist > 0.001f ? Mathf.Clamp01(curlDist / maxCurledDist) : 0f;
 
                     // Tepe noktasındaki keskin silindirik parlama
                     float apexHighlight = Mathf.Pow(Mathf.Sin(Mathf.Clamp01(alpha / Mathf.PI) * Mathf.PI), 2.5f);
@@ -459,6 +487,8 @@ namespace Stickerdom
             deformedMesh.RecalculateBounds();
         }
 
+        public float PeelAngle => peelAngle;
+
         public float PickRandomCornerAngle()
         {
             float chosen = CornerAngles[UnityEngine.Random.Range(0, CornerAngles.Length)];
@@ -468,13 +498,10 @@ namespace Stickerdom
 
         public void SetPeelAngle(float angle)
         {
-            if (Mathf.Abs(peelAngle - angle) > 0.01f)
+            peelAngle = angle;
+            if (isInitialized)
             {
-                peelAngle = angle;
-                if (isInitialized)
-                {
-                    BuildMesh();
-                }
+                RebuildGridMesh();
             }
             DeformMesh();
         }
@@ -488,11 +515,12 @@ namespace Stickerdom
         }
 
         /// <summary>
-        /// 3D SÖKÜLME: 0 -> 1 (Juicy, akıcı ve anında tepki veren Ease.OutCubic eğrisi).
+        /// 3D SÖKÜLME: 0 -> 1 (Juicy, akıcı ve pürüzsüz Ease.OutQuad eğrisi).
         /// </summary>
         public Tween AnimatePeelOff(float duration = 0.40f)
         {
-            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.OutCubic);
+            PeelProgress = 0f;
+            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.OutQuad);
         }
 
         /// <summary>
@@ -524,8 +552,9 @@ namespace Stickerdom
         /// </summary>
         public void ResetPeel()
         {
-            currentPeelProgress = 0f;
-            DeformMesh();
+            PeelProgress = 0f;
+            currentShineProgress = -0.5f;
+            if (dynamicMat != null) dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
         }
 
         private void OnDestroy()
