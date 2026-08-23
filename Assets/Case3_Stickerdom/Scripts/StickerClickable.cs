@@ -227,22 +227,7 @@ namespace Stickerdom
 
             onPeelStarted?.Invoke();
 
-            // 3. Audio & VFX: Play Peel Sound & Peel Poof Particles
-            if (StickerAudioManager.Instance != null)
-            {
-                StickerAudioManager.Instance.PlayPeelSound();
-            }
-
-            if (StickerVFXManager.Instance != null)
-            {
-                StickerVFXManager.Instance.PlayPeelVFX(transform.position);
-            }
-            else
-            {
-                SpawnVFX(peelVfxPrefab, transform.position);
-            }
-
-            // 4. Calculate corner peel angle
+            // 3. Calculate corner peel angle
             float chosenAngle = (peelMesh3D != null && randomizeCornerOnPeel)
                 ? peelMesh3D.PickRandomCornerAngle()
                 : (peelMesh3D != null ? peelMesh3D.PeelAngle : 45f);
@@ -250,6 +235,12 @@ namespace Stickerdom
             if (peelMesh3D != null)
             {
                 peelMesh3D.SetPeelAngle(chosenAngle);
+            }
+
+            // 4. Audio: Play Peel Sound (Adhesive sparkle trail under the fold line is driven live by peelMesh3D)
+            if (StickerAudioManager.Instance != null)
+            {
+                StickerAudioManager.Instance.PlayPeelSound();
             }
 
             // 5. Construct Tactile Sequence: 3D Peel Off -> Parabolic Flight -> 3D Reverse Stick
@@ -336,15 +327,14 @@ namespace Stickerdom
                     peelMesh3D.AnimateShineRay(shineRayDuration);
                 }
 
-                // Spawn Sparkle Burst via StickerVFXManager
-                if (StickerVFXManager.Instance != null)
+                // Rapid sequential perimeter star cascade ("pıt-pıt-pıt-pıt" in the shape of the sticker!)
+                if (StickerVFXManager.Instance != null && spriteRenderer != null && spriteRenderer.sprite != null)
+                {
+                    StickerVFXManager.Instance.PlayStampCascade(transform, spriteRenderer.sprite);
+                }
+                else if (StickerVFXManager.Instance != null)
                 {
                     StickerVFXManager.Instance.PlayStampVFX(targetGhostSlot.TargetPosition);
-                }
-                else
-                {
-                    SpawnVFX(attachVfxPrefab, transform.position);
-                    SpawnVFX(sparkleVfxPrefab, transform.position);
                 }
 
                 // Notify target slot

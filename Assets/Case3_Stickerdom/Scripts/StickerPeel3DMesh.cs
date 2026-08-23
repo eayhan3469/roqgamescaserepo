@@ -100,6 +100,8 @@ namespace Stickerdom
         private float currentPeelProgress = 0f;
         private float currentShineProgress = -0.5f;
         private float currentShadowOpacity = 1.0f;
+        private bool isPeelingOff = false;
+        private float lastSparkleTime = 0f;
         private Material dynamicMat;
         private bool isInitialized = false;
 
@@ -639,6 +641,53 @@ namespace Stickerdom
             {
                 shadowMesh.colors = shadowColors;
             }
+
+            if (isPeelingOff && currentPeelProgress > 0.05f && currentPeelProgress < 0.98f)
+            {
+                if (Time.time - lastSparkleTime > 0.022f)
+                {
+                    lastSparkleTime = Time.time;
+                    EmitSparklesAlongFoldLine();
+                }
+            }
+        }
+
+        private void EmitSparklesAlongFoldLine()
+        {
+            if (spriteRenderer == null || spriteRenderer.sprite == null) return;
+            if (StickerVFXManager.Instance == null) return;
+
+            Vector2 spriteSize = spriteRenderer.sprite.rect.size / spriteRenderer.sprite.pixelsPerUnit;
+            float hw = spriteSize.x * 0.5f;
+            float hh = spriteSize.y * 0.5f;
+
+            float rad = peelAngle * Mathf.Deg2Rad;
+            Vector2 dir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+            Vector2 perp = new Vector2(-dir.y, dir.x);
+
+            float p00 = Vector2.Dot(new Vector2(-hw, -hh), dir);
+            float p10 = Vector2.Dot(new Vector2(hw, -hh), dir);
+            float p01 = Vector2.Dot(new Vector2(-hw, hh), dir);
+            float p11 = Vector2.Dot(new Vector2(hw, hh), dir);
+
+            float pMax = Mathf.Max(Mathf.Max(p00, p10), Mathf.Max(p01, p11));
+            float pMin = Mathf.Min(Mathf.Min(p00, p10), Mathf.Min(p01, p11));
+            float span = Mathf.Max(pMax - pMin, 0.001f);
+
+            float foldProj = pMax - currentPeelProgress * span;
+            Vector2 centerOnFold = foldProj * dir;
+
+            for (int s = 0; s < 2; s++)
+            {
+                float w = UnityEngine.Random.Range(-span * 0.45f, span * 0.45f);
+                Vector2 pt = centerOnFold + perp * w;
+
+                if (pt.x >= -hw && pt.x <= hw && pt.y >= -hh && pt.y <= hh)
+                {
+                    Vector3 worldPos = transform.TransformPoint(new Vector3(pt.x, pt.y, 0.005f));
+                    StickerVFXManager.Instance.EmitPeelSparkle(worldPos);
+                }
+            }
         }
 
         public float PeelAngle => peelAngle;
@@ -667,6 +716,44 @@ namespace Stickerdom
         }
 
         /// <summary>
+        /// Sökülmenin başladığı köşenin gerçek dünya pozisyonunu döndürür.
+        /// </summary>
+        public Vector3 GetPeelCornerWorldPosition()
+        {
+            if (spriteRenderer == null || spriteRenderer.sprite == null) return transform.position;
+
+            Vector2 spriteSize = spriteRenderer.sprite.rect.size / spriteRenderer.sprite.pixelsPerUnit;
+            float hw = spriteSize.x * 0.5f;
+            float hh = spriteSize.y * 0.5f;
+
+            float rad = peelAngle * Mathf.Deg2Rad;
+            Vector2 dir = new Vector2(Mathf.Cos(rad), Mathf.Sin(rad));
+
+            // Sökülmenin başladığı köşe (projeksiyonun maksimum olduğu köşe)
+            Vector2[] corners = new Vector2[]
+            {
+                new Vector2(-hw, -hh),
+                new Vector2(hw, -hh),
+                new Vector2(-hw, hh),
+                new Vector2(hw, hh)
+            };
+
+            Vector2 bestCorner = corners[0];
+            float maxProj = Vector2.Dot(bestCorner, dir);
+            for (int i = 1; i < corners.Length; i++)
+            {
+                float p = Vector2.Dot(corners[i], dir);
+                if (p > maxProj)
+                {
+                    maxProj = p;
+                    bestCorner = corners[i];
+                }
+            }
+
+            return transform.TransformPoint(bestCorner);
+        }
+
+        /// <summary>
         /// Boşta beklerken köşe göz kırpması / çağırma efekti (Idle corner tease / wink).
         /// </summary>
         public Tween AnimateCornerTease(float targetProgress, float duration = 0.30f)
@@ -680,9 +767,13 @@ namespace Stickerdom
         /// </summary>
         public Tween AnimatePeelOff(float duration = 0.40f)
         {
+            isPeelingOff = true;
             currentShadowOpacity = 1f;
             PeelProgress = 0f;
-            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.OutQuad);
+            lastSparkleTime = 0f;
+            return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() => isPeelingOff = false);
         }
 
         /// <summary>
@@ -715,6 +806,7 @@ namespace Stickerdom
         /// </summary>
         public void ResetPeel()
         {
+            isPeelingOff = false;
             PeelProgress = 0f;
             currentShineProgress = -0.5f;
             if (dynamicMat != null) dynamicMat.SetFloat(PropShineProgress, currentShineProgress);
