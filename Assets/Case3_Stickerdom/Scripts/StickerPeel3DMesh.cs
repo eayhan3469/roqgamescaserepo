@@ -29,17 +29,17 @@ namespace Stickerdom
         [Tooltip("5. Kanat serbest uç bitiş rengi.")]
         [SerializeField] private Color tipColor = Color.white;
 
-        [Tooltip("1. Zemin temas çizgisi (Tam Siyah) genişliği/konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float creasePosition = 0.1f;
+        [Tooltip("1. Zemin temas çizgisi (Tam Siyah) sabit fiziksel genişliği (0.00 - 2.00).")]
+        [Range(0.00f, 2.00f)] [SerializeField] private float creasePosition = 0.4f;
 
-        [Tooltip("2. Tepe noktasının kanattaki konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float peakPosition = 0.31f;
+        [Tooltip("2. Tepe beyaz parlama noktasının katlanma çizgisine sabit uzaklığı (0.00 - 2.00).")]
+        [Range(0.00f, 2.00f)] [SerializeField] private float peakPosition = 0.7f;
 
-        [Tooltip("3. Koyu gri çukurun kanattaki konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float dipPosition = 0.445f;
+        [Tooltip("3. Koyu gri çukur noktasının katlanma çizgisine sabit uzaklığı (0.00 - 2.00).")]
+        [Range(0.00f, 2.00f)] [SerializeField] private float dipPosition = 0.989f;
 
-        [Tooltip("4. Gövde ara degrade bitiş konumu (0.00 - 1.00).")]
-        [Range(0.00f, 1.00f)] [SerializeField] private float tailPosition = 0.619f;
+        [Tooltip("4. Beyaz gövdeye geçiş bitiş noktasının sabit uzaklığı (0.00 - 2.00).")]
+        [Range(0.00f, 2.00f)] [SerializeField] private float tailPosition = 1.253f;
 
         [Tooltip("Tepe noktasındaki parlama şiddeti.")]
         [Range(0.0f, 3.0f)] [SerializeField] private float apexGlossIntensity = 0.05f;
@@ -124,10 +124,10 @@ namespace Stickerdom
         [ContextMenu("🔥 Ayarları Varsayılana Sıfırla (Reset To Dialed Defaults)")]
         public void ResetToUserDefaults()
         {
-            creasePosition = 0.17f;
-            peakPosition = 0.31f;
-            dipPosition = 0.445f;
-            tailPosition = 0.619f;
+            creasePosition = 0.4f;
+            peakPosition = 0.7f;
+            dipPosition = 0.989f;
+            tailPosition = 1.253f;
             apexGlossIntensity = 0.05f;
             rollRadius = 0.20f;
             peelAngle = 184f;
@@ -471,8 +471,8 @@ namespace Stickerdom
                     // ARKA YÜZ: Kameraya bakan dış yapışkan yüzey (Z slightly in front by 0.002 to avoid z-fighting)
                     workingVertices[i + singleVerts] = new Vector3(curledPos.x, curledPos.y, curledPos.z - 0.002f);
 
-                    // u Koordinatı (Doğrusal ve birebir kanat boyu eşleme):
-                    float u = maxCurledDist > 0.001f ? Mathf.Clamp01(curlDist / maxCurledDist) : 0f;
+                    // u Koordinatı: Katlanma çizgisinden olan net fiziksel uzaklık (Söküldükçe ASLA kaymaz, sabit kalır!)
+                    float u = curlDist;
 
                     // Tepe noktasındaki keskin silindirik parlama
                     float apexHighlight = Mathf.Pow(Mathf.Sin(Mathf.Clamp01(alpha / Mathf.PI) * Mathf.PI), 2.5f);

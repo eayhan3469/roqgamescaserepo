@@ -16,11 +16,11 @@ Shader "Custom/StickerDoubleSidedURP"
         _MidDipColor ("3 Mid Dip Dark Gray Color", Color) = (0.28, 0.30, 0.36, 1.0)
         _EndToneColor ("4 Body Gradient Tone Color", Color) = (0.80, 0.82, 0.88, 1.0)
         _TipColor ("5 Flap Tip Final Color", Color) = (0.98, 0.98, 1.00, 1.0)
-        _CreasePosition ("1 Crease End Position", Range(0.00, 1.00)) = 0.05
-        _PeakPosition ("2 Apex Peak Position", Range(0.00, 1.00)) = 0.20
-        _DipPosition ("3 Mid Dip Position", Range(0.00, 1.00)) = 0.40
-        _TailPosition ("4 Body Tail Position", Range(0.00, 1.00)) = 0.70
-        _ApexGlossIntensity ("Apex Gloss Intensity", Range(0.0, 3.0)) = 0.60
+        _CreasePosition ("1 Crease End Position", Range(0.00, 2.00)) = 0.4
+        _PeakPosition ("2 Apex Peak Position", Range(0.00, 2.00)) = 0.7
+        _DipPosition ("3 Mid Dip Position", Range(0.00, 2.00)) = 0.989
+        _TailPosition ("4 Body Tail Position", Range(0.00, 2.00)) = 1.253
+        _ApexGlossIntensity ("Apex Gloss Intensity", Range(0.0, 3.0)) = 0.05
         [Toggle] _InvertGradient ("Invert Gradient Direction", Float) = 0.0
     }
 
@@ -132,11 +132,11 @@ Shader "Custom/StickerDoubleSidedURP"
                 else
                 {
                     // 2. SADECE HAVAYA KALKAN SÖKÜLMÜŞ ARKA KANAT (Adhesive Backside):
-                    // Birebir Çizdiğiniz Çok Kademeli Degrade (Inspector'dan Canlı Kontrollü):
-                    float u = saturate(input.color.r);
+                    // Birebir Çizdiğiniz Çok Kademeli Degrade (Sabit Fiziksel Uzaklık / World-Space Distance):
+                    float u = max(input.color.r, 0.0f);
                     if (_InvertGradient > 0.5f)
                     {
-                        u = 1.0f - u;
+                        u = max(_TailPosition - u, 0.0f);
                     }
 
                     float3 colBlack   = _CreaseColor.rgb;
@@ -154,7 +154,7 @@ Shader "Custom/StickerDoubleSidedURP"
 
                     if (u < cPos)
                     {
-                        // 0 -> cPos: Zemin Temas Çizgisi TAM SİYAH
+                        // 0 -> cPos: Zemin Temas Çizgisi TAM SİYAH (Sabit Fiziksel Genişlik)
                         backRgb = colBlack;
                     }
                     else if (u < pPos)
@@ -177,9 +177,8 @@ Shader "Custom/StickerDoubleSidedURP"
                     }
                     else
                     {
-                        // tPos -> 1.0: Gövde Tonundan Kanat Ucuna Son Degrade (Gövde Tonu -> Uç Rengi)
-                        float t = (u - tPos) / max(1.0f - tPos, 0.001f);
-                        backRgb = lerp(colEndTone, colTip, t);
+                        // tPos+: Gövdeden Uca Beyaz
+                        backRgb = colTip;
                     }
 
                     // Tepe noktası silindirik parlama vurgusu

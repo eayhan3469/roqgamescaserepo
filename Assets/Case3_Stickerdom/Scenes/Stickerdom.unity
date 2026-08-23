@@ -1221,10 +1221,10 @@ MonoBehaviour:
   midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
   endToneColor: {r: 1, g: 1, b: 1, a: 1}
   tipColor: {r: 1, g: 1, b: 1, a: 1}
-  creasePosition: 0.1
-  peakPosition: 0.31
-  dipPosition: 0.445
-  tailPosition: 0.619
+  creasePosition: 0.4
+  peakPosition: 0.7
+  dipPosition: 0.989
+  tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
   rollRadius: 0.2
@@ -1957,10 +1957,10 @@ MonoBehaviour:
   midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
   endToneColor: {r: 1, g: 1, b: 1, a: 1}
   tipColor: {r: 1, g: 1, b: 1, a: 1}
-  creasePosition: 0.1
-  peakPosition: 0.31
-  dipPosition: 0.445
-  tailPosition: 0.619
+  creasePosition: 0.4
+  peakPosition: 0.7
+  dipPosition: 0.989
+  tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
   rollRadius: 0.2
@@ -2566,10 +2566,10 @@ MonoBehaviour:
   midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
   endToneColor: {r: 1, g: 1, b: 1, a: 1}
   tipColor: {r: 1, g: 1, b: 1, a: 1}
-  creasePosition: 0.1
-  peakPosition: 0.31
-  dipPosition: 0.445
-  tailPosition: 0.619
+  creasePosition: 0.4
+  peakPosition: 0.7
+  dipPosition: 0.989
+  tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
   rollRadius: 0.2
@@ -2767,10 +2767,10 @@ MonoBehaviour:
   midDipColor: {r: 0.7, g: 0.72, b: 0.78, a: 1}
   endToneColor: {r: 1, g: 1, b: 1, a: 1}
   tipColor: {r: 1, g: 1, b: 1, a: 1}
-  creasePosition: 0.1
-  peakPosition: 0.31
-  dipPosition: 0.445
-  tailPosition: 0.619
+  creasePosition: 0.4
+  peakPosition: 0.7
+  dipPosition: 0.989
+  tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
   rollRadius: 0.2
