@@ -6010,7 +6010,7 @@ Transform:
   m_GameObject: {fileID: 1297003747}
   serializedVersion: 2
   m_LocalRotation: {x: 0.57357645, y: 0, z: 0, w: 0.81915206}
-  m_LocalPosition: {x: 0.02, y: 70.96, z: -15.25}
+  m_LocalPosition: {x: 0, y: 97.51, z: -28.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10731,12 +10731,6 @@ MonoBehaviour:
   pushDuration: 0.085
   springDuration: 0.3
   springOvershoot: 1.4
-  anticipationAngle: -28
-  anticipationDuration: 0.2
-  columnSpinDuration: 0.5
-  settleOvershootAngle: 8
-  settleDuration: 0.22
-  columnStaggerDelay: 0.09
   impactParticles: {fileID: 0}
   impactAudio: {fileID: 0}
   onReactionTriggered:
