@@ -44,6 +44,7 @@ namespace Buca
         private void Start()
         {
             CountTotalBlocks();
+            RestartLevel(true);
         }
 
         private void FindBlocksAndLauncher()
@@ -208,14 +209,14 @@ namespace Buca
 
         public void RestartLevel()
         {
+            RestartLevel(true);
+        }
+
+        public void RestartLevel(bool animated)
+        {
             if (autoRestartTween != null && autoRestartTween.IsActive())
             {
                 autoRestartTween.Kill();
-            }
-
-            foreach (var block in targetBlocks)
-            {
-                if (block != null) block.ResetBlock();
             }
 
             if (discLauncher != null)
@@ -225,6 +226,37 @@ namespace Buca
 
             knockedBlocks = 0;
             isLevelCleared = false;
+
+            if (animated)
+            {
+                // Sort blocks spatially (from back to front) for a clean directional pop wave
+                targetBlocks.Sort((a, b) =>
+                {
+                    if (a == null || b == null) return 0;
+                    int zComp = a.InitialPosition.z.CompareTo(b.InitialPosition.z);
+                    if (zComp != 0) return zComp;
+                    return a.InitialPosition.x.CompareTo(b.InitialPosition.x);
+                });
+
+                float interval = 0.042f;
+                for (int i = 0; i < targetBlocks.Count; i++)
+                {
+                    var block = targetBlocks[i];
+                    if (block != null)
+                    {
+                        // Pleasant subtle ascending chime pitch per cube
+                        float pitch = Mathf.Lerp(0.96f, 1.20f, (float)i / Mathf.Max(1, targetBlocks.Count - 1));
+                        block.TriggerJuicySpawn(i * interval, pitch);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var block in targetBlocks)
+                {
+                    if (block != null) block.ResetBlock();
+                }
+            }
         }
 
         private void OnDestroy()

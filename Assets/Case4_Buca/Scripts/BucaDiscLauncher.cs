@@ -94,6 +94,18 @@ namespace Buca
         private float currentSpinSpeedY = 0f;
         private float currentVisualAngleY = 0f;
 
+        [Header("Dynamic Wall Banking / Lean Tilt Settings")]
+        [Tooltip("Maximum roll tilt angle (in degrees) when sliding along walls.")]
+        [Range(5f, 25f)] [SerializeField] private float maxWallLeanAngle = 12.0f;
+        [Tooltip("How fast the disc tilts into the wall banking angle (deg/sec).")]
+        [SerializeField] private float leanInSpeed = 140.0f;
+        [Tooltip("How fast the disc levels back to flat when leaving the wall (deg/sec).")]
+        [SerializeField] private float leanOutSpeed = 100.0f;
+
+        private float currentRollAngle = 0f;
+        private float targetRollAngle = 0f;
+        private Vector3 lastMoveDir = Vector3.forward;
+
         private MeshFilter aimMeshFilter;
         private MeshRenderer aimMeshRenderer;
         private Mesh aimMesh;
@@ -336,8 +348,25 @@ namespace Buca
                     currentSpinSpeedY = 0f;
                 }
 
-                // Apply rotation strictly flat in the XZ plane
-                Quaternion targetRot = Quaternion.Euler(0f, currentVisualAngleY, 0f);
+                // Smoothly interpolate roll lean angle
+                float leanRate = Mathf.Abs(targetRollAngle) > Mathf.Abs(currentRollAngle) ? leanInSpeed : leanOutSpeed;
+                currentRollAngle = Mathf.MoveTowards(currentRollAngle, targetRollAngle, leanRate * Time.deltaTime);
+
+                // Update movement direction cache if moving
+                if (discRb != null && discRb.linearVelocity.sqrMagnitude > 0.1f)
+                {
+                    Vector3 flatVel = discRb.linearVelocity;
+                    flatVel.y = 0f;
+                    lastMoveDir = flatVel.normalized;
+                }
+
+                // Build composite rotation: Dynamic Wall Roll Tilt * Flat Yaw Spin
+                Quaternion yawRot = Quaternion.Euler(0f, currentVisualAngleY, 0f);
+                Quaternion tiltRot = (Mathf.Abs(currentRollAngle) > 0.01f && lastMoveDir.sqrMagnitude > 0.01f)
+                    ? Quaternion.AngleAxis(currentRollAngle, lastMoveDir)
+                    : Quaternion.identity;
+
+                Quaternion targetRot = tiltRot * yawRot;
                 discTransform.rotation = targetRot;
 
                 if (discRb != null && !discRb.isKinematic)
@@ -386,9 +415,10 @@ namespace Buca
             // Cache velocity before the next collision step
             preCollisionVelocity = vel;
 
-            // Stop continuous wall slide sound if detached from wall or stopped
-            if (Time.time - lastWallContactTime > 0.05f || vel.magnitude < 1.0f)
+            // Stop continuous wall slide sound and return lean tilt to flat if detached from wall or stopped
+            if (Time.time - lastWallContactTime > 0.06f || vel.magnitude < 1.0f)
             {
+                targetRollAngle = 0f;
                 if (BucaAudioManager.Instance != null)
                 {
                     BucaAudioManager.Instance.SetWallSliding(false, 0f);
@@ -531,31 +561,16 @@ namespace Buca
             Vector3 aimVector = -dragVector;
             currentLaunchDir = aimVector.normalized;
 
+            discTransform.position = spawnPosition;
             currentVisualAngleY = Quaternion.LookRotation(currentLaunchDir, Vector3.up).eulerAngles.y;
             discTransform.rotation = Quaternion.Euler(0f, currentVisualAngleY, 0f);
-
-            DrawOriginRing(dragStartWorldPos, ringActiveColor);
 
             UpdateAimIndicator(displayedElasticPower, currentLaunchDir);
         }
 
         private void DrawOriginRing(Vector3 center, Color color)
         {
-            if (touchOriginRing == null) return;
-            touchOriginRing.enabled = true;
-
-            int segments = 36;
-            touchOriginRing.positionCount = segments + 1;
-            touchOriginRing.startColor = color;
-            touchOriginRing.endColor = color;
-
-            float angleStep = 360f / segments;
-            for (int i = 0; i <= segments; i++)
-            {
-                float rad = i * angleStep * Mathf.Deg2Rad;
-                Vector3 pt = center + new Vector3(Mathf.Cos(rad) * ringRadius, 0.08f, Mathf.Sin(rad) * ringRadius);
-                touchOriginRing.SetPosition(i, pt);
-            }
+            if (touchOriginRing != null) touchOriginRing.enabled = false;
         }
 
         private void UpdateAimIndicator(float elasticPower, Vector3 direction)
@@ -597,12 +612,21 @@ namespace Buca
                 new Vector2(0.5f, 1.0f)
             };
 
-            Color currentColor = Color.Lerp(indicatorColorLow, indicatorColorHigh, elasticPower);
+            // Dynamic 3-Stage Tension Heat Color Palette: Cyan -> Golden Amber -> Blazing Neon Flame Red
+            Color currentColor;
+            if (elasticPower < 0.50f)
+            {
+                currentColor = Color.Lerp(new Color(0.18f, 0.92f, 1.0f), new Color(1.0f, 0.82f, 0.20f), elasticPower * 2.0f);
+            }
+            else
+            {
+                currentColor = Color.Lerp(new Color(1.0f, 0.82f, 0.20f), new Color(1.0f, 0.24f, 0.38f), (elasticPower - 0.50f) * 2.0f);
+            }
 
             Color[] colors = new Color[3];
             colors[0] = new Color(currentColor.r, currentColor.g, currentColor.b, 0.45f);
             colors[1] = new Color(currentColor.r, currentColor.g, currentColor.b, 0.45f);
-            colors[2] = Color.Lerp(currentColor, Color.white, 0.75f); // Bright luminous apex tip
+            colors[2] = Color.Lerp(currentColor, Color.white, 0.80f); // Bright luminous apex tip
 
             aimMesh.Clear();
             aimMesh.vertices = vertices;
@@ -626,7 +650,16 @@ namespace Buca
             aimLine.SetPosition(0, startPos);
             aimLine.SetPosition(1, tipPos);
 
-            Color activeColor = Color.Lerp(indicatorColorLow, indicatorColorHigh, elasticPower);
+            Color activeColor;
+            if (elasticPower < 0.50f)
+            {
+                activeColor = Color.Lerp(new Color(0.18f, 0.92f, 1.0f), new Color(1.0f, 0.82f, 0.20f), elasticPower * 2.0f);
+            }
+            else
+            {
+                activeColor = Color.Lerp(new Color(1.0f, 0.82f, 0.20f), new Color(1.0f, 0.24f, 0.38f), (elasticPower - 0.50f) * 2.0f);
+            }
+
             Color spineColor = Color.Lerp(activeColor, Color.white, 0.65f);
             aimLine.startColor = new Color(spineColor.r, spineColor.g, spineColor.b, 0.35f);
             aimLine.endColor = new Color(spineColor.r, spineColor.g, spineColor.b, 0.95f);
@@ -689,10 +722,19 @@ namespace Buca
             currentPowerRatio = 0f;
             displayedElasticPower = 0f;
             currentSpinSpeedY = 0f;
+            currentRollAngle = 0f;
+            targetRollAngle = 0f;
             maxAllowedSpeed = 0f;
             preCollisionVelocity = Vector3.zero;
+            lastWallContactTime = 0f;
+            lastWallBounceAudioTime = 0f;
 
             HideVisualizers();
+
+            if (trailEffect == null && discTransform != null)
+            {
+                trailEffect = discTransform.GetComponent<BucaDiscTrailEffect>();
+            }
 
             if (trailEffect != null)
             {
@@ -799,6 +841,7 @@ namespace Buca
             float speed = vel.magnitude;
             if (speed < 1.5f)
             {
+                targetRollAngle = 0f;
                 if (BucaAudioManager.Instance != null) BucaAudioManager.Instance.SetWallSliding(false, 0f);
                 return;
             }
@@ -807,20 +850,38 @@ namespace Buca
             float normalComp = Vector3.Dot(vel, wallNormal);
             Vector3 tangentVel = vel - normalComp * wallNormal;
             float tangentSpeed = tangentVel.magnitude;
-            float tangentialRatio = tangentSpeed / speed; // 1.0 = pure sliding along wall, 0.0 = perpendicular bounce
+            float tangentialRatio = tangentSpeed / (speed + 0.001f); // 1.0 = pure sliding along wall curve/arc, 0.0 = perpendicular bounce
 
-            // ONLY slide if the movement is predominantly parallel to the wall (gliding along wall)
-            if (tangentialRatio > 0.70f && tangentSpeed > 1.5f)
+            // STRICT separation: ONLY tangential sliding along the wall (virajı alırken / duvar dibinde kayarken)
+            // AND speed must exceed minimum threshold (> 2.0f) so slow bumps never spark!
+            const float minSparkSpeed = 2.0f;
+            const float maxSparkSpeed = 18.0f;
+
+            if (tangentialRatio > 0.40f && tangentSpeed > minSparkSpeed)
             {
                 lastWallContactTime = Time.time;
-                float speedRatio = Mathf.Clamp(tangentSpeed / 20.0f, 0.20f, 1.0f);
+                float speedRatio = Mathf.Clamp01((tangentSpeed - minSparkSpeed) / (maxSparkSpeed - minSparkSpeed));
+
                 if (BucaAudioManager.Instance != null)
                 {
                     BucaAudioManager.Instance.SetWallSliding(true, speedRatio);
                 }
+
+                // Dynamic wall lean tilt based on sliding speed and wall side
+                Vector3 cross = Vector3.Cross(tangentVel.normalized, wallNormal);
+                float leanSide = cross.y;
+                float leanAmount = Mathf.Lerp(5.0f, maxWallLeanAngle, speedRatio);
+                targetRollAngle = -leanSide * leanAmount;
+
+                // Spray friction sparks with intensity strictly proportional to disc speed!
+                if (trailEffect != null)
+                {
+                    trailEffect.EmitWallSlideSparks(contact.point, tangentVel, speedRatio);
+                }
             }
             else
             {
+                targetRollAngle = 0f;
                 if (BucaAudioManager.Instance != null)
                 {
                     BucaAudioManager.Instance.SetWallSliding(false, 0f);
@@ -829,7 +890,7 @@ namespace Buca
         }
 
         /// <summary>
-        /// Adds visual rotational spin roll, spark VFX, and slide audio on wall impacts.
+        /// Adds visual rotational spin roll and slide audio on wall impacts.
         /// </summary>
         private void ProcessWallImpactSpin(Collision collision, bool isObstacle = false)
         {
@@ -868,20 +929,18 @@ namespace Buca
             currentSpinSpeedY += sideSign * spinImpact;
             currentSpinSpeedY = Mathf.Clamp(currentSpinSpeedY, -maxSpinSpeedCap, maxSpinSpeedCap);
 
-            if (trailEffect != null)
-            {
-                trailEffect.TriggerWallBounceSpark(contactPoint, outwardNormal);
-            }
-
             if (!isObstacle && BucaAudioManager.Instance != null)
             {
-                // Only start sliding if entering at a very shallow tangential angle (> 0.75)
-                if (glancingAngle > 0.75f)
+                // Slide & lean active whenever entering at a glancing angle
+                if (glancingAngle > 0.65f && speed > 4.0f)
                 {
                     BucaAudioManager.Instance.SetWallSliding(true, speedRatio);
+                    float leanAmount = Mathf.Lerp(5.0f, maxWallLeanAngle, speedRatio);
+                    targetRollAngle = sideSign * leanAmount;
                 }
                 else
                 {
+                    targetRollAngle = 0f;
                     // Direct perpendicular bounce: strictly ensure sliding audio is OFF
                     BucaAudioManager.Instance.SetWallSliding(false, 0f);
                 }

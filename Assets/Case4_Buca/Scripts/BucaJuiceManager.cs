@@ -43,9 +43,9 @@ namespace Buca
         [SerializeField] private float hitStopCooldown = 0.45f;
 
         [Header("Ground Shockwave Settings")]
-        [SerializeField] private bool enableShockwave = false;
-        [SerializeField] private float shockwaveDuration = 0.40f;
-        [SerializeField] private float shockwaveBaseSize = 10.5f;
+        [SerializeField] private bool enableShockwave = true;
+        [SerializeField] private float shockwaveDuration = 0.35f;
+        [SerializeField] private float shockwaveBaseSize = 6.5f;
 
         [Header("VFX Prefab")]
         [SerializeField] private GameObject hitVfxPrefab;
@@ -211,6 +211,33 @@ namespace Buca
 
                 ps.gameObject.SetActive(true);
                 ps.Play();
+            }
+        }
+
+        /// <summary>
+        /// Spawns a high-energy ground shockwave ring right at the launch point when the player fires the disc.
+        /// </summary>
+        public void SpawnLaunchImpulseShockwave(Vector3 launchPos, Vector3 launchDir, float powerRatio)
+        {
+            if (!enableShockwave) return;
+
+            ParticleSystem ps = GetPooledShockwave();
+            if (ps != null)
+            {
+                ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                ps.transform.position = new Vector3(launchPos.x, 0.05f, launchPos.z);
+
+                var main = ps.main;
+                main.startSize = Mathf.Lerp(4.0f, 7.5f, Mathf.Clamp01(powerRatio));
+
+                ps.gameObject.SetActive(true);
+                ps.Play();
+            }
+
+            // Subtle micro-shake proportional to high power launch
+            if (powerRatio > 0.60f)
+            {
+                TriggerCameraShake(powerRatio * 0.35f);
             }
         }
 

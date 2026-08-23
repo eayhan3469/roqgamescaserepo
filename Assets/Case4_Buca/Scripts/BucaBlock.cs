@@ -49,6 +49,9 @@ namespace Buca
 
         public bool IsHit => isHit;
         public Rigidbody Rb => rb;
+        public Vector3 InitialPosition => initialPosition;
+        public Quaternion InitialRotation => initialRotation;
+        public Vector3 InitialScale => initialScale;
 
         private void Awake()
         {
@@ -350,6 +353,70 @@ namespace Buca
 
             transform.position = initialPosition;
             transform.rotation = initialRotation;
+        }
+
+        /// <summary>
+        /// Snappy, juicy pop-in spawn animation: spawns with scale overshoot, pop sound, flash and vortex VFX.
+        /// </summary>
+        public void TriggerJuicySpawn(float delay, float pitchRatio = 1.0f, Action onComplete = null)
+        {
+            isHit = false;
+            transform.DOKill();
+            if (flashTween != null && flashTween.IsActive()) flashTween.Kill();
+
+            // Set initial position and hide initially
+            transform.position = initialPosition;
+            transform.rotation = initialRotation;
+            transform.localScale = Vector3.zero;
+
+            if (meshRenderer != null)
+            {
+                meshRenderer.enabled = true;
+                meshRenderer.GetPropertyBlock(propBlock);
+                propBlock.SetColor(BaseColorProp, originalBaseColor);
+                propBlock.SetColor(ColorProp, originalBaseColor);
+                propBlock.SetColor(EmissionColorProp, Color.black);
+                meshRenderer.SetPropertyBlock(propBlock);
+            }
+
+            if (boxCollider != null) boxCollider.enabled = false;
+
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.isKinematic = true;
+                rb.useGravity = false;
+            }
+
+            DOVirtual.DelayedCall(delay, () =>
+            {
+                if (this == null || gameObject == null) return;
+
+                // Juicy pop audio
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.PlayBlockPopSound(pitchRatio);
+                }
+
+                // Micro bright white flash on appearance
+                TriggerHitFlash(0.85f);
+
+                // Small sparkle/warp particle burst
+                if (BucaJuiceManager.Instance != null)
+                {
+                    BucaJuiceManager.Instance.SpawnBlockWarpVFX(transform.position);
+                }
+
+                // Snappy pop overshoot animation
+                transform.DOScale(initialScale, 0.22f)
+                    .SetEase(Ease.OutBack, 1.85f)
+                    .OnComplete(() =>
+                    {
+                        if (boxCollider != null) boxCollider.enabled = true;
+                        onComplete?.Invoke();
+                    });
+            });
         }
 
         private void OnDestroy()

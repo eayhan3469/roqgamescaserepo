@@ -457,19 +457,19 @@ namespace Buca
         /// <summary>
         /// Plays a fast sci-fi pop / warp sound when a block teleports away.
         /// </summary>
-        public void PlayBlockWarpSound()
+        public void PlayBlockWarpSound(float pitchMultiplier = 1.0f)
         {
             AudioClip clip = blockPopClip != null ? blockPopClip : (obstacleDeflectClip != null ? obstacleDeflectClip : wallBounceClip);
             if (clip == null) return;
-            PlayClipWithPitch(warpSource != null ? warpSource : clatterSource, clip, 0.50f, false, 1.0f, 1.0f);
+            PlayClipWithPitch(warpSource != null ? warpSource : clatterSource, clip, 0.55f, false, pitchMultiplier, pitchMultiplier);
         }
 
         /// <summary>
-        /// Plays a cute bubble/sparkle pop sound when a block dissolves.
+        /// Plays a cute bubble/sparkle pop sound when a block dissolves or spawns.
         /// </summary>
-        public void PlayBlockPopSound()
+        public void PlayBlockPopSound(float pitchMultiplier = 1.0f)
         {
-            PlayBlockWarpSound();
+            PlayBlockWarpSound(pitchMultiplier);
         }
 
         /// <summary>
