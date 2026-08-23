@@ -64,6 +64,19 @@ namespace Stickerdom
             UpdateGhostVisual();
         }
 
+        public void ResetSlot()
+        {
+            isOccupied = false;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.DOKill();
+                Color c = spriteRenderer.color;
+                c.a = ghostInitialAlpha;
+                spriteRenderer.DOColor(c, 0.25f);
+            }
+        }
+
         public void OnStickerPlaced(StickerClickable sticker)
         {
             SetOccupied(true);

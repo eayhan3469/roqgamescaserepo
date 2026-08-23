@@ -62,10 +62,13 @@ namespace Stickerdom
         private Collider2D col2D;
         private SpriteRenderer spriteRenderer;
         private Vector3 originalLocalScale;
+        private Vector3 initialLocalPos;
+        private Quaternion initialLocalRot;
+        private int initialSortingOrder = 30;
         private bool isFlying = false;
         private bool isPlaced = false;
 
-        public StickerType StickerType => stickerType;
+        public StickerType StickerType { get => stickerType; set => stickerType = value; }
         public GhostSlot TargetGhostSlot { get => targetGhostSlot; set => targetGhostSlot = value; }
         public bool IsFlying => isFlying;
         public bool IsPlaced => isPlaced;
@@ -75,6 +78,12 @@ namespace Stickerdom
             spriteRenderer = GetComponent<SpriteRenderer>();
             col2D = GetComponent<Collider2D>();
             originalLocalScale = transform.localScale;
+            initialLocalPos = transform.localPosition;
+            initialLocalRot = transform.localRotation;
+            if (spriteRenderer != null)
+            {
+                initialSortingOrder = spriteRenderer.sortingOrder;
+            }
 
             if (peelMesh3D == null)
             {
@@ -93,6 +102,33 @@ namespace Stickerdom
             }
 
             FindMatchingGhostSlotIfNull();
+        }
+
+        public void ResetSticker()
+        {
+            transform.DOKill();
+            isFlying = false;
+            isPlaced = false;
+
+            transform.localPosition = initialLocalPos;
+            transform.localRotation = initialLocalRot;
+            transform.localScale = originalLocalScale;
+
+            if (col2D != null)
+            {
+                col2D.enabled = true;
+            }
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sortingOrder = initialSortingOrder;
+            }
+
+            if (peelMesh3D != null)
+            {
+                peelMesh3D.ResetPeel();
+                peelMesh3D.UpdateSortingOrder(initialSortingOrder);
+            }
         }
 
         private void Start()
@@ -294,15 +330,19 @@ namespace Stickerdom
 
                 // Notify target slot
                 targetGhostSlot.OnStickerPlaced(this);
-
-                // Check Level Victory
-                if (StickerAudioManager.Instance != null)
-                {
-                    StickerAudioManager.Instance.CheckAllSlotsCompleted();
-                }
             }
 
             onStickerPlaced?.Invoke();
+
+            // Notify StickerLevelManager for 4th sticker sequence & auto-restart
+            if (StickerLevelManager.Instance != null)
+            {
+                StickerLevelManager.Instance.OnStickerPlaced(this);
+            }
+            else if (StickerAudioManager.Instance != null)
+            {
+                StickerAudioManager.Instance.CheckAllSlotsCompleted();
+            }
         }
 
         private void SpawnVFX(GameObject vfxPrefab, Vector3 pos)

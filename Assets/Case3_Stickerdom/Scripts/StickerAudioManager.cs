@@ -184,6 +184,14 @@ namespace Stickerdom
         }
 
         /// <summary>
+        /// Mor desteden kart çekilme sesi (High-pitch card draw whoosh).
+        /// </summary>
+        public void PlayDrawSound()
+        {
+            PlayClipWithPitch(flyClip, flyVolume, 1.25f, 1.35f);
+        }
+
+        /// <summary>
         /// Yapışma ve mühürleme sesi (Stamp sound with slight pitch variation).
         /// </summary>
         public void PlayStampSound()
