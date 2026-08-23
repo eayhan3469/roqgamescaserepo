@@ -99,6 +99,7 @@ namespace Stickerdom
 
         private float currentPeelProgress = 0f;
         private float currentShineProgress = -0.5f;
+        private float currentShadowOpacity = 1.0f;
         private Material dynamicMat;
         private bool isInitialized = false;
 
@@ -560,7 +561,7 @@ namespace Stickerdom
                     if (underFoldAOWidth > 0.001f && -curlDist < underFoldAOWidth && currentPeelProgress > 0.001f)
                     {
                         float tAO = 1.0f - (-curlDist / underFoldAOWidth);
-                        ao = Mathf.Pow(Mathf.Clamp01(tAO), 1.6f); // 1.0 katlanma çizgisinde, dışa doğru yumuşakça sönümlenir
+                        ao = Mathf.Pow(Mathf.Clamp01(tAO), 1.6f) * currentShadowOpacity;
                     }
 
                     // ÖN YÜZ: basePos'ta, r=ao (Contact AO), g=1 (Front Sheet)
@@ -608,19 +609,19 @@ namespace Stickerdom
 
                 // ZEMİNE DÜŞEN AMBIENT OCCLUSION GÖLGESİ (Ground Shadow):
                 float shadowAlpha = 0f;
-                if (currentPeelProgress > 0.001f && groundAOWidth > 0.001f)
+                if (currentPeelProgress > 0.001f && groundAOWidth > 0.001f && currentShadowOpacity > 0.001f)
                 {
                     if (curlDist >= 0f && curlDist <= groundAOWidth)
                     {
                         // Sökülen ve havaya kalkan kanadın masaya vuran gölgesi
                         float tNorm = 1.0f - (curlDist / groundAOWidth);
-                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.3f) * groundAOStrength;
+                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.3f) * groundAOStrength * currentShadowOpacity;
                     }
                     else if (curlDist < 0f && -curlDist <= groundAOWidth * 0.35f)
                     {
                         // Katlanma dikişinin zemin temas gölgesi
                         float tNorm = 1.0f - (-curlDist / (groundAOWidth * 0.35f));
-                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.6f) * groundAOStrength;
+                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.6f) * groundAOStrength * currentShadowOpacity;
                     }
                 }
                 if (shadowColors != null && i < shadowColors.Length)
@@ -641,6 +642,12 @@ namespace Stickerdom
         }
 
         public float PeelAngle => peelAngle;
+
+        public void SetShadowOpacity(float opacity)
+        {
+            currentShadowOpacity = Mathf.Clamp01(opacity);
+            DeformMesh();
+        }
 
         public float PickRandomCornerAngle()
         {
@@ -664,6 +671,7 @@ namespace Stickerdom
         /// </summary>
         public Tween AnimateCornerTease(float targetProgress, float duration = 0.30f)
         {
+            currentShadowOpacity = 1f;
             return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, targetProgress, duration).SetEase(Ease.OutQuad);
         }
 
@@ -672,6 +680,7 @@ namespace Stickerdom
         /// </summary>
         public Tween AnimatePeelOff(float duration = 0.40f)
         {
+            currentShadowOpacity = 1f;
             PeelProgress = 0f;
             return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 1.0f, duration).SetEase(Ease.OutQuad);
         }
@@ -681,6 +690,7 @@ namespace Stickerdom
         /// </summary>
         public Tween AnimateReverseUnroll(float duration = 0.42f)
         {
+            currentShadowOpacity = 1f;
             return DOTween.To(() => currentPeelProgress, x => PeelProgress = x, 0.0f, duration).SetEase(Ease.InOutSine);
         }
 

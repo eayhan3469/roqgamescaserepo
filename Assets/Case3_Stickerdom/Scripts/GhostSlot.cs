@@ -51,11 +51,7 @@ namespace Stickerdom
 
         public void HideGhost()
         {
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.DOKill();
-                spriteRenderer.DOFade(0f, 0.15f).OnComplete(() => spriteRenderer.enabled = false);
-            }
+            // Ghost placeholder remains permanently visible underneath placed sticker
         }
 
         public void SetOccupied(bool occupied)
@@ -80,14 +76,13 @@ namespace Stickerdom
         public void OnStickerPlaced(StickerClickable sticker)
         {
             SetOccupied(true);
-            HideGhost();
         }
 
         private void UpdateGhostVisual()
         {
             if (spriteRenderer == null) return;
             Color c = spriteRenderer.color;
-            c.a = isOccupied ? ghostCompletedAlpha : ghostInitialAlpha;
+            c.a = ghostInitialAlpha;
             spriteRenderer.color = c;
         }
 

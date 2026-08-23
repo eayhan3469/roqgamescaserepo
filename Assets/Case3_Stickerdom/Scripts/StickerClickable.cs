@@ -253,7 +253,7 @@ namespace Stickerdom
             }
 
             // 5. Construct Tactile Sequence: 3D Peel Off -> Parabolic Flight -> 3D Reverse Stick
-            Vector3 targetPos = targetGhostSlot.TargetPosition;
+            Vector3 targetPos = new Vector3(targetGhostSlot.TargetPosition.x, targetGhostSlot.TargetPosition.y, targetGhostSlot.TargetPosition.z - 0.02f);
             Vector3 targetRotEuler = targetGhostSlot.transform.eulerAngles;
             Vector3 targetScale = targetGhostSlot.TargetScale;
 
@@ -269,6 +269,10 @@ namespace Stickerdom
             // PHASE 2: UÇUŞ (0.55s) - Play Fly Swoosh & arc flight to target slot
             masterSequence.AppendCallback(() =>
             {
+                if (peelMesh3D != null)
+                {
+                    peelMesh3D.SetShadowOpacity(0f); // Uçuşta zemin temas gölgesi kapanır (yerden ayrıldık)
+                }
                 if (StickerAudioManager.Instance != null)
                 {
                     StickerAudioManager.Instance.PlayFlySound();
@@ -283,7 +287,12 @@ namespace Stickerdom
             {
                 if (targetGhostSlot != null)
                 {
-                    targetGhostSlot.HideGhost();
+                    if (spriteRenderer != null) spriteRenderer.sortingOrder = targetGhostSlot.PlacedSortingOrder;
+                    if (peelMesh3D != null) peelMesh3D.UpdateSortingOrder(targetGhostSlot.PlacedSortingOrder);
+                }
+                if (peelMesh3D != null)
+                {
+                    peelMesh3D.SetShadowOpacity(1f); // Slota inişte temas gölgesi geri açılır
                 }
                 if (StickerAudioManager.Instance != null)
                 {
@@ -307,7 +316,7 @@ namespace Stickerdom
 
             if (targetGhostSlot != null)
             {
-                transform.position = targetGhostSlot.TargetPosition;
+                transform.position = new Vector3(targetGhostSlot.TargetPosition.x, targetGhostSlot.TargetPosition.y, targetGhostSlot.TargetPosition.z - 0.02f);
                 transform.rotation = targetGhostSlot.TargetRotation;
                 transform.localScale = targetGhostSlot.TargetScale;
 

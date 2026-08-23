@@ -199,7 +199,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 938d6d037802453e95916802d231a8da, type: 3}
   m_Color: {r: 0.8, g: 0.85, b: 0.78, a: 1}
@@ -225,7 +225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
   stickerType: 1
   isOccupied: 0
-  placedSortingOrder: 20
+  placedSortingOrder: 35
   ghostInitialAlpha: 1
   ghostCompletedAlpha: 0
 --- !u!1 &339643456
@@ -458,7 +458,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 667b44d9d19d457886585f75d876c55e, type: 3}
   m_Color: {r: 0.8, g: 0.85, b: 0.78, a: 1}
@@ -484,7 +484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
   stickerType: 0
   isOccupied: 0
-  placedSortingOrder: 20
+  placedSortingOrder: 35
   ghostInitialAlpha: 1
   ghostCompletedAlpha: 0
 --- !u!1 &548803014
@@ -658,7 +658,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 1620f4d2138d4e49aa503d845e83a4f7, type: 3}
   m_Color: {r: 0.8, g: 0.85, b: 0.78, a: 1}
@@ -684,7 +684,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
   stickerType: 2
   isOccupied: 0
-  placedSortingOrder: 20
+  placedSortingOrder: 35
   ghostInitialAlpha: 1
   ghostCompletedAlpha: 0
 --- !u!1 &740737549
@@ -2358,7 +2358,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 20
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 3f880e1a06d343758da07a4aa860f4e1, type: 3}
   m_Color: {r: 0.8, g: 0.85, b: 0.78, a: 1}
@@ -2384,7 +2384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.GhostSlot
   stickerType: 3
   isOccupied: 0
-  placedSortingOrder: 20
+  placedSortingOrder: 35
   ghostInitialAlpha: 1
   ghostCompletedAlpha: 0
 --- !u!1 &2059011742
