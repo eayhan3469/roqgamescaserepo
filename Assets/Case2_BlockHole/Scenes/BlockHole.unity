@@ -9414,6 +9414,7 @@ MonoBehaviour:
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  dustExplosionPrefab: {fileID: 0}
 --- !u!1 &1303316624
 GameObject:
   m_ObjectHideFlags: 0
@@ -11745,6 +11746,7 @@ MonoBehaviour:
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  dustExplosionPrefab: {fileID: 0}
 --- !u!1 &1616658223
 GameObject:
   m_ObjectHideFlags: 0
@@ -12979,7 +12981,7 @@ Camera:
   far clip plane: 100
   field of view: 60
   orthographic: 1
-  orthographic size: 8.506944
+  orthographic size: 7
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -14108,6 +14110,7 @@ MonoBehaviour:
   cameraShakeDuration: 0.2
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  dustExplosionPrefab: {fileID: 0}
 --- !u!1 &1862100072
 GameObject:
   m_ObjectHideFlags: 0
