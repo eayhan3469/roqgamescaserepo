@@ -526,20 +526,23 @@ MonoBehaviour:
   blockClatterClips:
   - {fileID: 8300000, guid: 439146c49e3dc82418308c4d18af7a1b, type: 3}
   launchClip: {fileID: 8300000, guid: 811ab4a447ad5944aabbc9310faefa64, type: 3}
-  wallBounceClip: {fileID: 8300000, guid: f20bc664f7ebabb4089a2e2d789daf87, type: 3}
+  wallBounceClip: {fileID: 8300000, guid: 68570c6f16d224b4fb72d5ba00557555, type: 3}
+  wallSlideClip: {fileID: 8300000, guid: bfa7ddb72150be6479d756aed53dacdb, type: 3}
   obstacleDeflectClip: {fileID: 8300000, guid: 30ee952a2ada93348ab441d19490257b, type: 3}
+  blockPopClip: {fileID: 8300000, guid: a4fa49661f89feb459344b4e8b9d72cc, type: 3}
   victoryClip: {fileID: 8300000, guid: fc05e47e897d79f4ca669bc57af7ac03, type: 3}
   sfxSource: {fileID: 98601439}
   clatterSource: {fileID: 98601438}
   victorySource: {fileID: 98601441}
-  minPitch: 0.92
-  maxPitch: 1.12
+  minPitch: 1
+  maxPitch: 1
   masterVolume: 1
   blockImpactVolume: 0.65
   blockClatterVolume: 0.3
   launchVolume: 0
-  wallBounceVolume: 0.6
-  victoryVolume: 0.755
+  wallBounceVolume: 0.85
+  wallSlideVolume: 0.7
+  victoryVolume: 0.85
   isMuted: 0
 --- !u!82 &98601441
 AudioSource:

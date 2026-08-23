@@ -101,6 +101,10 @@ namespace Buca
         // Visual Polish Trail & Slipstream effect
         private BucaDiscTrailEffect trailEffect;
 
+        // Wall contact & sliding audio tracking
+        private float lastWallContactTime = 0f;
+        private float lastWallBounceAudioTime = 0f;
+
         public bool IsAiming => isAiming;
         public bool IsLaunched => isLaunched;
         public bool IsCanceling => isCanceling;
@@ -112,6 +116,7 @@ namespace Buca
             Instance = this;
             mainCam = Camera.main;
             groundPlane = new Plane(Vector3.up, new Vector3(0f, 0.08f, 0f));
+            Time.fixedDeltaTime = 0.01666667f;
         }
 
         private void Start()
@@ -173,7 +178,7 @@ namespace Buca
             discRb.angularDamping = 0.1f;
             discRb.useGravity = false;
             discRb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            discRb.interpolation = RigidbodyInterpolation.Interpolate;
+            discRb.interpolation = RigidbodyInterpolation.None;
 
             discRb.constraints = RigidbodyConstraints.FreezePositionY |
                                  RigidbodyConstraints.FreezeRotationX |
@@ -181,12 +186,17 @@ namespace Buca
 
             discRb.isKinematic = true;
 
+            // Remove any legacy MeshCollider on disc immediately so it doesn't cause conflicting contacts
+            var legacyMeshCols = discTransform.GetComponents<MeshCollider>();
+            foreach (var mc in legacyMeshCols)
+            {
+                mc.enabled = false;
+                DestroyImmediate(mc);
+            }
+
             discCollider = discTransform.GetComponent<SphereCollider>();
             if (discCollider == null)
             {
-                var mc = discTransform.GetComponent<MeshCollider>();
-                if (mc != null) Destroy(mc);
-
                 discCollider = discTransform.gameObject.AddComponent<SphereCollider>();
             }
 
@@ -375,6 +385,15 @@ namespace Buca
 
             // Cache velocity before the next collision step
             preCollisionVelocity = vel;
+
+            // Stop continuous wall slide sound if detached from wall or stopped
+            if (Time.time - lastWallContactTime > 0.05f || vel.magnitude < 1.0f)
+            {
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.SetWallSliding(false, 0f);
+                }
+            }
         }
 
         private void HandleInput()
@@ -694,6 +713,11 @@ namespace Buca
                 discTransform.rotation = spawnRotation;
                 currentVisualAngleY = spawnRotation.eulerAngles.y;
             }
+
+            if (BucaAudioManager.Instance != null)
+            {
+                BucaAudioManager.Instance.SetWallSliding(false, 0f);
+            }
         }
 
         /// <summary>
@@ -719,27 +743,100 @@ namespace Buca
             // Obstacle hit
             else if (collision.gameObject.TryGetComponent<BucaObstacle>(out var obstacle))
             {
+                if (BucaAudioManager.Instance != null)
+                {
+                    float currentSpeed = discRb != null ? Mathf.Max(discRb.linearVelocity.magnitude, preCollisionVelocity.magnitude) : 12f;
+                    float speedRatio = Mathf.Clamp(currentSpeed / 20.0f, 0.50f, 1.0f);
+                    BucaAudioManager.Instance.PlayObstacleDeflectSound(speedRatio);
+                }
+
                 ProcessWallImpactSpin(collision, true);
                 obstacle.SendMessage("TriggerHitFeedback", SendMessageOptions.DontRequireReceiver);
             }
             else
             {
+                if (collision.gameObject.name.ToLower().Contains("plane")) return;
+
+                // Check if this is a brand new hit from open air or an existing slide across wall mesh facets
+                bool isContinuousWallContact = (Time.time - lastWallContactTime < 0.12f);
+                lastWallContactTime = Time.time;
+
+                // ONLY play the crisp bounce tık sound on the initial impact, NEVER repeatedly while sliding along the wall!
+                if (!isContinuousWallContact && (Time.time - lastWallBounceAudioTime > 0.12f))
+                {
+                    lastWallBounceAudioTime = Time.time;
+                    if (BucaAudioManager.Instance != null)
+                    {
+                        float currentSpeed = discRb != null ? Mathf.Max(discRb.linearVelocity.magnitude, preCollisionVelocity.magnitude) : 12f;
+                        float speedRatio = Mathf.Clamp(currentSpeed / 20.0f, 0.50f, 1.0f);
+                        BucaAudioManager.Instance.PlayWallBounceSound(speedRatio);
+                    }
+                }
+
                 ProcessWallImpactSpin(collision, false);
             }
         }
 
         public void OnDiscCollisionStay(Collision collision)
         {
-            // Natural PhysX rolling and damping
+            if (!isLaunched || discRb == null) return;
+
+            // Only trigger slide on actual arena walls — skip floor, blocks, and obstacles
+            string objName = collision.gameObject.name.ToLower();
+            if (objName.Contains("plane")) return;
+            if (collision.gameObject.GetComponent<BucaBlock>() != null) return;
+            if (collision.gameObject.GetComponent<BucaObstacle>() != null) return;
+
+            if (collision.contactCount == 0) return;
+            ContactPoint contact = collision.GetContact(0);
+            Vector3 wallNormal = contact.normal;
+            wallNormal.y = 0f;
+            if (wallNormal.sqrMagnitude < 0.001f) return;
+            wallNormal.Normalize();
+
+            Vector3 vel = discRb.linearVelocity;
+            vel.y = 0f;
+            float speed = vel.magnitude;
+            if (speed < 1.5f)
+            {
+                if (BucaAudioManager.Instance != null) BucaAudioManager.Instance.SetWallSliding(false, 0f);
+                return;
+            }
+
+            // Calculate tangential sliding speed along the wall
+            float normalComp = Vector3.Dot(vel, wallNormal);
+            Vector3 tangentVel = vel - normalComp * wallNormal;
+            float tangentSpeed = tangentVel.magnitude;
+            float tangentialRatio = tangentSpeed / speed; // 1.0 = pure sliding along wall, 0.0 = perpendicular bounce
+
+            // ONLY slide if the movement is predominantly parallel to the wall (gliding along wall)
+            if (tangentialRatio > 0.70f && tangentSpeed > 1.5f)
+            {
+                lastWallContactTime = Time.time;
+                float speedRatio = Mathf.Clamp(tangentSpeed / 20.0f, 0.20f, 1.0f);
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.SetWallSliding(true, speedRatio);
+                }
+            }
+            else
+            {
+                if (BucaAudioManager.Instance != null)
+                {
+                    BucaAudioManager.Instance.SetWallSliding(false, 0f);
+                }
+            }
         }
 
         /// <summary>
-        /// Adds visual rotational spin roll, spark VFX, and audio feedback on wall impacts.
+        /// Adds visual rotational spin roll, spark VFX, and slide audio on wall impacts.
         /// </summary>
         private void ProcessWallImpactSpin(Collision collision, bool isObstacle = false)
         {
             if (collision.contactCount == 0 || discRb == null || !isLaunched) return;
             if (collision.gameObject.name.ToLower().Contains("plane")) return;
+
+            lastWallContactTime = Time.time;
 
             // Find the contact point
             ContactPoint contact = collision.GetContact(0);
@@ -748,14 +845,14 @@ namespace Buca
             // Outward normal from contact to disc center
             Vector3 outwardNormal = discTransform.position - contactPoint;
             outwardNormal.y = 0f;
-            if (outwardNormal.sqrMagnitude < 0.001f) return;
+            if (outwardNormal.sqrMagnitude < 0.0001f) outwardNormal = -preCollisionVelocity.normalized;
             outwardNormal.Normalize();
 
             // Extract movement direction
-            Vector3 incomingVel = discRb.linearVelocity.sqrMagnitude > 0.1f ? discRb.linearVelocity : preCollisionVelocity;
+            Vector3 incomingVel = preCollisionVelocity.sqrMagnitude > 0.1f ? preCollisionVelocity : discRb.linearVelocity;
             incomingVel.y = 0f;
             float speed = incomingVel.magnitude;
-            if (speed < 0.2f) return;
+            if (speed < 0.1f) return;
 
             Vector3 moveDir = incomingVel / speed;
 
@@ -764,7 +861,8 @@ namespace Buca
             float sideSign = -Mathf.Sign(crossY);
 
             float speedRatio = Mathf.Clamp(speed / 20.0f, 0.25f, 1.0f);
-            float glancingFactor = 0.4f + 0.6f * Mathf.Clamp01(Mathf.Abs(crossY));
+            float glancingAngle = Mathf.Abs(crossY); // 0 = perpendicular hit, 1 = parallel slide
+            float glancingFactor = 0.4f + 0.6f * glancingAngle;
             float spinImpact = wallImpactSpinSpeed * speedRatio * glancingFactor;
 
             currentSpinSpeedY += sideSign * spinImpact;
@@ -775,15 +873,17 @@ namespace Buca
                 trailEffect.TriggerWallBounceSpark(contactPoint, outwardNormal);
             }
 
-            if (BucaAudioManager.Instance != null)
+            if (!isObstacle && BucaAudioManager.Instance != null)
             {
-                if (isObstacle)
+                // Only start sliding if entering at a very shallow tangential angle (> 0.75)
+                if (glancingAngle > 0.75f)
                 {
-                    BucaAudioManager.Instance.PlayObstacleDeflectSound(speedRatio);
+                    BucaAudioManager.Instance.SetWallSliding(true, speedRatio);
                 }
                 else
                 {
-                    BucaAudioManager.Instance.PlayWallBounceSound(speedRatio);
+                    // Direct perpendicular bounce: strictly ensure sliding audio is OFF
+                    BucaAudioManager.Instance.SetWallSliding(false, 0f);
                 }
             }
         }

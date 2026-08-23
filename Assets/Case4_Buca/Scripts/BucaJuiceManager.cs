@@ -36,8 +36,8 @@ namespace Buca
         [SerializeField] private float shakeCooldown = 0.08f;
 
         [Header("Micro Hit-Stop Settings")]
-        [SerializeField] private bool enableHitStop = true;
-        [SerializeField] private float hitStopSlowScale = 0.04f;
+        [SerializeField] private bool enableHitStop = false;
+        [SerializeField] private float hitStopSlowScale = 1.0f;
         [SerializeField] private float minHitStopDuration = 0.028f;
         [SerializeField] private float maxHitStopDuration = 0.042f;
         [SerializeField] private float hitStopCooldown = 0.45f;
