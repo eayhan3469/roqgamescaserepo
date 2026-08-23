@@ -565,12 +565,28 @@ namespace Buca
             currentVisualAngleY = Quaternion.LookRotation(currentLaunchDir, Vector3.up).eulerAngles.y;
             discTransform.rotation = Quaternion.Euler(0f, currentVisualAngleY, 0f);
 
+            DrawOriginRing(dragStartWorldPos, ringActiveColor);
+
             UpdateAimIndicator(displayedElasticPower, currentLaunchDir);
         }
 
         private void DrawOriginRing(Vector3 center, Color color)
         {
-            if (touchOriginRing != null) touchOriginRing.enabled = false;
+            if (touchOriginRing == null) return;
+            touchOriginRing.enabled = true;
+
+            int segments = 36;
+            touchOriginRing.positionCount = segments + 1;
+            touchOriginRing.startColor = color;
+            touchOriginRing.endColor = color;
+
+            float angleStep = 360f / segments;
+            for (int i = 0; i <= segments; i++)
+            {
+                float rad = i * angleStep * Mathf.Deg2Rad;
+                Vector3 pt = center + new Vector3(Mathf.Cos(rad) * ringRadius, 0.08f, Mathf.Sin(rad) * ringRadius);
+                touchOriginRing.SetPosition(i, pt);
+            }
         }
 
         private void UpdateAimIndicator(float elasticPower, Vector3 direction)
