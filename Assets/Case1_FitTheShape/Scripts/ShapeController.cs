@@ -411,24 +411,11 @@ namespace FitTheShape
                         transform.DOScale(localShapeScale, 0.08f).SetEase(Ease.OutBack, 1.4f);
                     });
 
-                    // 💡 Şeklin rengini al ve YUVADA NEON RENK PATLAMASI (Flash) oluştur
-                    Color shapeColor = Color.yellow;
-                    Renderer rend = GetComponent<Renderer>();
-                    if (rend != null && rend.sharedMaterial != null)
-                    {
-                        if (rend.sharedMaterial.HasProperty("_BaseColor")) shapeColor = rend.sharedMaterial.GetColor("_BaseColor");
-                        else if (rend.sharedMaterial.HasProperty("_Color")) shapeColor = rend.sharedMaterial.color;
-                    }
-                    SpawnSegmentNeonFlash(embossedLandingPos, lastAnchor != null ? lastAnchor.up : Vector3.up, shapeColor);
-
-                    // 🌟 Şekil deliğe girmeye başladığı tam bu anda Hole ve Hole-Cap objelerini kapat!
-                    HideHoleCutout(parentSeg);
-
                     // 🌟 İLK ÇARPMA ANINDA TETİKLENEN EFEKTLER (Anında Reaksiyon):
-                    // 1. Sürtünme kıvılcımları
+                    // 1. Sürtünme kıvılcımları & Parıltılar
                     SpawnInsertionSparks(embossedLandingPos);
 
-                    // 2. Çok tonlu parlak sarı yıldızlar patlaması
+                    // 2. Çok tonlu parlak yıldızlar patlaması
                     SpawnStarBurstVfx(embossedLandingPos);
 
                     // 3. Başarı parıltı sesi (Sparkle Chime)
@@ -735,10 +722,11 @@ namespace FitTheShape
         {
             if (insertionSparksPrefab == null) return;
 
-            Quaternion outwardRot = Quaternion.LookRotation(lastAnchor != null ? lastAnchor.up : Vector3.up);
-            GameObject sparksInstance = Instantiate(insertionSparksPrefab, spawnPos, outwardRot);
-            ParticleSystem ps = sparksInstance.GetComponent<ParticleSystem>();
-            if (ps != null)
+            Vector3 outwardDir = Camera.main != null ? (Camera.main.transform.position - spawnPos).normalized : Vector3.up;
+            Quaternion outwardRot = Quaternion.LookRotation(outwardDir);
+            GameObject sparksInstance = Instantiate(insertionSparksPrefab, spawnPos + (outwardDir * 0.04f), outwardRot);
+            ParticleSystem[] psList = sparksInstance.GetComponentsInChildren<ParticleSystem>(true);
+            foreach (var ps in psList)
             {
                 ps.Play();
             }
@@ -749,10 +737,10 @@ namespace FitTheShape
         {
             if (starBurstVfxPrefab == null) return;
 
-            Vector3 upwardDir = (Vector3.up * 0.78f + (lastAnchor != null ? lastAnchor.up : Vector3.forward) * 0.40f).normalized;
-            Quaternion sprayRot = Quaternion.LookRotation(upwardDir);
+            Vector3 outwardDir = Camera.main != null ? (Camera.main.transform.position - spawnPos).normalized : Vector3.up;
+            Quaternion sprayRot = Quaternion.LookRotation(outwardDir);
 
-            GameObject starBurstInstance = Instantiate(starBurstVfxPrefab, spawnPos, sprayRot);
+            GameObject starBurstInstance = Instantiate(starBurstVfxPrefab, spawnPos + (outwardDir * 0.04f), sprayRot);
 
             ParticleSystem[] psList = starBurstInstance.GetComponentsInChildren<ParticleSystem>(true);
             foreach (var ps in psList)
