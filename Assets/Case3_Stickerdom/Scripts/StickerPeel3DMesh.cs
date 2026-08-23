@@ -47,6 +47,25 @@ namespace Stickerdom
         [Tooltip("Degrade yönünü tersine çevir (Gerektiğinde tek tıkla ters çevirebilirsiniz).")]
         [SerializeField] private bool invertGradientDirection = false;
 
+        [Header("🌑 GROUND & CONTACT AMBIENT OCCLUSION (ZEMİN VE TEMAS GÖLGESİ)")]
+        [Tooltip("Zemine/masaya düşen temas gölgesinin açılan kısma doğru genişliği (0.00 - 2.00).")]
+        [Range(0.00f, 2.00f)] [SerializeField] private float groundAOWidth = 0.60f;
+
+        [Tooltip("Zemin gölgesinin koyuluk/yoğunluk şiddeti (0.00: Gölge yok, 1.00: Tam koyu).")]
+        [Range(0.00f, 1.00f)] [SerializeField] private float groundAOStrength = 0.70f;
+
+        [Tooltip("Zemin gölgesinin renk tonu.")]
+        [SerializeField] private Color groundAOColor = new Color(0.0f, 0.0f, 0.0f, 0.75f);
+
+        [Tooltip("Kıvrımın masadaki düz kısma vurduğu temas gölgesinin genişliği (0.00 - 1.00).")]
+        [Range(0.00f, 1.00f)] [SerializeField] private float underFoldAOWidth = 0.25f;
+
+        [Tooltip("Temas gölgesinin koyuluk/yoğunluk şiddeti (0.00: Gölge yok, 1.00: Tam koyu).")]
+        [Range(0.00f, 1.00f)] [SerializeField] private float underFoldAOStrength = 0.50f;
+
+        [Tooltip("Temas gölgesinin renk tonu.")]
+        [SerializeField] private Color underFoldAOColor = new Color(0.0f, 0.0f, 0.0f, 1.0f);
+
         [Header("📐 PEEL MECHANICS & 3D MESH")]
         [Tooltip("Cylinder roll radius (smaller = tighter curl, larger = looser curve).")]
         [Range(0.15f, 0.80f)] [SerializeField] private float rollRadius = 0.20f;
@@ -64,6 +83,13 @@ namespace Stickerdom
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
         private Mesh deformedMesh;
+
+        private GameObject shadowHolder;
+        private MeshFilter shadowFilter;
+        private MeshRenderer shadowRenderer;
+        private Mesh shadowMesh;
+        private Color[] shadowColors;
+        private Material shadowMat;
 
         private Vector3[] baseVertices;
         private Vector3[] workingVertices;
@@ -91,6 +117,9 @@ namespace Stickerdom
         private static readonly int PropTailPosition = Shader.PropertyToID("_TailPosition");
         private static readonly int PropApexGlossIntensity = Shader.PropertyToID("_ApexGlossIntensity");
         private static readonly int PropInvertGradient = Shader.PropertyToID("_InvertGradient");
+        private static readonly int PropUnderFoldAOWidth = Shader.PropertyToID("_UnderFoldAOWidth");
+        private static readonly int PropUnderFoldAOStrength = Shader.PropertyToID("_UnderFoldAOStrength");
+        private static readonly int PropUnderFoldAOColor = Shader.PropertyToID("_UnderFoldAOColor");
 
         public float PeelProgress
         {
@@ -200,6 +229,14 @@ namespace Stickerdom
                 targetMat.SetFloat(PropTailPosition, tailPosition);
                 targetMat.SetFloat(PropApexGlossIntensity, apexGlossIntensity);
                 targetMat.SetFloat(PropInvertGradient, invertGradientDirection ? 1f : 0f);
+                targetMat.SetFloat(PropUnderFoldAOWidth, underFoldAOWidth);
+                targetMat.SetFloat(PropUnderFoldAOStrength, underFoldAOStrength);
+                targetMat.SetColor(PropUnderFoldAOColor, underFoldAOColor);
+            }
+
+            if (shadowMat != null)
+            {
+                shadowMat.SetColor(PropColor, groundAOColor);
             }
         }
 
@@ -237,6 +274,34 @@ namespace Stickerdom
 
                 meshRenderer.material = dynamicMat;
                 meshRenderer.sortingOrder = spriteRenderer.sortingOrder;
+
+                // 2. Create Child GameObject for Ground AO Shadow Mesh on Table
+                shadowHolder = new GameObject($"{gameObject.name}_GroundShadow");
+                shadowHolder.transform.SetParent(transform, false);
+                shadowHolder.transform.localPosition = new Vector3(0, 0, 0.002f);
+                shadowHolder.transform.localRotation = Quaternion.identity;
+                shadowHolder.transform.localScale = Vector3.one;
+
+                shadowFilter = shadowHolder.AddComponent<MeshFilter>();
+                shadowRenderer = shadowHolder.AddComponent<MeshRenderer>();
+
+                shadowMesh = new Mesh { name = $"{gameObject.name}_GroundShadowMesh" };
+                shadowFilter.mesh = shadowMesh;
+
+                Shader shadowShader = Shader.Find("Custom/StickerGroundShadow") ?? Shader.Find("Sprites/Default");
+                shadowMat = new Material(shadowShader);
+                shadowMat.name = $"Mat_{gameObject.name}_GroundShadow";
+                if (spriteRenderer != null && spriteRenderer.sprite != null)
+                {
+                    shadowMat.SetTexture(PropMainTex, spriteRenderer.sprite.texture);
+                }
+                shadowMat.SetColor(PropColor, groundAOColor);
+                shadowRenderer.material = shadowMat;
+                if (spriteRenderer != null)
+                {
+                    shadowRenderer.sortingLayerID = spriteRenderer.sortingLayerID;
+                    shadowRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
+                }
 
                 // Disable original SpriteRenderer so the 3D curling mesh renders
                 spriteRenderer.enabled = false;
@@ -383,6 +448,55 @@ namespace Stickerdom
             {
                 meshFilter.mesh = deformedMesh;
             }
+
+            if (shadowMesh == null && shadowHolder != null)
+            {
+                shadowMesh = new Mesh();
+                shadowMesh.name = $"{gameObject.name}_GroundShadowMesh";
+                if (shadowFilter != null) shadowFilter.mesh = shadowMesh;
+            }
+
+            shadowColors = new Color[singleVerts];
+            if (shadowMesh != null)
+            {
+                Vector3[] shadowVerts = new Vector3[singleVerts];
+                Vector2[] shadowUVs = new Vector2[singleVerts];
+                int[] shadowTris = new int[singleTris];
+
+                for (int i = 0; i < singleVerts; i++)
+                {
+                    shadowVerts[i] = baseVertices[i];
+                    shadowUVs[i] = baseUVs[i];
+                    shadowColors[i] = Color.clear;
+                }
+
+                int sTriIdx = 0;
+                for (int y = 0; y < res; y++)
+                {
+                    for (int x = 0; x < res; x++)
+                    {
+                        int i0 = y * (res + 1) + x;
+                        int i1 = i0 + 1;
+                        int i2 = (y + 1) * (res + 1) + x;
+                        int i3 = i2 + 1;
+
+                        shadowTris[sTriIdx++] = i0;
+                        shadowTris[sTriIdx++] = i2;
+                        shadowTris[sTriIdx++] = i1;
+
+                        shadowTris[sTriIdx++] = i1;
+                        shadowTris[sTriIdx++] = i2;
+                        shadowTris[sTriIdx++] = i3;
+                    }
+                }
+
+                shadowMesh.Clear();
+                shadowMesh.vertices = shadowVerts;
+                shadowMesh.uv = shadowUVs;
+                shadowMesh.triangles = shadowTris;
+                shadowMesh.colors = shadowColors;
+                shadowMesh.RecalculateBounds();
+            }
         }
 
         public void UpdateSortingOrder(int order)
@@ -390,6 +504,10 @@ namespace Stickerdom
             if (meshRenderer != null)
             {
                 meshRenderer.sortingOrder = order;
+            }
+            if (shadowRenderer != null)
+            {
+                shadowRenderer.sortingOrder = order - 1;
             }
         }
 
@@ -437,9 +555,17 @@ namespace Stickerdom
                 if (curlDist <= 0f)
                 {
                     // 1. MASADA DÜZ KALAN KISIM (Unpeeled on table):
-                    // ÖN YÜZ: basePos'ta, g=1, a=1 (%100 Saf Orijinal Görsel, SIFIR gölge)
+                    // Zemin Temas Ambient Occlusion Gölgesi (Kıvrımın masadaki düz kısma vurduğu temas gölgesi)
+                    float ao = 0f;
+                    if (underFoldAOWidth > 0.001f && -curlDist < underFoldAOWidth && currentPeelProgress > 0.001f)
+                    {
+                        float tAO = 1.0f - (-curlDist / underFoldAOWidth);
+                        ao = Mathf.Pow(Mathf.Clamp01(tAO), 1.6f); // 1.0 katlanma çizgisinde, dışa doğru yumuşakça sönümlenir
+                    }
+
+                    // ÖN YÜZ: basePos'ta, r=ao (Contact AO), g=1 (Front Sheet)
                     workingVertices[i] = basePos;
-                    workingColors[i] = new Color(0f, 1f, 0f, 1f);
+                    workingColors[i] = new Color(ao, 1f, 0f, 1f);
 
                     // ARKA YÜZ: a=0, Z=1.0 (MASADA KESİNLİKLE YOK / TAMAMEN GÖRÜNMEZ)
                     workingVertices[i + singleVerts] = new Vector3(basePos.x, basePos.y, 1.0f);
@@ -479,12 +605,39 @@ namespace Stickerdom
 
                     workingColors[i + singleVerts] = new Color(u, 0f, apexHighlight, 1f);
                 }
+
+                // ZEMİNE DÜŞEN AMBIENT OCCLUSION GÖLGESİ (Ground Shadow):
+                float shadowAlpha = 0f;
+                if (currentPeelProgress > 0.001f && groundAOWidth > 0.001f)
+                {
+                    if (curlDist >= 0f && curlDist <= groundAOWidth)
+                    {
+                        // Sökülen ve havaya kalkan kanadın masaya vuran gölgesi
+                        float tNorm = 1.0f - (curlDist / groundAOWidth);
+                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.3f) * groundAOStrength;
+                    }
+                    else if (curlDist < 0f && -curlDist <= groundAOWidth * 0.35f)
+                    {
+                        // Katlanma dikişinin zemin temas gölgesi
+                        float tNorm = 1.0f - (-curlDist / (groundAOWidth * 0.35f));
+                        shadowAlpha = Mathf.Pow(Mathf.Clamp01(tNorm), 1.6f) * groundAOStrength;
+                    }
+                }
+                if (shadowColors != null && i < shadowColors.Length)
+                {
+                    shadowColors[i] = new Color(groundAOColor.r, groundAOColor.g, groundAOColor.b, shadowAlpha * groundAOColor.a);
+                }
             }
 
             deformedMesh.vertices = workingVertices;
             deformedMesh.colors = workingColors;
             deformedMesh.RecalculateNormals();
             deformedMesh.RecalculateBounds();
+
+            if (shadowMesh != null && shadowColors != null)
+            {
+                shadowMesh.colors = shadowColors;
+            }
         }
 
         public float PeelAngle => peelAngle;
@@ -561,6 +714,8 @@ namespace Stickerdom
         {
             if (deformedMesh != null) Destroy(deformedMesh);
             if (dynamicMat != null) Destroy(dynamicMat);
+            if (shadowMesh != null) Destroy(shadowMesh);
+            if (shadowMat != null) Destroy(shadowMat);
         }
     }
 }

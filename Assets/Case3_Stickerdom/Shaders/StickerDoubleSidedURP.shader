@@ -22,6 +22,11 @@ Shader "Custom/StickerDoubleSidedURP"
         _TailPosition ("4 Body Tail Position", Range(0.00, 2.00)) = 1.253
         _ApexGlossIntensity ("Apex Gloss Intensity", Range(0.0, 3.0)) = 0.05
         [Toggle] _InvertGradient ("Invert Gradient Direction", Float) = 0.0
+
+        [Header(Contact Ambient Occlusion Controls)]
+        _UnderFoldAOWidth ("Under Fold AO Width", Range(0.00, 1.00)) = 0.25
+        _UnderFoldAOStrength ("Under Fold AO Strength", Range(0.00, 1.00)) = 0.50
+        _UnderFoldAOColor ("Under Fold AO Color", Color) = (0.0, 0.0, 0.0, 1.0)
     }
 
     SubShader
@@ -80,6 +85,7 @@ Shader "Custom/StickerDoubleSidedURP"
                 float4 _MidDipColor;
                 float4 _EndToneColor;
                 float4 _TipColor;
+                float4 _UnderFoldAOColor;
                 float _Cutoff;
                 float _ShineProgress;
                 float _CreasePosition;
@@ -88,6 +94,10 @@ Shader "Custom/StickerDoubleSidedURP"
                 float _TailPosition;
                 float _ApexGlossIntensity;
                 float _InvertGradient;
+                float _UnderFoldAOWidth;
+                float _UnderFoldAOStrength;
+                float _Pad0;
+                float _Pad1;
             CBUFFER_END
 
             Varyings vert(Attributes input)
@@ -109,12 +119,20 @@ Shader "Custom/StickerDoubleSidedURP"
                 if (input.color.a < 0.05f) discard;
 
                 // input.color.g:
-                // > 0.5 = ÖN YÜZEY (Front Sheet: %100 saf renkli görsel)
+                // > 0.5 = ÖN YÜZEY (Front Sheet: Masada kalan düz sticker görseli)
                 // <= 0.5 = ARKA YÜZEY (Back Sheet: Sökülen kanattaki yapışkan kağıt)
                 if (input.color.g > 0.5f)
                 {
-                    // 1. ÖN YÜZ: %100 DOKUNULMAZ, SAF ORİJİNAL STICKER GÖRSELİ (SIFIR GÖLGE, SIFIR ETKİ)
+                    // 1. ÖN YÜZ: Masada kalan düz sticker görseli
                     float3 frontRgb = texCol.rgb * _Color.rgb;
+
+                    // Zemin Temas Ambient Occlusion Gölgesi (Kıvrımın masadaki düz kısma vurduğu temas gölgesi)
+                    float ao = input.color.r * _UnderFoldAOStrength;
+                    if (ao > 0.001f)
+                    {
+                        float3 shadowTint = lerp(float3(1.0f, 1.0f, 1.0f), _UnderFoldAOColor.rgb, 0.70f);
+                        frontRgb *= lerp(float3(1.0f, 1.0f, 1.0f), shadowTint, ao);
+                    }
 
                     // Diagonal Shine Ray / Gloss Light Sweep across sticker on landing
                     if (_ShineProgress > -0.4f && _ShineProgress < 1.4f)

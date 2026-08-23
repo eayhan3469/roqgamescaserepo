@@ -1227,6 +1227,12 @@ MonoBehaviour:
   tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
+  groundAOWidth: 0.8
+  groundAOStrength: 1
+  groundAOColor: {r: 0, g: 0, b: 0, a: 0.9019608}
+  underFoldAOWidth: 0.25
+  underFoldAOStrength: 0.5
+  underFoldAOColor: {r: 0, g: 0, b: 0, a: 1}
   rollRadius: 0.2
   peelAngle: 184
   gridResolution: 36
@@ -1963,6 +1969,12 @@ MonoBehaviour:
   tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
+  groundAOWidth: 0.8
+  groundAOStrength: 1
+  groundAOColor: {r: 0, g: 0, b: 0, a: 0.9019608}
+  underFoldAOWidth: 0.25
+  underFoldAOStrength: 0.5
+  underFoldAOColor: {r: 0, g: 0, b: 0, a: 1}
   rollRadius: 0.2
   peelAngle: 184
   gridResolution: 36
@@ -2572,6 +2584,12 @@ MonoBehaviour:
   tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
+  groundAOWidth: 0.8
+  groundAOStrength: 1
+  groundAOColor: {r: 0, g: 0, b: 0, a: 0.9019608}
+  underFoldAOWidth: 0.25
+  underFoldAOStrength: 0.5
+  underFoldAOColor: {r: 0, g: 0, b: 0, a: 1}
   rollRadius: 0.2
   peelAngle: 184
   gridResolution: 36
@@ -2773,6 +2791,12 @@ MonoBehaviour:
   tailPosition: 1.253
   apexGlossIntensity: 0.05
   invertGradientDirection: 0
+  groundAOWidth: 0.8
+  groundAOStrength: 1
+  groundAOColor: {r: 0, g: 0, b: 0, a: 0.9019608}
+  underFoldAOWidth: 0.25
+  underFoldAOStrength: 0.5
+  underFoldAOColor: {r: 0, g: 0, b: 0, a: 1}
   rollRadius: 0.2
   peelAngle: 184
   gridResolution: 36
