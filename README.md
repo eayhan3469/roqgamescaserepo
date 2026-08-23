@@ -29,6 +29,16 @@ DOTween, PrimeTween vb. tweening/animasyon kütüphanelerini ihtiyacınıza gör
 kendiniz ekleyebilirsiniz. Hangi aracı neden seçtiğinizi README'nize not
 düşmeniz yeterli.
 
+**Bu projede DOTween kullanıldı.** Dört case'in tamamı, tek bir tetiklemeden
+sonra birden çok animasyonun (hareket, rotasyon, scale, renk) sıralı/paralel
+aktığı çok aşamalı sekanslara dayanıyor (ör. Case 1'de kavisli uçuş →
+hover → dalış → squash-stretch → çark rezonansı zinciri). DOTween'in
+`Sequence` / `Append` / `Join` / `Insert` API'si bu zincirleri tek bir
+akıcı akışta, callback'lerle (ses, VFX, state güncellemeleri) senkronize
+şekilde yazmayı kolaylaştırdığı ve `OutBack`, `InQuad` gibi hazır easing
+eğrileriyle "juicy" hissi (overshoot, anticipation, punch) hızlıca elde
+etmeye izin verdiği için tercih edildi.
+
 ## VFX / SFX
 
 Her case klasöründe basit particle prefab'ları verilmiştir; kullanmak zorunda
