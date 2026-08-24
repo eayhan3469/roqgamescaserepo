@@ -47,3 +47,6 @@ mono_crash.*
 # MCP for Unity playtest screenshots
 /Assets/Screenshots/
 /Assets/Screenshots.meta
+
+# Claude Code agent tooling (not part of the game project)
+.agents/
