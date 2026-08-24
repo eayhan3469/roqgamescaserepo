@@ -18,6 +18,16 @@ Shader "Bonus/JellyWobble"
     // when normals were left un-transformed. The secondary ripple is a small perturbation and
     // is not accounted for in the normal, which is an accepted approximation.
     //
+    // _JellyPivotOffset: the squash/stretch decomposition below is relative to OBJECT-SPACE
+    // ORIGIN, not the mesh's actual centroid — fine for a single block cube (naturally
+    // centered on its own pivot), but multi-cell BlockHole shapes (e.g. the L-tetromino)
+    // render through a combined mesh whose pivot sits at one corner of the footprint, not
+    // its center. Deforming relative to origin there meant vertices far from that off-center
+    // pivot got scaled by a hugely disproportionate absolute amount, which looked like the
+    // block exploding/jumping in size. JellySpringDriver feeds this once (mesh.bounds.center
+    // in local space) so the decomposition can happen relative to the actual mesh center
+    // instead, regardless of where the pivot happens to sit.
+    //
     // NOTE (see roq-case-project memory / commit 02030bf): a custom shader that is only ever
     // instantiated at runtime via Shader.Find + new Material() gets STRIPPED from mobile
     // builds. This shader is intentionally referenced by a real saved Material asset
@@ -41,6 +51,7 @@ Shader "Bonus/JellyWobble"
         [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)
         _JellyAmount ("Jelly Amount", Float) = 0
+        _JellyPivotOffset ("Jelly Pivot Offset (local mesh center)", Vector) = (0, 0, 0, 0)
 
         [Header(Secondary Ripple)]
         _JellyRippleFreq ("Ripple Frequency", Float) = 6.0
@@ -98,6 +109,7 @@ Shader "Bonus/JellyWobble"
                 float _RimStrength;
                 float4 _JellyDir;
                 float _JellyAmount;
+                float4 _JellyPivotOffset;
                 float _JellyRippleFreq;
                 float _JellyRippleSpeed;
                 float _JellyRippleStrength;
@@ -118,20 +130,26 @@ Shader "Bonus/JellyWobble"
                 Varyings OUT;
 
                 float3 posOS = IN.positionOS.xyz;
+                float3 pivot = _JellyPivotOffset.xyz;
+                float3 posRelPivot = posOS - pivot;
+
                 float3 dir = _JellyDir.xyz;
                 float dirLenSq = dot(dir, dir);
                 dir = (dirLenSq > 1e-8) ? normalize(dir) : float3(0, 1, 0);
 
                 // Volume-preserving squash/stretch: stretch along the drive axis,
-                // inverse-sqrt squash on the two perpendicular axes.
+                // inverse-sqrt squash on the two perpendicular axes. Relative to the
+                // mesh's actual center (posRelPivot), not raw object-space origin — see
+                // _JellyPivotOffset note up top.
                 float stretch = 1.0 + _JellyAmount;
                 float squash = 1.0 / sqrt(max(abs(stretch), 0.0001));
 
-                float3 deformed = ApplyJellyBasis(posOS, dir, stretch, squash);
+                float3 deformedRelPivot = ApplyJellyBasis(posRelPivot, dir, stretch, squash);
+                float3 deformed = deformedRelPivot + pivot;
 
                 // Secondary traveling ripple along the normal for a wetter/gooey look,
                 // strongest at the stretch extremities and fading as the spring settles.
-                float axisPos = dot(posOS, dir);
+                float axisPos = dot(posRelPivot, dir);
                 float ripple = sin(axisPos * _JellyRippleFreq - _Time.y * _JellyRippleSpeed)
                              * _JellyRippleStrength * _JellyAmount;
                 deformed += IN.normalOS * ripple;

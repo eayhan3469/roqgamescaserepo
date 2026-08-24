@@ -52,12 +52,27 @@ namespace Bonus.BlockHoleJelly
 
         private static readonly int JellyDirId = Shader.PropertyToID("_JellyDir");
         private static readonly int JellyAmountId = Shader.PropertyToID("_JellyAmount");
+        private static readonly int JellyPivotOffsetId = Shader.PropertyToID("_JellyPivotOffset");
 
         private void Awake()
         {
             meshRenderer = GetComponent<MeshRenderer>();
             propBlock = new MaterialPropertyBlock();
             lastPosition = transform.position;
+
+            // Tell the shader where this mesh's actual center is in local space, so it
+            // deforms around that instead of raw object-space origin — matters whenever the
+            // mesh's pivot isn't at its own centroid, e.g. BlockHole's multi-cell combined
+            // meshes (an L-tetromino's pivot sits at one corner of its footprint, not the
+            // middle), which otherwise looked like the block exploding/jumping in size. Set
+            // once here (not every frame) since it never changes at runtime for a given mesh.
+            var meshFilter = GetComponent<MeshFilter>();
+            Vector3 pivotOffset = Vector3.zero;
+            if (meshFilter != null && meshFilter.sharedMesh != null)
+            {
+                pivotOffset = meshFilter.sharedMesh.bounds.center;
+            }
+            propBlock.SetVector(JellyPivotOffsetId, pivotOffset);
         }
 
         private void LateUpdate()
