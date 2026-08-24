@@ -394,22 +394,26 @@ namespace FitTheShape
 
                     Vector3 localShapeScale = new Vector3(originalScale.x * invX, originalScale.y * invY, originalScale.z * invZ);
 
-                    Vector3 localEmbossedPos = parentSeg.InverseTransformPoint(embossedLandingPos);
                     Vector3 localFlushPos = parentSeg.InverseTransformPoint(flushSeatedPos);
                     Quaternion localRot = Quaternion.Inverse(parentSeg.rotation) * lastAnchor.rotation;
 
-                    transform.localPosition = localEmbossedPos;
+                    // Kullanıcı isteği: artık kabartılı (embossed) pozisyonda durup ayrıca
+                    // sinkDuration kadar süzülmüyor — bu 0.2s'lik ekstra bekleme, delik zaten
+                    // kapandıktan SONRA hâlâ görünür bir "kabartı" olarak duruyordu. Direkt nihai
+                    // (flush/oturmuş) pozisyona yerleşiyor, delikle TAM AYNI ANDA kapanıyor —
+                    // vuruş efektleri (kıvılcım, patlama, ses, ripple) yine embossedLandingPos'ta
+                    // (temas noktası) tetikleniyor, sadece şeklin kendisi artık orada asılı kalmıyor.
+                    transform.localPosition = localFlushPos;
                     transform.localRotation = localRot;
                     transform.localScale = localShapeScale;
 
                     StopFlightTrail();
 
-                    // 🤹 SQUASH & STRETCH (Aşama 2: Çarpma anında tok basılma ve anında yaylanma)
-                    Vector3 impactSquash = new Vector3(localShapeScale.x * 1.15f, localShapeScale.y * 0.78f, localShapeScale.z * 1.15f);
-                    transform.DOScale(impactSquash, 0.05f).SetEase(Ease.OutQuad).OnComplete(() =>
-                    {
-                        transform.DOScale(localShapeScale, 0.08f).SetEase(Ease.OutBack, 1.4f);
-                    });
+                    // NOT: eski squash&stretch (impactSquash) tween'i buradan kaldırıldı — şekil
+                    // artık aynı fonksiyon çağrısı içinde hemen altında SetActive(false) olduğu
+                    // için o tween'in tek bir karesi bile render olmadan görünmez kalıyordu
+                    // (ölü/gereksiz kod). Vuruş hissi artık kıvılcım + patlama + ses + ripple
+                    // efektleriyle veriliyor.
 
                     // 🌟 İLK ÇARPMA ANINDA TETİKLENEN EFEKTLER (Anında Reaksiyon):
                     // 1. Sürtünme kıvılcımları & Parıltılar
@@ -430,27 +434,18 @@ namespace FitTheShape
                         WheelReactor.Instance.TriggerReaction(lastAnchor, null);
                     }
 
-                    // 5. Delik direkt kapansın: parça hedefe oturduğu (ilk temas) anda hemen kapat,
-                    // aşağıdaki pürüzsüz süzülme animasyonunun bitmesini bekleme — kullanıcı isteği,
-                    // eskiden bu sinkDuration (0.2s) kadar gecikiyordu. Şekil zaten bu anda deliğin
-                    // tam üstünde durduğu için (embossedLandingPos), deliği hemen kapatmak görsel
-                    // olarak bozuk durmuyor — şekil kendisi deliğin üstünü zaten kapatıyor.
+                    // 5. Delik ve şekil TAM VURUŞ ANINDA birlikte kapanıyor — HideHoleCutout deliği
+                    // kapatır kapatmaz segmentin kendi düz yüzeyi ortaya çıkıyor (ayrı bir "dolu"
+                    // kapak objesi gerekmiyor, doğrulanmıştı), o yüzden şekli aynı anda gizlemek
+                    // hiçbir görsel boşluk bırakmıyor.
                     HideHoleCutout(parentSeg);
+                    gameObject.SetActive(false);
+                    isSeated = true;
 
-                    // 🌟 2. AŞAMA: Segment'in içinde pürüzsüzce içeri süzülerek yüzeye kilitlenme
-                    transform.DOLocalMove(localFlushPos, sinkDuration).SetEase(sinkEase).OnComplete(() =>
-                    {
-                        transform.localPosition = localFlushPos;
-                        transform.localRotation = localRot;
+                    OnShapeEntered?.Invoke();
 
-                        gameObject.SetActive(false);
-                        isSeated = true;
-
-                        OnShapeEntered?.Invoke();
-
-                        // 🏆 Tüm şekiller deliklerine oturdu mu kontrol et
-                        CheckAllShapesSeated();
-                    });
+                    // 🏆 Tüm şekiller deliklerine oturdu mu kontrol et
+                    CheckAllShapesSeated();
                 }
             });
         }
