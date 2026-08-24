@@ -7166,14 +7166,17 @@ MonoBehaviour:
   snapImpactClip: {fileID: 8300000, guid: 97c0df8d2b118b643b99518f68b4dc58, type: 3}
   resonanceWobbleClip: {fileID: 8300000, guid: 6390e9e56aadc7d48b089e4fdb9d1572, type: 3}
   successSparkleClip: {fileID: 8300000, guid: e32343c8645bd3149904fea2a6d9b6b7, type: 3}
+  wheelSpinClip: {fileID: 8300000, guid: f7cbf2a81e170ad448e549768e0020c5, type: 3}
   launchSource: {fileID: 0}
   snapSource: {fileID: 0}
   wobbleSource: {fileID: 0}
   sparkleSource: {fileID: 0}
+  wheelSpinSource: {fileID: 0}
   launchVolume: 0.3
   impactVolume: 0.8
   wobbleVolume: 0.1
   sparkleVolume: 0.1
+  wheelSpinVolume: 0.8
   minPitch: 0.95
   maxPitch: 1.05
 --- !u!82 &1483402402
@@ -10731,6 +10734,12 @@ MonoBehaviour:
   pushDuration: 0.085
   springDuration: 0.3
   springOvershoot: 1.4
+  anticipationAngle: -28
+  anticipationDuration: 0.2
+  columnSpinDuration: 0.5
+  settleOvershootAngle: 8
+  settleDuration: 0.22
+  columnStaggerDelay: 0.09
   impactParticles: {fileID: 0}
   impactAudio: {fileID: 0}
   onReactionTriggered:

@@ -208,6 +208,16 @@ namespace FitTheShape
                 Sequence colSeq = DOTween.Sequence();
                 colSeq.SetTarget(colPivot);
 
+                // 🔊 Sütun başına mekanik çark dönüş sesi (5 sütun stagger ile art arda tetiklenir,
+                // cascade/tıkırtı hissi verir; pitch varyasyonu PlayWheelSpinSound içinde)
+                colSeq.AppendCallback(() =>
+                {
+                    if (FitTheShapeAudioManager.Instance != null)
+                    {
+                        FitTheShapeAudioManager.Instance.PlayWheelSpinSound();
+                    }
+                });
+
                 // 1. AŞAMA (Windup / Anticipation): Geriye yaylanarak gerilme ve güç toplama
                 colSeq.Append(colPivot.DOLocalRotate(new Vector3(anticipationAngle, 0f, 0f), anticipationDuration, RotateMode.LocalAxisAdd)
                     .SetEase(Ease.OutQuad));

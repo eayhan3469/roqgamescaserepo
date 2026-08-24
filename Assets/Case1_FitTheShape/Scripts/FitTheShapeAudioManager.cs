@@ -20,17 +20,22 @@ namespace FitTheShape
         [Tooltip("Played for success / completion polish.")]
         [SerializeField] private AudioClip successSparkleClip;
 
+        [Tooltip("Played per-column when the wheel spins (windup → spin → settle cascade).")]
+        [SerializeField] private AudioClip wheelSpinClip;
+
         [Header("Dedicated Audio Sources")]
         [SerializeField] private AudioSource launchSource;
         [SerializeField] private AudioSource snapSource;
         [SerializeField] private AudioSource wobbleSource;
         [SerializeField] private AudioSource sparkleSource;
+        [SerializeField] private AudioSource wheelSpinSource;
 
         [Header("Volume Controls")]
         [Range(0f, 1f)] [SerializeField] private float launchVolume = 0.85f;
         [Range(0f, 1f)] [SerializeField] private float impactVolume = 1.0f;
         [Range(0f, 1f)] [SerializeField] private float wobbleVolume = 0.75f;
         [Range(0f, 1f)] [SerializeField] private float sparkleVolume = 0.90f;
+        [Range(0f, 1f)] [SerializeField] private float wheelSpinVolume = 0.80f;
 
         [Header("Pitch Variation Settings")]
         [SerializeField] private float minPitch = 0.96f;
@@ -40,6 +45,7 @@ namespace FitTheShape
         public AudioClip SnapImpactClip { get => snapImpactClip; set => snapImpactClip = value; }
         public AudioClip ResonanceWobbleClip { get => resonanceWobbleClip; set => resonanceWobbleClip = value; }
         public AudioClip SuccessSparkleClip { get => successSparkleClip; set => successSparkleClip = value; }
+        public AudioClip WheelSpinClip { get => wheelSpinClip; set => wheelSpinClip = value; }
 
         private void Awake()
         {
@@ -62,6 +68,7 @@ namespace FitTheShape
             if (snapSource == null) snapSource = CreateDedicatedSource("SnapSource");
             if (wobbleSource == null) wobbleSource = CreateDedicatedSource("WobbleSource");
             if (sparkleSource == null) sparkleSource = CreateDedicatedSource("SparkleSource");
+            if (wheelSpinSource == null) wheelSpinSource = CreateDedicatedSource("WheelSpinSource");
         }
 
         private AudioSource CreateDedicatedSource(string name)
@@ -124,6 +131,20 @@ namespace FitTheShape
 
             wobbleSource.pitch = UnityEngine.Random.Range(0.96f, 1.04f);
             wobbleSource.PlayOneShot(resonanceWobbleClip, wobbleVolume);
+        }
+
+        /// <summary>
+        /// Plays the mechanical wheel-spin sound. Called once per column as the reset cascade
+        /// staggers across the 5 columns, so pitch is randomized a bit wider than the other cues
+        /// to keep the overlapping hits from sounding like a stacked duplicate.
+        /// </summary>
+        public void PlayWheelSpinSound()
+        {
+            if (wheelSpinClip == null) return;
+            if (wheelSpinSource == null) InitializeSources();
+
+            wheelSpinSource.pitch = UnityEngine.Random.Range(0.94f, 1.08f);
+            wheelSpinSource.PlayOneShot(wheelSpinClip, wheelSpinVolume);
         }
 
         /// <summary>
