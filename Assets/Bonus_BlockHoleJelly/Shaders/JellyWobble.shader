@@ -153,6 +153,16 @@ Shader "Bonus/JellyWobble"
                 float _CornerBevelStrength;
                 float _CornerBevelSize;
                 float _CornerBevelSharpness;
+                // Real silhouette corners of the mesh's top face, in raw local (object) space,
+                // computed once in JellySpringDriver.Awake() from the actual mesh geometry (see
+                // its ComputeExteriorTopCorners for why: a plain periodic grid can't tell a real
+                // exterior/concave corner apart from the flat interior seam between two occupied
+                // cells sitting flush together, which showed up as an obviously fake floating
+                // sparkle in the middle of a flat run on multi-cell pieces). Unused slots are a
+                // sentinel far outside any block's local space so they're never the "nearest".
+                // xz used (corner position), yw unused padding — array size MUST match
+                // JellySpringDriver.MaxExteriorCorners.
+                float4 _ExteriorCorners[16];
                 float4 _FleckColor;
                 float _FleckStrength;
                 float _FleckDensity;
@@ -288,21 +298,36 @@ Shader "Bonus/JellyWobble"
                 float NdotV = saturate(dot(normalWS, viewDir));
                 float fresnel = pow(1.0 - NdotV, _RimPower);
 
-                // Beveled-corner fake normal: find the nearest of the top face's 4 corners
-                // within this cell (cells tile every 1 local unit, matching the block mesh's
-                // per-cube layout), then lean the normal outward from that corner and upward
-                // — approximating what a real small rounded bevel there would look like. Only
+                // Beveled-corner fake normal: find the NEAREST REAL exterior/concave corner of
+                // the whole piece's top silhouette (from _ExteriorCorners, computed on the CPU
+                // from actual mesh geometry — see JellySpringDriver.ComputeExteriorTopCorners),
+                // then lean the normal outward from that corner and upward — approximating what
+                // a real small rounded bevel there would look like. Deliberately NOT a plain
+                // periodic per-cell grid corner: that version could not tell a real silhouette
+                // corner apart from the flat interior seam between two occupied cells sitting
+                // flush together, and lit up seams with no real edge there at all. Only
                 // meaningful near an actual corner (bevelAmount fades to 0 elsewhere) and only
                 // on top-facing geometry (topShape, computed further below reused here via its
                 // own local copy since it is needed before the diffuse falls out of the loop).
                 float topFacingForBevel = saturate(normalWS.y);
                 float topShapeForBevel = topFacingForBevel * topFacingForBevel * topFacingForBevel * topFacingForBevel;
-                float2 cellFracXZ = frac(IN.localPosOS.xz);
-                float2 nearestCornerXZ = round(cellFracXZ);
-                float2 offsetFromCornerXZ = cellFracXZ - nearestCornerXZ;
-                float cornerDistXZ = length(offsetFromCornerXZ);
+                float2 localXZ = IN.localPosOS.xz;
+                float bestCornerDistSq = 1e9;
+                float2 bestOffsetXZ = float2(0, 0);
+                UNITY_UNROLL
+                for (int c = 0; c < 16; c++)
+                {
+                    float2 offsetXZ = localXZ - _ExteriorCorners[c].xz;
+                    float distSq = dot(offsetXZ, offsetXZ);
+                    if (distSq < bestCornerDistSq)
+                    {
+                        bestCornerDistSq = distSq;
+                        bestOffsetXZ = offsetXZ;
+                    }
+                }
+                float cornerDistXZ = sqrt(bestCornerDistSq);
                 float bevelAmount = smoothstep(_CornerBevelSize, 0.0, cornerDistXZ) * topShapeForBevel;
-                float2 outwardDirXZ = offsetFromCornerXZ / max(cornerDistXZ, 1e-4);
+                float2 outwardDirXZ = bestOffsetXZ / max(cornerDistXZ, 1e-4);
                 float3 bevelNormal = normalize(float3(outwardDirXZ.x, 1.4, outwardDirXZ.y));
 
                 // Wrapped + BANDED diffuse: real-time smooth NdotL shading reads as plastic;

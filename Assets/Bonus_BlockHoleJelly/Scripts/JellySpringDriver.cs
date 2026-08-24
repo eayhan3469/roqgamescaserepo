@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Bonus.BlockHoleJelly
@@ -80,6 +81,11 @@ namespace Bonus.BlockHoleJelly
         private static readonly int JellyDirId = Shader.PropertyToID("_JellyDir");
         private static readonly int JellyAmountId = Shader.PropertyToID("_JellyAmount");
         private static readonly int JellyPivotOffsetId = Shader.PropertyToID("_JellyPivotOffset");
+        private static readonly int ExteriorCornersId = Shader.PropertyToID("_ExteriorCorners");
+
+        // Must match the fixed-size array declared in JellyWobble.shader's CBUFFER. Covers
+        // even a fairly sprawling BlockHole piece's silhouette corner count with margin.
+        private const int MaxExteriorCorners = 16;
 
         private void Awake()
         {
@@ -106,8 +112,106 @@ namespace Bonus.BlockHoleJelly
                 const float referenceHalfExtent = 0.5f;
                 float halfExtent = Mathf.Max(bounds.extents.x, bounds.extents.z);
                 kickSizeScale = halfExtent > 0.0001f ? halfExtent / referenceHalfExtent : 1f;
+
+                propBlock.SetVectorArray(ExteriorCornersId, ComputeExteriorTopCorners(meshFilter.sharedMesh));
             }
             propBlock.SetVector(JellyPivotOffsetId, pivotOffset);
+        }
+
+        /// <summary>
+        /// Finds the real silhouette corners of the mesh's top-facing surface, in raw local
+        /// (object) space, for the shader's beveled-corner sparkle (see JellyWobble.shader).
+        ///
+        /// Why this exists: with this scene's orthographic camera + directional lights, real
+        /// specular is mathematically UNIFORM across an entire flat top face (view/light
+        /// direction don't vary across it), so it can never single out a corner. The shader
+        /// fakes a small rounded-bevel normal near a corner to get real per-corner light
+        /// response instead. The first version of that picked "nearest corner" from a plain
+        /// periodic 1-unit grid (frac/round on local position) — which correctly finds a
+        /// corner-like point in every unit cell, but does NOT know whether that point is a
+        /// real exterior/silhouette corner of the whole (possibly multi-cell) piece or just
+        /// the seam where two occupied cells sit flush against each other with no real edge
+        /// there at all. On an L-piece that put a floating, geometry-less "sparkle" right in
+        /// the middle of a flat continuous run — looked obviously fake, and is what the user
+        /// flagged. This method fixes that by deriving the real shape from the mesh itself:
+        /// walk every top-facing triangle, bucket its centroid into a 1-unit cell (measured
+        /// from the mesh's own bounds.min so it works regardless of where this particular
+        /// piece's pivot happens to sit), then keep only the corner grid-points where NOT
+        /// all 4 surrounding cells are occupied — i.e. real exterior/concave corners, not
+        /// interior seams. Unused array slots are filled with a sentinel far outside any
+        /// block's local space so they are never picked as "nearest" by the shader.
+        /// </summary>
+        private static Vector4[] ComputeExteriorTopCorners(Mesh mesh)
+        {
+            var result = new Vector4[MaxExteriorCorners];
+            const float sentinel = 9999f;
+            for (int i = 0; i < MaxExteriorCorners; i++)
+            {
+                result[i] = new Vector4(sentinel, 0f, sentinel, 0f);
+            }
+
+            if (mesh == null || !mesh.isReadable)
+            {
+                return result;
+            }
+
+            Vector3[] verts = mesh.vertices;
+            int[] tris = mesh.triangles;
+            Vector3 originLocal = mesh.bounds.min;
+
+            var occupiedCells = new HashSet<Vector2Int>();
+            for (int i = 0; i + 2 < tris.Length; i += 3)
+            {
+                Vector3 v0 = verts[tris[i]];
+                Vector3 v1 = verts[tris[i + 1]];
+                Vector3 v2 = verts[tris[i + 2]];
+                Vector3 faceNormal = Vector3.Cross(v1 - v0, v2 - v0).normalized;
+                if (faceNormal.y < 0.9f) continue; // only top-facing triangles form the top silhouette
+
+                Vector3 centroid = (v0 + v1 + v2) / 3f;
+                // Bucket relative to the mesh's own bounds.min (a real cell boundary corner
+                // by definition), not raw local 0 — a combined multi-cell mesh's cell grid can
+                // sit at any fractional offset from local origin depending on where its pivot
+                // was placed, and flooring raw local coordinates would misalign with actual
+                // cell boundaries in that case.
+                int cx = Mathf.FloorToInt(centroid.x - originLocal.x + 0.01f);
+                int cz = Mathf.FloorToInt(centroid.z - originLocal.z + 0.01f);
+                occupiedCells.Add(new Vector2Int(cx, cz));
+            }
+
+            var candidateCorners = new HashSet<Vector2Int>();
+            foreach (var cell in occupiedCells)
+            {
+                candidateCorners.Add(new Vector2Int(cell.x, cell.y));
+                candidateCorners.Add(new Vector2Int(cell.x + 1, cell.y));
+                candidateCorners.Add(new Vector2Int(cell.x, cell.y + 1));
+                candidateCorners.Add(new Vector2Int(cell.x + 1, cell.y + 1));
+            }
+
+            int written = 0;
+            foreach (var corner in candidateCorners)
+            {
+                if (written >= MaxExteriorCorners) break;
+
+                int occupiedQuadrants = 0;
+                if (occupiedCells.Contains(new Vector2Int(corner.x - 1, corner.y - 1))) occupiedQuadrants++;
+                if (occupiedCells.Contains(new Vector2Int(corner.x, corner.y - 1))) occupiedQuadrants++;
+                if (occupiedCells.Contains(new Vector2Int(corner.x - 1, corner.y))) occupiedQuadrants++;
+                if (occupiedCells.Contains(new Vector2Int(corner.x, corner.y))) occupiedQuadrants++;
+
+                // A grid point surrounded by all 4 occupied cells is a flat interior seam
+                // (no real edge there); one surrounded by 0 is not touched by the shape at
+                // all. Only 1-3 occupied quadrants means a real exterior or concave corner.
+                if (occupiedQuadrants > 0 && occupiedQuadrants < 4)
+                {
+                    float worldLocalX = originLocal.x + corner.x;
+                    float worldLocalZ = originLocal.z + corner.y;
+                    result[written] = new Vector4(worldLocalX, 0f, worldLocalZ, 0f);
+                    written++;
+                }
+            }
+
+            return result;
         }
 
         private void LateUpdate()
