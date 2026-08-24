@@ -6246,13 +6246,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 838135528}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14494713, y: 0.86564136, z: -0.30007166, w: 0.37364742}
+  m_LocalRotation: {x: 0.14497738, y: 0.8656363, z: -0.30005863, w: 0.37365788}
   m_LocalPosition: {x: -1.54809, y: 3.52837, z: 2.76028}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 80.586, y: 142.036, z: 9.395}
 --- !u!1 &840813948
 GameObject:
   m_ObjectHideFlags: 0
@@ -9275,7 +9275,7 @@ PrefabInstance:
     - target: {fileID: 2772340410769736312, guid: 7d128090a81004d9c9914ac2cea5691a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: af184f9c9d38619b404f270fe94d37f2, type: 2}
+      objectReference: {fileID: 2100000, guid: ef272c6f7d5c7834b9fecaab6aa51323, type: 2}
     - target: {fileID: 2943204707417077802, guid: 7d128090a81004d9c9914ac2cea5691a, type: 3}
       propertyPath: m_Name
       value: Block_Block-Single
@@ -11651,7 +11651,7 @@ PrefabInstance:
     - target: {fileID: 4131301088703998705, guid: 7c40027f7d63c42c183791b92848834a, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 84e45f0cc674b3d4193598a870b039b0, type: 2}
+      objectReference: {fileID: 2100000, guid: af184f9c9d38619b404f270fe94d37f2, type: 2}
     - target: {fileID: 5138500445381540524, guid: 7c40027f7d63c42c183791b92848834a, type: 3}
       propertyPath: m_Name
       value: Block_Block-2
@@ -14102,7 +14102,7 @@ PrefabInstance:
     - target: {fileID: 3900416481416638675, guid: 1f9a7fd359571437db2d08d6d83dbefa, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: ef272c6f7d5c7834b9fecaab6aa51323, type: 2}
+      objectReference: {fileID: 2100000, guid: 84e45f0cc674b3d4193598a870b039b0, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14279,7 +14279,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ef272c6f7d5c7834b9fecaab6aa51323, type: 2}
+  - {fileID: 2100000, guid: 84e45f0cc674b3d4193598a870b039b0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
