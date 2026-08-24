@@ -37,8 +37,12 @@ Shader "Bonus/JellyWobble"
     {
         _BaseMap ("Base Map", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (0.08, 0.68, 0.60, 1)
-        _Smoothness ("Smoothness", Range(0,1)) = 0.45
+        _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.78
+        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.35
+        _Smoothness ("Smoothness", Range(0,1)) = 0.8
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
+        _SpecularIntensity ("Specular Intensity", Range(0,6)) = 3.0
+        _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.5
 
         [Header(Gummy Translucency)]
         _WrapAmount ("Diffuse Wrap (soft falloff)", Range(0,1)) = 0.4
@@ -61,13 +65,19 @@ Shader "Bonus/JellyWobble"
 
     SubShader
     {
-        Tags { "RenderType" = "Opaque" "Queue" = "Geometry" "RenderPipeline" = "UniversalPipeline" }
+        // Real alpha transparency (not just a tinted-but-opaque look) — a jelly block
+        // should let some light/background through, especially toward the edges where
+        // you are looking through more of a curved-feeling surface at a grazing angle.
+        Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "RenderPipeline" = "UniversalPipeline" "IgnoreProjector" = "True" }
         LOD 200
 
         Pass
         {
             Name "ForwardLit"
             Tags { "LightMode" = "UniversalForward" }
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
+            Cull Back
 
             HLSLPROGRAM
             #pragma vertex vert
@@ -99,8 +109,12 @@ Shader "Bonus/JellyWobble"
             CBUFFER_START(UnityPerMaterial)
                 float4 _BaseMap_ST;
                 float4 _BaseColor;
+                float _Alpha;
+                float _EdgeOpacityBoost;
                 float _Smoothness;
                 float4 _SpecColor;
+                float _SpecularIntensity;
+                float _SheenStrength;
                 float _WrapAmount;
                 float _TranslucencyStrength;
                 float4 _TranslucencyColor;
@@ -186,8 +200,19 @@ Shader "Bonus/JellyWobble"
 
                 float3 halfDir = normalize(lightDir + viewDir);
                 float NdotH = saturate(dot(normalWS, halfDir));
-                half specPower = exp2(_Smoothness * 10.0 + 1.0);
-                half3 specular = _SpecColor.rgb * mainLight.color * pow(NdotH, specPower) * _Smoothness;
+                float NdotV = saturate(dot(normalWS, viewDir));
+                float fresnel = pow(1.0 - NdotV, _RimPower);
+
+                // Two-lobe "wet gummy" specular: a tight bright highlight (the glossy
+                // clear-coat glint) plus a broader, dimmer sheen underneath it (so the
+                // shine doesn't look like a single hard plastic dot), both boosted at
+                // grazing angles the way a real wet/glossy surface gets shinier when
+                // viewed edge-on (cheap Schlick-style fresnel boost, not a full BRDF).
+                half sharpPower = exp2(_Smoothness * 11.0 + 1.0);
+                half sharpSpec = pow(NdotH, sharpPower);
+                half broadSpec = pow(NdotH, 4.0) * _SheenStrength;
+                half specFresnelBoost = lerp(1.0, 3.0, fresnel);
+                half3 specular = _SpecColor.rgb * mainLight.color * (sharpSpec + broadSpec) * _SpecularIntensity * specFresnelBoost;
 
                 // Cheap fake-SSS: light "bleeding through" from behind the surface,
                 // strongest when the view is looking roughly along the light direction
@@ -196,13 +221,18 @@ Shader "Bonus/JellyWobble"
                 half3 translucency = _TranslucencyColor.rgb * albedo * mainLight.color * backLight * _TranslucencyStrength;
 
                 // Fresnel rim for a soft gummy sheen at grazing angles.
-                float fresnel = pow(1.0 - saturate(dot(normalWS, viewDir)), _RimPower);
                 half3 rim = _RimColor.rgb * fresnel * _RimStrength;
 
                 half3 ambient = albedo * SampleSH(normalWS);
 
                 half3 color = diffuse + specular + translucency + rim + ambient;
-                return half4(color, tex.a * _BaseColor.a);
+
+                // Real transparency: base opacity plus extra opacity at grazing angles
+                // (like looking through the curved edge of a gummy block vs. straight
+                // through its flat face) — reads as a proper see-through jelly instead of
+                // an opaque surface with a tinted color.
+                float alpha = saturate(_Alpha + fresnel * _EdgeOpacityBoost) * tex.a * _BaseColor.a;
+                return half4(color, alpha);
             }
             ENDHLSL
         }

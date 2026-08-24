@@ -36,7 +36,9 @@ Material:
     - _JellyRippleStrength: 0.18
     - _RimPower: 3
     - _RimStrength: 0.5
-    - _Smoothness: 0.45
+    - _SheenStrength: 0.5
+    - _Smoothness: 0.8
+    - _SpecularIntensity: 3
     - _TranslucencyStrength: 0.6
     - _WrapAmount: 0.4
     m_Colors:
