@@ -50,6 +50,18 @@ namespace Bonus.BlockHoleJelly
         private float springAmount;
         private float springVelocity;
 
+        // Auto-computed in Awake from the driven mesh's own bounds: since displacement for
+        // a given `amount` scales with distance-from-pivot (see JellyWobble.shader), the
+        // exact same Kick() strength moves a bigger mesh's extremities a lot farther in
+        // absolute world units than a small one's — a multi-cell BlockHole shape (e.g. the
+        // L-tetromino, ~3x the half-extent of a single cube) visibly "jumped" harder than
+        // the single-cell blocks even after the pivot-offset fix, because the *relative*
+        // stretch was the same but the *absolute* corner motion was 3x bigger. Kick()
+        // divides incoming strength by this so the same strength value produces similarly
+        // *sized* absolute motion regardless of which block it is driving — 1.0 for a
+        // standard single-cell block, larger for bigger combined meshes.
+        private float kickSizeScale = 1f;
+
         private static readonly int JellyDirId = Shader.PropertyToID("_JellyDir");
         private static readonly int JellyAmountId = Shader.PropertyToID("_JellyAmount");
         private static readonly int JellyPivotOffsetId = Shader.PropertyToID("_JellyPivotOffset");
@@ -70,7 +82,15 @@ namespace Bonus.BlockHoleJelly
             Vector3 pivotOffset = Vector3.zero;
             if (meshFilter != null && meshFilter.sharedMesh != null)
             {
-                pivotOffset = meshFilter.sharedMesh.bounds.center;
+                Bounds bounds = meshFilter.sharedMesh.bounds;
+                pivotOffset = bounds.center;
+
+                // Reference half-extent of a standard single BlockHole cell (0.5 = half of a
+                // 1x1x1 cube). Horizontal (X/Z) extent only — the drive axis is always
+                // cardinal-horizontal (see JellyBlockReactor), Y doesn't matter here.
+                const float referenceHalfExtent = 0.5f;
+                float halfExtent = Mathf.Max(bounds.extents.x, bounds.extents.z);
+                kickSizeScale = halfExtent > 0.0001f ? halfExtent / referenceHalfExtent : 1f;
             }
             propBlock.SetVector(JellyPivotOffsetId, pivotOffset);
         }
@@ -134,7 +154,7 @@ namespace Bonus.BlockHoleJelly
         {
             if (direction.sqrMagnitude < 0.0001f || strength == 0f) return;
             springDir = direction.normalized;
-            springVelocity = Mathf.Clamp(springVelocity + strength, -maxSpringVelocity, maxSpringVelocity);
+            springVelocity = Mathf.Clamp(springVelocity + strength / kickSizeScale, -maxSpringVelocity, maxSpringVelocity);
         }
     }
 }
