@@ -87,6 +87,22 @@ namespace Bonus.BlockHoleJelly
         // even a fairly sprawling BlockHole piece's silhouette corner count with margin.
         private const int MaxExteriorCorners = 16;
 
+        // Baked once in the Editor (see BakeExteriorCorners, an Editor-only menu action) and
+        // serialized with this component — NOT computed at runtime. Real gameplay confirmed
+        // this is necessary, not just a nice-to-have: mesh.vertices genuinely throws
+        // "Not allowed to access vertices... isReadable is false" when called from Awake()
+        // during an actual Play session (this fired for real when GridManager respawned a
+        // block — see roq-case-project memory for how an earlier attempt to verify this via
+        // the MCP execute_code tool gave a false "it works" result, because that tool's
+        // dynamically-compiled code runs with different Editor trust than a normally
+        // compiled MonoBehaviour like this one). Since GridManager's respawn system clones
+        // its block templates from the ORIGINAL scene-placed blocks (see GridManager.cs
+        // around blockTemplates), Unity's Instantiate() faithfully copies this serialized
+        // array to every clone-of-a-clone, so baking it once here, on the 3 original scene
+        // instances, is sufficient for every future respawn too — no runtime mesh read ever
+        // needed again for this data.
+        [SerializeField, HideInInspector] private Vector4[] bakedExteriorCorners;
+
         private void Awake()
         {
             meshRenderer = GetComponent<MeshRenderer>();
@@ -113,14 +129,57 @@ namespace Bonus.BlockHoleJelly
                 float halfExtent = Mathf.Max(bounds.extents.x, bounds.extents.z);
                 kickSizeScale = halfExtent > 0.0001f ? halfExtent / referenceHalfExtent : 1f;
 
-                propBlock.SetVectorArray(ExteriorCornersId, ComputeExteriorTopCorners(meshFilter.sharedMesh));
+                Vector4[] corners = (bakedExteriorCorners != null && bakedExteriorCorners.Length == MaxExteriorCorners)
+                    ? bakedExteriorCorners
+                    : BoundingBoxCornersFallback(bounds);
+                propBlock.SetVectorArray(ExteriorCornersId, corners);
             }
             propBlock.SetVector(JellyPivotOffsetId, pivotOffset);
         }
 
         /// <summary>
-        /// Finds the real silhouette corners of the mesh's top-facing surface, in raw local
-        /// (object) space, for the shader's beveled-corner sparkle (see JellyWobble.shader).
+        /// Editor-only: (re)computes real exterior/concave top-face corners from actual mesh
+        /// geometry (ComputeExteriorTopCorners) and serializes the result onto this component,
+        /// so Awake() never needs to read the mesh at runtime. Run this once from the Inspector
+        /// context menu (or via an Editor script) on every jelly block instance placed directly
+        /// in a scene whenever its mesh changes; GridManager's Instantiate()-based respawn
+        /// clones this serialized data along automatically, no need to re-bake per clone.
+        /// </summary>
+        [ContextMenu("Bake Exterior Corners (Editor Only)")]
+        private void BakeExteriorCorners()
+        {
+            var meshFilter = GetComponent<MeshFilter>();
+            if (meshFilter == null || meshFilter.sharedMesh == null)
+            {
+                Debug.LogWarning("JellySpringDriver.BakeExteriorCorners: no mesh to bake from.", this);
+                return;
+            }
+            bakedExteriorCorners = ComputeExteriorTopCorners(meshFilter.sharedMesh);
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.SetDirty(this);
+#endif
+        }
+
+        private static Vector4[] BoundingBoxCornersFallback(Bounds bounds)
+        {
+            var result = new Vector4[MaxExteriorCorners];
+            const float sentinel = 9999f;
+            for (int i = 0; i < MaxExteriorCorners; i++)
+            {
+                result[i] = new Vector4(sentinel, 0f, sentinel, 0f);
+            }
+            result[0] = new Vector4(bounds.min.x, 0f, bounds.min.z, 0f);
+            result[1] = new Vector4(bounds.max.x, 0f, bounds.min.z, 0f);
+            result[2] = new Vector4(bounds.min.x, 0f, bounds.max.z, 0f);
+            result[3] = new Vector4(bounds.max.x, 0f, bounds.max.z, 0f);
+            return result;
+        }
+
+        /// <summary>
+        /// EDITOR-ONLY (called from BakeExteriorCorners, never from Awake — see that field's
+        /// comment for why). Finds the real silhouette corners of the mesh's top-facing
+        /// surface, in raw local (object) space, for the shader's beveled-corner sparkle (see
+        /// JellyWobble.shader).
         ///
         /// Why this exists: with this scene's orthographic camera + directional lights, real
         /// specular is mathematically UNIFORM across an entire flat top face (view/light
@@ -140,6 +199,14 @@ namespace Bonus.BlockHoleJelly
         /// all 4 surrounding cells are occupied — i.e. real exterior/concave corners, not
         /// interior seams. Unused array slots are filled with a sentinel far outside any
         /// block's local space so they are never picked as "nearest" by the shader.
+        ///
+        /// NOTE: mesh.isReadable is FALSE for these shared BlockHole meshes (their import
+        /// settings have Read/Write Enabled off, since the real case never needs CPU-side
+        /// vertex access) — mesh.vertices/triangles genuinely throw when called from real
+        /// gameplay code during Play mode (confirmed live: GridManager's respawn routine hit
+        /// this exact exception from Awake()). They only read back successfully from an
+        /// Editor-context call like this one (invoked via the ContextMenu action above, in
+        /// Edit Mode, never at runtime) — do not call this from Awake()/LateUpdate() again.
         /// </summary>
         private static Vector4[] ComputeExteriorTopCorners(Mesh mesh)
         {
@@ -155,19 +222,6 @@ namespace Bonus.BlockHoleJelly
                 return result;
             }
 
-            // NOTE: mesh.isReadable is FALSE for these shared BlockHole meshes (their import
-            // settings have Read/Write Enabled off, since the real case never needs CPU-side
-            // vertex access) — but that flag only strips vertex data from an actual PLAYER
-            // BUILD; inside the Editor (where this whole bonus branch is exclusively tested,
-            // see roq-case-project memory) mesh.vertices/triangles read back the real data
-            // just fine regardless of the flag. An earlier version of this method treated
-            // isReadable as an authoritative "can I read this" check and early-returned empty
-            // whenever it was false — which is EVERY block here, so the corner sparkle was
-            // silently doing nothing at all despite compiling and running with no errors. Try
-            // the real read (works in-Editor); fall back to the mesh's bounding-box corners
-            // (still real geometry, just not concave-aware) only if it genuinely throws, which
-            // would only happen in an actual non-readable build — this branch is never shipped
-            // as-is, but a fallback costs nothing and avoids a hard crash if that ever changes.
             Vector3[] verts;
             int[] tris;
             try
