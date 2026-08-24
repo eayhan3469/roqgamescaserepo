@@ -71,6 +71,12 @@ namespace Bonus.BlockHoleJelly
         [Tooltip("Shake vibrato (number of shake cycles over the duration) — higher reads as a sharper rattle, lower as a softer wobble.")]
         [SerializeField] private int cameraShakeVibrato = 18;
 
+        [Header("Hole-Entry Absorb SFX")]
+        [Tooltip("Longer 'being sucked into the hole' sound, layered on top of BlockDraggable's own instant drop/shatter sounds (see BlockHoleAudioManager) — those are short one-shots timed to the impact moment, this one is meant to run through the whole ~1.3s fall (BlockDraggable.holeDropDuration) so the absorption itself has continuous audio, not just a start/end punctuation. A dedicated AudioSource on this component rather than routing through BlockHoleAudioManager, since that shared script/scene instance has no hook for a sustained per-fall sound and this branch avoids modifying the shared Case2 script.")]
+        [SerializeField] private AudioClip holeAbsorbClip;
+        [Range(0f, 1f)] [SerializeField] private float holeAbsorbVolume = 0.8f;
+        private AudioSource holeAbsorbSource;
+
         private JellySpringDriver spring;
         private BlockDraggable draggable;
 
@@ -102,6 +108,10 @@ namespace Bonus.BlockHoleJelly
                     holeSplashMistVFX = t.GetComponent<ParticleSystem>();
                 }
             }
+
+            holeAbsorbSource = gameObject.AddComponent<AudioSource>();
+            holeAbsorbSource.playOnAwake = false;
+            holeAbsorbSource.spatialBlend = 0f;
         }
 
         private void Start()
@@ -282,6 +292,14 @@ namespace Bonus.BlockHoleJelly
             if (holeSplashMistVFX != null)
             {
                 holeSplashMistVFX.Play();
+            }
+
+            // Sustained "being absorbed" sound, running through the whole fall rather than a
+            // single impact punctuation — see the field's tooltip for why this is a dedicated
+            // source instead of routing through BlockHoleAudioManager.
+            if (holeAbsorbClip != null && holeAbsorbSource != null)
+            {
+                holeAbsorbSource.PlayOneShot(holeAbsorbClip, holeAbsorbVolume);
             }
 
             // Camera punch — the same DOTween call BlockFractureEffect.cs uses for the real
