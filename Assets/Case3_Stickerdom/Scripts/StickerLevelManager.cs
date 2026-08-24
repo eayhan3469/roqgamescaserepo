@@ -14,6 +14,22 @@ namespace Stickerdom
         [Tooltip("The purple deck/pile in the bottom-right corner from which the 4th sticker emerges.")]
         [SerializeField] private Transform drawPile;
 
+        [Header("Pack Tear-Open (2-Piece Purple Package)")]
+        [Tooltip("Top flap piece of the 2-piece purple package — uses the tightly-cropped PurplePackage_Top_Peel sprite (just the visible flap, seam-to-tip) positioned so its own transform sits at the flap's vertical center. Auto-found by name (\"PackTop\") under drawPile if left unassigned. Gets a real StickerPeel3DMesh 3D curl (the same corner-curl effect stickers use) driving the tear, instead of a rigid translate/rotate.")]
+        [SerializeField] private Transform packTop;
+        [Tooltip("Bottom body piece of the 2-piece purple package (PurplePackage_Bottom sprite) — child of drawPile, auto-found by name (\"PackBottom\") if left unassigned. Stays in place (gets a small anticipation pop) while packTop tears away.")]
+        [SerializeField] private Transform packBottom;
+        [Tooltip("How long the top flap's tear-open curl animation takes. The 4th sticker's emerge sequence now waits for this to finish first, so the tree visibly comes out of the torn opening rather than overlapping the tear.")]
+        [SerializeField] private float packTearDuration = 0.4f;
+        [Tooltip("Curl direction in degrees (angle convention matches StickerPeel3DMesh.peelAngle: 0=curls from the right edge leftward, 90=curls from the top tip downward, 180=curls from the left edge rightward). Kept at exactly 180 (pure left-to-right) — packTearAngleJitter used to add variety here but that made the tear read as diagonal instead of a clean left-to-right, so it is fixed to 0.")]
+        [SerializeField] private float packTearBaseAngle = 180f;
+        [Tooltip("Random variation (degrees) added to packTearBaseAngle each tear. Kept at 0 so the tear is always exactly left-to-right; left here (rather than removed) in case a future design wants slight variety back.")]
+        [SerializeField] private float packTearAngleJitter = 0f;
+        [Tooltip("Once the torn-open pack has released the 4th sticker, the remaining pack body (packBottom) slowly fades away over this many seconds instead of staying visible forever.")]
+        [SerializeField] private float packDissolveDuration = 0.9f;
+        [Tooltip("Delay after the 4th sticker lands in the waiting row before the empty pack body starts dissolving away.")]
+        [SerializeField] private float packDissolveDelay = 0.3f;
+
         [Header("Album & Waiting Roots")]
         [Tooltip("Parent of waiting stickers.")]
         [SerializeField] private Transform waitingStickersRoot;
@@ -75,6 +91,101 @@ namespace Stickerdom
         {
             SetupFourthSticker();
             CacheInitialStickers();
+            ResetPackPieces();
+            RestrictEdgeStickerPeelCorners();
+        }
+
+        /// <summary>
+        /// Corner angles a peel can pick from without its curl bulging past the sticker's own
+        /// bounding box in a given horizontal direction — see StickerPeel3DMesh.DeformMesh: the
+        /// curled part of a peel moves in the OPPOSITE direction of where the peel started (e.g.
+        /// peelAngle 45/315 both start from a corner on the RIGHT side, so the curl bulges LEFT).
+        /// </summary>
+        private static readonly float[] CornersBulgingRight = { 135f, 225f }; // start from a LEFT corner, bulge right/inward
+        private static readonly float[] CornersBulgingLeft = { 45f, 315f };  // start from a RIGHT corner, bulge left/inward
+
+        /// <summary>
+        /// Finds whichever sticker sits furthest left and furthest right across all 4 waiting-row
+        /// slots (using each initial sticker's authored position, and the 4th sticker's configured
+        /// fourthStickerRestPosition since it isn't positioned there yet at Start), and restricts
+        /// each to only the corners whose curl bulges inward — so a randomized peel never rolls
+        /// the curled paper out past the screen edge. Middle stickers keep all 4 corners.
+        /// </summary>
+        private void RestrictEdgeStickerPeelCorners()
+        {
+            List<StickerClickable> candidates = new List<StickerClickable>(initialStickers);
+            if (fourthSticker != null) candidates.Add(fourthSticker);
+            candidates.RemoveAll(st => st == null);
+            if (candidates.Count < 2) return;
+
+            StickerClickable leftmost = null, rightmost = null;
+            float minX = float.MaxValue, maxX = float.MinValue;
+
+            foreach (var st in candidates)
+            {
+                float x = (st == fourthSticker) ? fourthStickerRestPosition.x : st.transform.position.x;
+                if (x < minX) { minX = x; leftmost = st; }
+                if (x > maxX) { maxX = x; rightmost = st; }
+            }
+
+            if (leftmost != null) leftmost.SetAllowedPeelCornerAngles(CornersBulgingRight);
+            if (rightmost != null && rightmost != leftmost) rightmost.SetAllowedPeelCornerAngles(CornersBulgingLeft);
+        }
+
+        /// <summary>
+        /// Puts PackTop/PackBottom (the 2-piece purple package) back to their rest state —
+        /// PackTop at its original local transform and full alpha, both pieces at scale 1.
+        /// Called once on Start (defensive, in case the scene wasn't authored in the exact
+        /// rest state) and again in RestartLevelRoutine so the tear-open animation can play
+        /// correctly every subsequent round, not just the first. Hardcodes identity/one rather
+        /// than caching whatever the scene happened to have at Awake, since the known-correct
+        /// rest state (matching the original single-piece Pack sprite's transform) is simple
+        /// and unambiguous — no reason to trust arbitrary authored values instead.
+        /// </summary>
+        private void ResetPackPieces()
+        {
+            if (packTop != null)
+            {
+                // DOKill(true) completes/clears ANY tween targeting packTop, INCLUDING the
+                // tear+fade Sequence started in DrawFourthStickerFromPileRoutine (that Sequence
+                // is explicitly SetTarget(packTop) for exactly this reason) — without this, a
+                // still-running tear/fade from a round that got restarted early keeps writing
+                // peel progress and alpha on top of this reset, and the pack looked like it
+                // "didn't reset" (old bug: the tear Sequence had no target, so this call used to
+                // silently kill nothing).
+                packTop.DOKill();
+
+                StickerPeel3DMesh peelMesh = packTop.GetComponent<StickerPeel3DMesh>();
+                if (peelMesh != null)
+                {
+                    peelMesh.ResetPeel();
+                    peelMesh.SetAlpha(1f);
+                }
+
+                SpriteRenderer topSr = packTop.GetComponent<SpriteRenderer>();
+                if (topSr != null)
+                {
+                    Color c = topSr.color;
+                    topSr.color = new Color(c.r, c.g, c.b, 1f);
+                }
+            }
+
+            if (packBottom != null)
+            {
+                packBottom.DOKill();
+                packBottom.localScale = Vector3.one;
+
+                SpriteRenderer bottomSr = packBottom.GetComponent<SpriteRenderer>();
+                if (bottomSr != null)
+                {
+                    // DOFade tweens the SpriteRenderer directly (a different DOTween target than
+                    // the Transform above), so it needs its own DOKill to stop the pack's
+                    // post-emerge dissolve-away fade if a restart interrupts it mid-fade.
+                    bottomSr.DOKill();
+                    Color c = bottomSr.color;
+                    bottomSr.color = new Color(c.r, c.g, c.b, 1f);
+                }
+            }
         }
 
         public void AutoFindReferences()
@@ -83,6 +194,12 @@ namespace Stickerdom
             {
                 GameObject dpObj = GameObject.Find("DrawPile");
                 if (dpObj != null) drawPile = dpObj.transform;
+            }
+
+            if (drawPile != null)
+            {
+                if (packTop == null) packTop = drawPile.Find("PackTop");
+                if (packBottom == null) packBottom = drawPile.Find("PackBottom");
             }
 
             if (pageSheet == null)
@@ -237,14 +354,60 @@ namespace Stickerdom
 
             Vector3 spawnPos = drawPile != null ? drawPile.position : new Vector3(4.75f, -10.45f, 0f);
 
-            // 1. Mor Obje Squash & Stretch / Pop Animasyonu
-            if (drawPile != null)
+            // 1. Paket üst kapağı yırtılarak açılıyor (2 parçalı paket: PackTop + PackBottom).
+            // Ağaç (4. sticker) bu yırtılma bitene kadar ÇIKMIYOR — kullanıcı isteği, eskiden
+            // tüm paket tek parça olarak "pop" edip ağaç aynı anda fırlıyordu; artık önce üst
+            // parça yırtılıp uçuyor, alt gövde yerinde kalıp küçük bir sıkışma tepkisi veriyor,
+            // ağaç ancak ondan sonra deliğinden çıkıyor.
+            float tearDuration = 0f;
+
+            if (packBottom != null)
             {
+                packBottom.DOKill();
+                // Alt gövde yerinde kalıyor, sadece küçük bir "sıkışma" tepkisi (eski tek parça
+                // paketin punch-scale'inin daha küçük/hafif hali) — büyük hareket üst parçada.
+                packBottom.DOPunchScale(new Vector3(0.12f, -0.10f, 0.12f), packTearDuration * 0.75f, 5, 0.5f);
+            }
+            else if (drawPile != null)
+            {
+                // Geriye dönük uyum: 2 parçalı paket bulunamazsa (örn. eski tek parçalı sahne),
+                // eski tek-parça punch-scale davranışına düş.
                 drawPile.DOKill();
                 drawPile.DOPunchScale(new Vector3(0.22f, -0.18f, 0.22f), 0.45f, 6, 0.5f);
             }
 
-            // 2. Ses ve Parçacık Efekti (Draw Swoosh & Puff)
+            if (packTop != null)
+            {
+                packTop.DOKill();
+                tearDuration = packTearDuration;
+
+                // Real sticker-style 3D curl (the exact same StickerPeel3DMesh corner-curl the
+                // stickers themselves use), not a rigid translate/rotate — the flap bends and
+                // rolls up like paper actually tearing, instead of just falling/flying away.
+                // packTop's sprite (PurplePackage_Top_Peel) is pre-cropped to just the visible
+                // flap with its own transform centered on it, so peelAngle=180 curls from the
+                // left edge (peels first) rightward — tears open left-to-right, per user request.
+                StickerPeel3DMesh peelMesh = packTop.GetComponent<StickerPeel3DMesh>();
+                if (peelMesh == null) peelMesh = packTop.gameObject.AddComponent<StickerPeel3DMesh>();
+
+                float angleJitter = UnityEngine.Random.Range(-packTearAngleJitter, packTearAngleJitter);
+                peelMesh.SetPeelAngle(packTearBaseAngle + angleJitter);
+                peelMesh.SetAlpha(1f);
+                peelMesh.ResetPeel();
+
+                float fadeAlpha = 1f;
+                Sequence tearSeq = DOTween.Sequence();
+                // Target this Sequence to packTop so ResetPackPieces's packTop.DOKill() can
+                // actually find and stop it if a restart happens mid-tear — see the comment on
+                // ResetPackPieces for why this matters.
+                tearSeq.SetTarget(packTop);
+                tearSeq.Append(peelMesh.AnimatePeelOff(tearDuration));
+                // Fade only kicks in for the back half of the curl, once the flap already reads
+                // clearly as "peeling open" — it dissolves away rather than popping out instantly.
+                tearSeq.Insert(tearDuration * 0.5f, DOTween.To(() => fadeAlpha, x => { fadeAlpha = x; peelMesh.SetAlpha(x); }, 0f, tearDuration * 0.5f).SetEase(Ease.InQuad));
+            }
+
+            // 2. Ses ve Parçacık Efekti (Yırtılma anı - Draw Swoosh & Puff)
             if (StickerAudioManager.Instance != null)
             {
                 StickerAudioManager.Instance.PlayFlySound();
@@ -255,7 +418,13 @@ namespace Stickerdom
                 StickerVFXManager.Instance.PlayPeelVFX(spawnPos);
             }
 
-            // 3. 4. Sticker'ı Mor Objenin Merkezinde Başlat
+            // 3. Ağaç, üst kapak tamamen yırtılıp uçana kadar bekliyor.
+            if (tearDuration > 0f)
+            {
+                yield return new WaitForSeconds(tearDuration);
+            }
+
+            // 4. 4. Sticker'ı Mor Objenin Merkezinde Başlat
             if (fourthSticker != null)
             {
                 fourthSticker.gameObject.SetActive(true);
@@ -285,6 +454,18 @@ namespace Stickerdom
                     if (StickerVFXManager.Instance != null)
                     {
                         StickerVFXManager.Instance.PlayStampVFX(fourthStickerRestPosition);
+                    }
+
+                    // Ağaç (4. sticker) paketten tamamen çıktı — artık boşalan paket gövdesinin
+                    // (packBottom) kullanıcı isteğiyle yavaşça sönerek kaybolma vaktı geldi.
+                    if (packBottom != null)
+                    {
+                        SpriteRenderer bottomSr = packBottom.GetComponent<SpriteRenderer>();
+                        if (bottomSr != null)
+                        {
+                            bottomSr.DOKill();
+                            bottomSr.DOFade(0f, packDissolveDuration).SetDelay(packDissolveDelay).SetEase(Ease.InQuad);
+                        }
                     }
                 });
             }
@@ -372,6 +553,10 @@ namespace Stickerdom
                 fourthSticker.gameObject.SetActive(false);
                 fourthSticker.ResetSticker();
             }
+
+            // 3.5. Yırtılan paket parçalarını (PackTop/PackBottom) başlangıç haline getir, bir
+            // sonraki turda yırtılma animasyonu tekrar oynayabilsin.
+            ResetPackPieces();
 
             // 4. İlk 3 sticker'ı orijinal başlangıç pozisyonlarına getir ve kademeli Pop-in ile aç
             for (int i = 0; i < initialStickers.Count; i++)

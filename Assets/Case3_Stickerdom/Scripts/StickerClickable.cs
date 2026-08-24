@@ -35,6 +35,14 @@ namespace Stickerdom
         [Tooltip("Randomize peel corner on each click (if false, uses the configured peelAngle).")]
         [SerializeField] private bool randomizeCornerOnPeel = false;
 
+        [Tooltip("Restricts which corners randomizeCornerOnPeel can pick for THIS sticker (all 4 if empty). Set at runtime by StickerLevelManager for whichever sticker sits at the left/right edge of the waiting row, so its curl bulges inward rather than past the screen edge — see StickerLevelManager.RestrictEdgeStickerPeelCorners.")]
+        [SerializeField] private float[] allowedPeelCornerAngles;
+
+        public void SetAllowedPeelCornerAngles(float[] angles)
+        {
+            allowedPeelCornerAngles = angles;
+        }
+
         [Header("Flight Animation Settings")]
         [Tooltip("Duration of the flight while rolled in the air.")]
         [SerializeField] private float flightDuration = 0.55f;
@@ -230,7 +238,7 @@ namespace Stickerdom
 
             // 3. Calculate corner peel angle
             float chosenAngle = (peelMesh3D != null && randomizeCornerOnPeel)
-                ? peelMesh3D.PickRandomCornerAngle()
+                ? peelMesh3D.PickRandomCornerAngle(allowedPeelCornerAngles)
                 : (peelMesh3D != null ? peelMesh3D.PeelAngle : 45f);
 
             if (peelMesh3D != null)

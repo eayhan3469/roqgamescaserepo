@@ -698,9 +698,39 @@ namespace Stickerdom
             DeformMesh();
         }
 
+        /// <summary>
+        /// Overall opacity of the curled mesh's main tint color (independent of the disabled
+        /// source SpriteRenderer, which this component's own mesh/material replace once built —
+        /// tweening SpriteRenderer.color after BuildMesh() has no visual effect). Used by
+        /// StickerLevelManager to fade the purple package's torn-off top flap out once it has
+        /// visibly peeled open, so it dissolves away instead of popping out instantly.
+        /// </summary>
+        public void SetAlpha(float alpha)
+        {
+            if (dynamicMat == null) return;
+            Color c = dynamicMat.GetColor(PropColor);
+            c.a = Mathf.Clamp01(alpha);
+            dynamicMat.SetColor(PropColor, c);
+        }
+
         public float PickRandomCornerAngle()
         {
             float chosen = CornerAngles[UnityEngine.Random.Range(0, CornerAngles.Length)];
+            SetPeelAngle(chosen);
+            return chosen;
+        }
+
+        /// <summary>
+        /// Same as <see cref="PickRandomCornerAngle()"/> but picks only from a restricted subset
+        /// of corners — used by StickerClickable to keep stickers near the edge of the screen
+        /// (leftmost/rightmost in the waiting row) from picking a corner whose curl bulges
+        /// outward past the fold line toward the screen edge and off-screen. Falls back to the
+        /// full default corner set if <paramref name="allowedAngles"/> is null or empty.
+        /// </summary>
+        public float PickRandomCornerAngle(float[] allowedAngles)
+        {
+            float[] pool = (allowedAngles != null && allowedAngles.Length > 0) ? allowedAngles : CornerAngles;
+            float chosen = pool[UnityEngine.Random.Range(0, pool.Length)];
             SetPeelAngle(chosen);
             return chosen;
         }
