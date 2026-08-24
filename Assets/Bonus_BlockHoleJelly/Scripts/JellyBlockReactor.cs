@@ -57,6 +57,11 @@ namespace Bonus.BlockHoleJelly
         private Vector3 lastDragPos;
         private Vector3 lastDragMoveDir = Vector3.forward;
 
+        // Which cardinal axis (+/-X or +/-Z) the drag-lag stretch is currently locked to —
+        // see the big comment in Update() for why this has to be cardinal-only, not the
+        // raw diagonal lead direction.
+        private Vector3 dragLeadAxis = Vector3.right;
+
         private void Awake()
         {
             spring = GetComponentInChildren<JellySpringDriver>(true);
@@ -120,8 +125,29 @@ namespace Bonus.BlockHoleJelly
                     float clampRange = BlockHole.GridManager.Instance.TileSize * 0.45f;
                     float normalizedPull = clampRange > 0.0001f ? Mathf.Clamp01(leadMag / clampRange) : 0f;
 
-                    Vector3 leadDir = leadMag > 0.001f ? lead / leadMag : lastDragMoveDir;
-                    spring.SetDragLagTarget(leadDir, normalizedPull * dragPullMaxAmount);
+                    // Lock the stretch axis to a cardinal (+/-X or +/-Z) instead of the raw
+                    // diagonal lead direction. A cube stretched along an arbitrary diagonal
+                    // axis reads as a lopsided parallelogram/rhomboid, and — worse — as the
+                    // player's cursor wanders even slightly within the cell, that diagonal
+                    // angle keeps changing frame to frame, which looked like the block's
+                    // corners darting off in different directions each frame (reported by
+                    // the user). Locking to X/Z keeps every frame's shape a clean rectangular
+                    // stretch, and collapses the direction to only 4 possible states instead
+                    // of a continuous angle, which is also inherently far less jittery.
+                    // Hysteresis (need >20% larger, not just >) stops it flapping back and
+                    // forth right at a 45-degree lead.
+                    if (leadMag > 0.02f)
+                    {
+                        float absX = Mathf.Abs(lead.x);
+                        float absZ = Mathf.Abs(lead.z);
+                        bool currentIsX = Mathf.Abs(dragLeadAxis.x) > 0.5f;
+                        bool preferX = currentIsX ? absX >= absZ * 0.8f : absX > absZ * 1.2f;
+                        dragLeadAxis = preferX
+                            ? new Vector3(Mathf.Sign(lead.x), 0f, 0f)
+                            : new Vector3(0f, 0f, Mathf.Sign(lead.z));
+                    }
+
+                    spring.SetDragLagTarget(dragLeadAxis, normalizedPull * dragPullMaxAmount);
                 }
 
                 // Track the most recent drag movement direction too, for OnReleased()'s

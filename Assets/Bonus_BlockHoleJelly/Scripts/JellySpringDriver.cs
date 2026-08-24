@@ -52,8 +52,8 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float dragLagMaxAmount = 0.32f;
         [Tooltip("SmoothDamp time constant for the drag-lag amount chasing its target — lower reacts faster, higher feels more like a sluggish trailing lag.")]
         [SerializeField] private float dragLagAmountSmoothTime = 0.08f;
-        [Tooltip("How fast the drag-lag stretch axis turns to follow its target direction (exponential rate, higher = snappier turning).")]
-        [SerializeField] private float dragLagDirTurnRate = 15f;
+        [Tooltip("How fast the drag-lag stretch axis turns to follow its target direction (exponential rate, higher = snappier turning). Kept moderate since the target is now cardinal-snapped (see JellyBlockReactor) — this only needs to smooth out the occasional X/Z flip, not chase a continuously wandering angle.")]
+        [SerializeField] private float dragLagDirTurnRate = 8f;
 
         private Vector3 dragLagTargetDir = Vector3.forward;
         private float dragLagTargetAmount;
