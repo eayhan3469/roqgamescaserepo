@@ -9395,7 +9395,19 @@ MonoBehaviour:
         m_CallState: 2
   onGridPositionChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1296097193}
+        m_TargetAssemblyTypeName: Bonus.BlockHoleJelly.JellyBlockReactor, Assembly-CSharp
+        m_MethodName: OnGridStep
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDragEnded:
     m_PersistentCalls:
       m_Calls:
@@ -9448,6 +9460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 1.4
+  gridStepKickStrength: 1.8
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
@@ -11758,7 +11771,19 @@ MonoBehaviour:
         m_CallState: 2
   onGridPositionChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1613842031}
+        m_TargetAssemblyTypeName: Bonus.BlockHoleJelly.JellyBlockReactor, Assembly-CSharp
+        m_MethodName: OnGridStep
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDragEnded:
     m_PersistentCalls:
       m_Calls:
@@ -11811,6 +11836,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 1.4
+  gridStepKickStrength: 1.8
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
@@ -14156,7 +14182,19 @@ MonoBehaviour:
         m_CallState: 2
   onGridPositionChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1825520759}
+        m_TargetAssemblyTypeName: Bonus.BlockHoleJelly.JellyBlockReactor, Assembly-CSharp
+        m_MethodName: OnGridStep
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDragEnded:
     m_PersistentCalls:
       m_Calls:
@@ -14209,6 +14247,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 1.4
+  gridStepKickStrength: 1.8
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
