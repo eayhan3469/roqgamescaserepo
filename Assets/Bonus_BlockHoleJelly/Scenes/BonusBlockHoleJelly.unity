@@ -40410,11 +40410,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockHoleAudioManager
   pickupClips:
-  - {fileID: 8300000, guid: 2b75183fc7da9a44a85da1c35e96cf3e, type: 3}
+  - {fileID: 8300000, guid: f709a43f38be889488b55fa7ca48f464, type: 3}
   slideClip: {fileID: 8300000, guid: 0a7276f5850835c4b9f57c846d7d1352, type: 3}
-  snapBackClip: {fileID: 8300000, guid: 37a65589ac467f14aa1240abbd0310a9, type: 3}
+  snapBackClip: {fileID: 8300000, guid: 79c8f0139d79ffb4e9434aae7b938a41, type: 3}
   dropClips:
-  - {fileID: 8300000, guid: 752657be72fd74a439314a499662031f, type: 3}
+  - {fileID: 8300000, guid: 3429f07e201b7d54aba8393983a06ad3, type: 3}
   shatterClips:
   - {fileID: 8300000, guid: 37a65589ac467f14aa1240abbd0310a9, type: 3}
   victoryClip: {fileID: 8300000, guid: 4d66431f5242cba4b8add713edde8be2, type: 3}
