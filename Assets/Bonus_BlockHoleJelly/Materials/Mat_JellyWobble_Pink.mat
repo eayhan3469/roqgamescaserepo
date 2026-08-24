@@ -34,13 +34,19 @@ Material:
     - _JellyRippleFreq: 6
     - _JellyRippleSpeed: 10
     - _JellyRippleStrength: 0.18
+    - _Alpha: 0.97
+    - _EdgeOpacityBoost: 0.08
     - _RimPower: 3
-    - _RimStrength: 0.5
-    - _SheenStrength: 0.5
+    - _RimStrength: 0.25
+    - _SheenStrength: 0.2
     - _Smoothness: 0.8
-    - _SpecularIntensity: 3
-    - _TranslucencyStrength: 0.6
+    - _SpecularIntensity: 0.8
+    - _TranslucencyStrength: 0.25
     - _WrapAmount: 0.4
+    - _ShadowTone: 0.5
+    - _MidTone: 0.95
+    - _HighTone: 1.15
+    - _TopHighlightStrength: 0.45
     m_Colors:
     - _BaseColor: {r: 0.745, g: 0.369, b: 0.694, a: 1}
     - _JellyDir: {r: 0, g: 1, b: 0, a: 0}

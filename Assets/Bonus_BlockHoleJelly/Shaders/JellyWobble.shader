@@ -37,20 +37,27 @@ Shader "Bonus/JellyWobble"
     {
         _BaseMap ("Base Map", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (0.08, 0.68, 0.60, 1)
-        _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.78
-        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.35
+        _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.97
+        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.08
         _Smoothness ("Smoothness", Range(0,1)) = 0.8
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
-        _SpecularIntensity ("Specular Intensity", Range(0,6)) = 3.0
-        _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.5
+        _SpecularIntensity ("Specular Intensity", Range(0,6)) = 0.7
+        _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.15
+
+        [Header(Toy Candy Toon Shading)]
+        _ShadowTone ("Shadow Band Brightness", Range(0,1)) = 0.5
+        _MidTone ("Mid Band Brightness", Range(0.5,1.5)) = 0.95
+        _HighTone ("Highlight Band Brightness", Range(1,2)) = 1.15
+        _TopHighlightColor ("Top Highlight Color", Color) = (1, 1, 1, 1)
+        _TopHighlightStrength ("Top Highlight Strength", Range(0,1)) = 0.45
 
         [Header(Gummy Translucency)]
         _WrapAmount ("Diffuse Wrap (soft falloff)", Range(0,1)) = 0.4
-        _TranslucencyStrength ("Backlight Translucency", Range(0,2)) = 0.6
+        _TranslucencyStrength ("Backlight Translucency", Range(0,2)) = 0.25
         _TranslucencyColor ("Translucency Tint", Color) = (1, 0.95, 0.7, 1)
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimPower ("Rim Power", Range(0.5, 8)) = 3.0
-        _RimStrength ("Rim Strength", Range(0,2)) = 0.5
+        _RimStrength ("Rim Strength", Range(0,2)) = 0.25
 
         [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)
@@ -115,6 +122,11 @@ Shader "Bonus/JellyWobble"
                 float4 _SpecColor;
                 float _SpecularIntensity;
                 float _SheenStrength;
+                float _ShadowTone;
+                float _MidTone;
+                float _HighTone;
+                float4 _TopHighlightColor;
+                float _TopHighlightStrength;
                 float _WrapAmount;
                 float _TranslucencyStrength;
                 float4 _TranslucencyColor;
@@ -192,11 +204,29 @@ Shader "Bonus/JellyWobble"
                 float3 lightDir = mainLight.direction;
                 float3 viewDir = normalize(GetWorldSpaceViewDir(IN.positionWS));
 
-                // Wrapped diffuse: softens the terminator so the gummy surface doesn't
-                // look hard-shaded like plastic.
+                // Wrapped + BANDED diffuse: real-time smooth NdotL shading reads as plastic;
+                // reference toy/jelly-game shaders use a toon-style ramp instead (a dark
+                // band, a mid band, a bright band, soft-blended rather than hard-stepped) —
+                // this is the main thing that makes the material look like jelly at rest,
+                // not just "shiny plastic that jiggles".
                 float NdotL = dot(normalWS, lightDir);
                 float wrappedNdotL = saturate((NdotL + _WrapAmount) / (1.0 + _WrapAmount));
-                half3 diffuse = albedo * mainLight.color * wrappedNdotL;
+                float shadowToMid = smoothstep(0.15, 0.45, wrappedNdotL);
+                float midToHigh = smoothstep(0.55, 0.85, wrappedNdotL);
+                float toonTone = lerp(_ShadowTone, _MidTone, shadowToMid);
+                toonTone = lerp(toonTone, _HighTone, midToHigh);
+                half3 diffuseBase = albedo * mainLight.color * toonTone;
+
+                // Big soft "always-on" top highlight — upward-facing surfaces blend toward
+                // a bright tone regardless of the actual light direction, the way reference
+                // jelly-cube toy shaders fake a consistent studio key light on top of every
+                // piece. Blended (lerp) rather than added on top, so it brightens the toon
+                // shading without washing the base color out to flat white — squared falloff
+                // for a softer, rounder patch than a raw dot product.
+                float topFacing = saturate(normalWS.y);
+                float topShape = topFacing * topFacing * topFacing * topFacing;
+                float topFactor = saturate(topShape * _TopHighlightStrength);
+                half3 diffuse = lerp(diffuseBase, _TopHighlightColor.rgb * mainLight.color, topFactor);
 
                 float3 halfDir = normalize(lightDir + viewDir);
                 float NdotH = saturate(dot(normalWS, halfDir));
@@ -211,7 +241,7 @@ Shader "Bonus/JellyWobble"
                 half sharpPower = exp2(_Smoothness * 11.0 + 1.0);
                 half sharpSpec = pow(NdotH, sharpPower);
                 half broadSpec = pow(NdotH, 4.0) * _SheenStrength;
-                half specFresnelBoost = lerp(1.0, 3.0, fresnel);
+                half specFresnelBoost = lerp(1.0, 1.8, fresnel);
                 half3 specular = _SpecColor.rgb * mainLight.color * (sharpSpec + broadSpec) * _SpecularIntensity * specFresnelBoost;
 
                 // Cheap fake-SSS: light "bleeding through" from behind the surface,
@@ -223,7 +253,11 @@ Shader "Bonus/JellyWobble"
                 // Fresnel rim for a soft gummy sheen at grazing angles.
                 half3 rim = _RimColor.rgb * fresnel * _RimStrength;
 
-                half3 ambient = albedo * SampleSH(normalWS);
+                // Ambient probe light (bright sky/backdrop) was the biggest single cause of
+                // the "washed out" look on top faces — full-strength SH on top of an already
+                // bright toon high-band and top highlight blew the saturated color out toward
+                // white. Dialed way down; it is just a faint fill now, not a driver of tone.
+                half3 ambient = albedo * SampleSH(normalWS) * 0.25;
 
                 half3 color = diffuse + specular + translucency + rim + ambient;
 
