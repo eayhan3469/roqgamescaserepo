@@ -90,8 +90,19 @@ namespace Bonus.BlockHoleJelly
             springAmount += springVelocity * dt;
             springAmount = Mathf.Clamp(springAmount, -maxJellyAmount, maxJellyAmount);
 
+            // Send the shader the RECTIFIED (always >= 0) amount, not the signed spring
+            // value. The underlying spring still swings positive/negative internally (that's
+            // what makes it ring down naturally) — but a negative amount stretches the
+            // mesh along the *perpendicular* axes instead of springDir (see
+            // JellyWobble.shader's squash/stretch), i.e. every other half-cycle visually
+            // flips to being stretched sideways instead of toward springDir. From a
+            // top-down camera that reads as "just pulsing bigger/smaller" rather than
+            // "jiggling toward the direction it was dragged", which is what the user
+            // actually wants. Rectifying keeps the stretch always along springDir, pulsing
+            // in intensity (touching the rest cube shape between pulses) instead of
+            // alternating axis — a clean directional "heartbeat" jiggle.
             propBlock.SetVector(JellyDirId, springDir);
-            propBlock.SetFloat(JellyAmountId, springAmount);
+            propBlock.SetFloat(JellyAmountId, Mathf.Abs(springAmount));
             meshRenderer.SetPropertyBlock(propBlock);
         }
 
