@@ -22,10 +22,10 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float reactivity = 0.006f;
 
         [Header("Spring Tuning")]
-        [Tooltip("Higher = snaps back to rest faster / feels stiffer.")]
+        [Tooltip("Higher = snaps back to rest faster / feels stiffer. Controls wobble frequency (how fast it jiggles), not how long it jiggles for — that's damping.")]
         [SerializeField] private float stiffness = 180f;
-        [Tooltip("Higher = settles with less oscillation / feels less bouncy.")]
-        [SerializeField] private float damping = 12f;
+        [Tooltip("Higher = settles with less oscillation / feels less bouncy. Kept low so it actually wobbles back and forth several times like real jelly instead of one quick elastic snap — a high damping value (previously 12) killed the oscillation almost immediately, which read as 'stiff' rather than 'jelly'.")]
+        [SerializeField] private float damping = 4f;
         [Tooltip("Clamp on spring displacement so a big impulse can't invert or explode the mesh. Kept below ~0.5 — higher values showed a visible seam/crack near the mesh midline even with the analytic normal recompute (the secondary ripple isn't accounted for in the normal, so it still shows at extreme stretch).")]
         [SerializeField] private float maxJellyAmount = 0.4f;
 

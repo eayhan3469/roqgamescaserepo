@@ -1626,7 +1626,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 12
+  damping: 4
   maxJellyAmount: 0.4
 --- !u!1 &234578699
 GameObject:
@@ -9447,8 +9447,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5350ef4f834810c4cbe51ff148f44f8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
-  grabKickStrength: 0.12
-  releaseKickStrength: 0.22
+  grabKickStrength: 1.4
+  releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
 --- !u!114 &1296097194
@@ -9465,7 +9465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 12
+  damping: 4
   maxJellyAmount: 0.4
 --- !u!1 &1303316624
 GameObject:
@@ -11810,8 +11810,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5350ef4f834810c4cbe51ff148f44f8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
-  grabKickStrength: 0.12
-  releaseKickStrength: 0.22
+  grabKickStrength: 1.4
+  releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
 --- !u!114 &1613842032
@@ -11828,7 +11828,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 12
+  damping: 4
   maxJellyAmount: 0.4
 --- !u!1 &1616658223
 GameObject:
@@ -14208,8 +14208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5350ef4f834810c4cbe51ff148f44f8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
-  grabKickStrength: 0.12
-  releaseKickStrength: 0.22
+  grabKickStrength: 1.4
+  releaseKickStrength: 2.6
   holeSquishDuration: 0.6
   holeSquishEase: 5
 --- !u!23 &1825520761

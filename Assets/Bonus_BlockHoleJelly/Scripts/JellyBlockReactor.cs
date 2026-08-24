@@ -37,10 +37,10 @@ namespace Bonus.BlockHoleJelly
     public class JellyBlockReactor : MonoBehaviour
     {
         [Header("Kick Strengths")]
-        [Tooltip("Small pop when the block is first grabbed.")]
-        [SerializeField] private float grabKickStrength = 0.12f;
-        [Tooltip("Kick on a normal release/grid-snap, opposite the direction it was just dragged.")]
-        [SerializeField] private float releaseKickStrength = 0.22f;
+        [Tooltip("Small pop when the block is first grabbed. NOTE: Kick() strength is a velocity impulse, not a direct displacement — the resulting peak wobble amplitude works out to roughly strength / sqrt(JellySpringDriver.stiffness), so these numbers look big compared to the ~0.1-0.4 amplitude range they actually produce. Re-tune together with stiffness if you change either.")]
+        [SerializeField] private float grabKickStrength = 1.4f;
+        [Tooltip("Kick on a normal release/grid-snap, opposite the direction it was just dragged. Same velocity-impulse caveat as grabKickStrength above.")]
+        [SerializeField] private float releaseKickStrength = 2.6f;
 
         [Header("Hole-Entry Squish (replaces fracture/shatter)")]
         [Tooltip("Duration of the shrink-to-nothing squish when the block is swallowed by a hole. Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the block finishes shrinking right as BlockDraggable disables its renderers — tune both together.")]
