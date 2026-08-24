@@ -160,6 +160,10 @@ namespace Stickerdom
                 {
                     peelMesh.ResetPeel();
                     peelMesh.SetAlpha(1f);
+                    // ResetPeel() does not reset shadow opacity (it is independent of peel
+                    // progress) — without this, the curl's separate ground-contact shadow mesh
+                    // would stay faded from the previous round's dissolve.
+                    peelMesh.SetShadowOpacity(1f);
                 }
 
                 SpriteRenderer topSr = packTop.GetComponent<SpriteRenderer>();
@@ -404,7 +408,11 @@ namespace Stickerdom
                 tearSeq.Append(peelMesh.AnimatePeelOff(tearDuration));
                 // Fade only kicks in for the back half of the curl, once the flap already reads
                 // clearly as "peeling open" — it dissolves away rather than popping out instantly.
-                tearSeq.Insert(tearDuration * 0.5f, DOTween.To(() => fadeAlpha, x => { fadeAlpha = x; peelMesh.SetAlpha(x); }, 0f, tearDuration * 0.5f).SetEase(Ease.InQuad));
+                // Also fades the curl's separate ground-contact shadow mesh (its own renderer
+                // and material — SetAlpha alone never touched it) — without this, a dark shadow
+                // patch stayed sitting where the flap used to be even after the flap itself had
+                // fully faded, reading as "the top never actually disappeared".
+                tearSeq.Insert(tearDuration * 0.5f, DOTween.To(() => fadeAlpha, x => { fadeAlpha = x; peelMesh.SetAlpha(x); peelMesh.SetShadowOpacity(x); }, 0f, tearDuration * 0.5f).SetEase(Ease.InQuad));
             }
 
             // 2. Ses ve Parçacık Efekti (Yırtılma anı - Draw Swoosh & Puff)
