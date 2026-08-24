@@ -30,6 +30,21 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float reactivity = 0.006f;
         public bool PassiveReactivityEnabled { get; set; } = true;
 
+        /// <summary>
+        /// When true (default), the shader always receives Mathf.Abs(springAmount) — needed
+        /// so grab/release/grid-step kicks read as a clean directional "heartbeat" instead
+        /// of alternating between stretched-along-dir and stretched-perpendicular every half
+        /// cycle (see the LateUpdate comment). Set false for a deliberate signed sequence
+        /// where BOTH the negative phase (squash along dir / bulge perpendicular) and the
+        /// positive phase (stretch along dir / squash perpendicular) are meant to be seen as
+        /// distinct, ordered moments — e.g. JellyBlockReactor's hole-entry squeeze: a
+        /// negative-strength Kick(down) bulges outward first (as if the leading edge hit
+        /// resistance), swings through zero into a positive squeeze (being pulled through the
+        /// narrower opening), then relaxes — a real physical two-phase story, not ambiguous
+        /// axis-flicker like the drag case was.
+        /// </summary>
+        public bool RectifyAmount = true;
+
         [Header("Spring Tuning")]
         [Tooltip("Higher = snaps back to rest faster / feels stiffer. Controls wobble frequency (how fast it jiggles), not how long it jiggles for — that's damping.")]
         [SerializeField] private float stiffness = 180f;
@@ -139,7 +154,7 @@ namespace Bonus.BlockHoleJelly
             // in intensity (touching the rest cube shape between pulses) instead of
             // alternating axis — a clean directional "heartbeat" jiggle.
             propBlock.SetVector(JellyDirId, springDir);
-            propBlock.SetFloat(JellyAmountId, Mathf.Abs(springAmount));
+            propBlock.SetFloat(JellyAmountId, RectifyAmount ? Mathf.Abs(springAmount) : springAmount);
             meshRenderer.SetPropertyBlock(propBlock);
         }
 

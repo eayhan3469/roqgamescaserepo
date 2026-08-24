@@ -169,15 +169,23 @@ namespace Bonus.BlockHoleJelly
         /// </summary>
         public void OnReleased()
         {
-            if (spring != null)
-            {
-                spring.PassiveReactivityEnabled = true;
-            }
-
+            // Check the hole-drop case FIRST, before touching PassiveReactivityEnabled —
+            // it must stay false into PlayHoleSquish(). Re-enabling it here unconditionally
+            // (the previous order) meant that while BlockDraggable's own dropSeq was moving
+            // the block down into the hole, the passive system saw that real fall
+            // acceleration and kept firing its own extra Kicks on top of PlayHoleSquish's
+            // deliberate signed bulge-then-squeeze one, scrambling it — traced via Unity MCP:
+            // the amount trajectory came out positive-first even though the hole-kick itself
+            // measured a correct negative springVelocity immediately after being applied.
             if (draggable != null && draggable.IsDroppedInHole)
             {
                 PlayHoleSquish();
                 return;
+            }
+
+            if (spring != null)
+            {
+                spring.PassiveReactivityEnabled = true;
             }
 
             if (spring == null) return;
@@ -236,7 +244,17 @@ namespace Bonus.BlockHoleJelly
             }
 
             if (spring == null) return;
-            spring.Kick(Vector3.down, holeSquishKickStrength);
+
+            // Signed (not rectified) so the spring's natural swing tells a real two-phase
+            // story instead of always reading as "squeezed inward": a NEGATIVE kick makes
+            // springAmount dip negative first (squash along down-axis / bulge sideways — as
+            // if the leading edge hit resistance and the still-above-ground top widens from
+            // inertia), swing through zero into positive (stretch down / squeeze inward — the
+            // top now being pulled through the narrower opening), then relax back to rest.
+            // Same spring, same tuning, just letting both halves of one honest oscillation
+            // show instead of folding them onto one side.
+            spring.RectifyAmount = false;
+            spring.Kick(Vector3.down, -holeSquishKickStrength);
         }
     }
 }
