@@ -24,7 +24,7 @@ Shader "Bonus/JellyWobble"
         _Smoothness ("Smoothness", Range(0,1)) = 0.35
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
 
-        [Header(Jelly Drive - set at runtime by JellySpringDriver)]
+        [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)
         _JellyAmount ("Jelly Amount", Float) = 0
 
