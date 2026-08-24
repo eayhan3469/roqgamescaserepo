@@ -47,8 +47,8 @@ namespace Bonus.BlockHoleJelly
         [Header("Kick Strengths")]
         [Tooltip("Small pop when the block is first grabbed. NOTE: Kick() strength is a velocity impulse, not a direct displacement — the resulting peak wobble amplitude works out to roughly strength / sqrt(JellySpringDriver.stiffness), so these numbers look big compared to the ~0.1-0.4 amplitude range they actually produce. Re-tune together with stiffness if you change either.")]
         [SerializeField] private float grabKickStrength = 1.4f;
-        [Tooltip("Kick each time the block steps to a new grid cell while being dragged — this is what makes the jelly feel present while being carried, without ever being a continuous/perpetual wobble (each step's kick rings down on its own before or as the next one arrives).")]
-        [SerializeField] private float gridStepKickStrength = 1.8f;
+        [Tooltip("Kick each time the block steps to a new grid cell while being dragged — this is what makes the jelly feel present while being carried, without ever being a continuous/perpetual wobble (each step's kick rings down on its own before or as the next one arrives). Kept lower than grab/release: a fast diagonal drag fires several of these in quick succession, and JellySpringDriver.maxSpringVelocity only caps the aggregate — this keeps each individual contribution modest so a burst of steps doesn't read as excessive corner-stretch even under that cap.")]
+        [SerializeField] private float gridStepKickStrength = 1.3f;
         [Tooltip("Kick on a normal release/grid-snap, opposite the direction of the last grid step. Same velocity-impulse caveat as the other kick strengths.")]
         [SerializeField] private float releaseKickStrength = 2.6f;
 
