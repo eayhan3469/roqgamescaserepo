@@ -60,6 +60,9 @@ namespace Bonus.BlockHoleJelly
         [Tooltip("Burst particle system (a child named 'HoleSplashVFX', set up per block instance) that fires when the block is squeezed into a hole — small colored droplets flung outward from the block's edges, gravity-pulled down, mimicking juice/liquid squirting out under the squeeze. Found automatically in Awake via child name; safe to leave null if a given instance does not have one.")]
         private ParticleSystem holeSplashVFX;
 
+        [Tooltip("Second particle system (a child named 'HoleSplashMistVFX') layered on top of holeSplashVFX — many more, much smaller and shorter-lived flecks scattering more widely, the fine-spray counterpart to the bigger droplets. One particle system alone reads as a handful of discrete blobs, not a juicy squirt; this second finer layer is what actually sells 'juicy'. Played alongside holeSplashVFX, same trigger moment.")]
+        private ParticleSystem holeSplashMistVFX;
+
         private JellySpringDriver spring;
         private BlockDraggable draggable;
 
@@ -85,7 +88,10 @@ namespace Bonus.BlockHoleJelly
                 if (t.name == "HoleSplashVFX")
                 {
                     holeSplashVFX = t.GetComponent<ParticleSystem>();
-                    break;
+                }
+                else if (t.name == "HoleSplashMistVFX")
+                {
+                    holeSplashMistVFX = t.GetComponent<ParticleSystem>();
                 }
             }
         }
@@ -264,6 +270,10 @@ namespace Bonus.BlockHoleJelly
             if (holeSplashVFX != null)
             {
                 holeSplashVFX.Play();
+            }
+            if (holeSplashMistVFX != null)
+            {
+                holeSplashMistVFX.Play();
             }
 
             if (spring == null) return;
