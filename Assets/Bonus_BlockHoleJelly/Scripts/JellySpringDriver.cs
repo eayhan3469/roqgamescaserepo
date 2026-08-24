@@ -39,6 +39,16 @@ namespace Bonus.BlockHoleJelly
         private float springAmount;
         private float springVelocity;
 
+        /// <summary>
+        /// Lets an external script (JellyBlockReactor) mute the passive per-frame
+        /// reactivity while a block is actively being dragged — the drag-follow tween
+        /// changes direction every frame (mouse jitter, Lerp catch-up), which otherwise
+        /// keeps yanking springDir to a new axis each frame and reads as chaotic
+        /// spinning/wobbling instead of a clean jelly feel. Explicit Kick() calls (grab,
+        /// release) still work normally regardless of this flag.
+        /// </summary>
+        public bool PassiveReactivityEnabled { get; set; } = true;
+
         private static readonly int JellyDirId = Shader.PropertyToID("_JellyDir");
         private static readonly int JellyAmountId = Shader.PropertyToID("_JellyAmount");
 
@@ -57,7 +67,7 @@ namespace Bonus.BlockHoleJelly
             // Passive reactivity: track the block's own acceleration and let sudden
             // changes kick the spring — no gameplay script needs to call Kick() for
             // basic drag-and-drop jiggle to work.
-            if (reactivity > 0f)
+            if (reactivity > 0f && PassiveReactivityEnabled)
             {
                 Vector3 currentVelocity = (transform.position - lastPosition) / dt;
                 Vector3 acceleration = (currentVelocity - velocity) / dt;

@@ -61,9 +61,22 @@ namespace Bonus.BlockHoleJelly
 
         private void Update()
         {
+            bool isDragging = draggable != null && draggable.IsDragging;
+
+            // Mute JellySpringDriver's passive per-frame reactivity while actively being
+            // dragged — the drag-follow tween changes direction every frame (mouse jitter,
+            // Lerp catch-up), and letting that keep re-kicking the spring made the block
+            // wobble chaotically the whole time it was held instead of a clean jelly feel.
+            // Only the deliberate grab/release Kicks below should read as "jelly" while
+            // dragging; BlockDraggable's own tilt/sway already sells the drag-carry feel.
+            if (spring != null)
+            {
+                spring.PassiveReactivityEnabled = !isDragging;
+            }
+
             // Track the most recent drag movement direction while actively dragging, so
             // OnReleased() knows which way to squash back into on a normal release.
-            if (draggable != null && draggable.IsDragging)
+            if (isDragging)
             {
                 Vector3 delta = transform.position - lastDragPos;
                 if (delta.sqrMagnitude > 0.0001f)
