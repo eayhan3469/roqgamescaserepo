@@ -20,7 +20,7 @@ Material:
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -33,7 +33,7 @@ Material:
     - _JellyAmount: 0
     - _JellyRippleFreq: 6
     - _JellyRippleSpeed: 10
-    - _JellyRippleStrength: 0.12
+    - _JellyRippleStrength: 0.18
     - _RimPower: 3
     - _RimStrength: 0.5
     - _Smoothness: 0.45
@@ -42,6 +42,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.08, g: 0.68, b: 0.6, a: 1}
     - _JellyDir: {r: 0, g: 1, b: 0, a: 0}
+    - _JellyPivotOffset: {r: 0, g: 0, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _TranslucencyColor: {r: 1, g: 0.95, b: 0.7, a: 1}

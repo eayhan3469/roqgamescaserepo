@@ -34,11 +34,11 @@ namespace Bonus.BlockHoleJelly
         [Tooltip("Higher = snaps back to rest faster / feels stiffer. Controls wobble frequency (how fast it jiggles), not how long it jiggles for — that's damping.")]
         [SerializeField] private float stiffness = 180f;
         [Tooltip("Higher = settles with less oscillation / feels less bouncy. Kept low so it actually wobbles back and forth several times like real jelly instead of one quick elastic snap.")]
-        [SerializeField] private float damping = 4f;
+        [SerializeField] private float damping = 3f;
         [Tooltip("Clamp on spring displacement so a big impulse can't invert or explode the mesh. Kept below ~0.5 — higher values showed a visible seam/crack near the mesh midline even with the analytic normal recompute (the secondary ripple isn't accounted for in the normal, so it still shows at extreme stretch).")]
         [SerializeField] private float maxJellyAmount = 0.4f;
         [Tooltip("Clamp on springVelocity itself (separate from maxJellyAmount, which only clamps position). A fast diagonal drag fires several grid-step Kicks in quick succession (see JellyBlockReactor.OnGridStep), and Kick() strengths simply add — without this, that stacked velocity can massively overshoot maxJellyAmount's *position* clamp, which keeps the block pinned at max stretch for an extended time while the excess velocity bleeds off (looked like \"too much stretching\" to the user) instead of naturally peaking below the clamp and settling right away. Note peak natural amplitude works out to roughly maxSpringVelocity / sqrt(stiffness) — at stiffness=180 (sqrt≈13.4), 3 -> ~0.22, well clear of maxJellyAmount's 0.4 ceiling, so a stacked-kick drag no longer even approaches the position clamp.")]
-        [SerializeField] private float maxSpringVelocity = 3f;
+        [SerializeField] private float maxSpringVelocity = 4f;
 
         private MeshRenderer meshRenderer;
         private MaterialPropertyBlock propBlock;

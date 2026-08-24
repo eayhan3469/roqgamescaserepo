@@ -1626,9 +1626,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 4
+  damping: 3
   maxJellyAmount: 0.4
-  maxSpringVelocity: 3
+  maxSpringVelocity: 4
 --- !u!1 &234578699
 GameObject:
   m_ObjectHideFlags: 0
@@ -9464,7 +9464,8 @@ MonoBehaviour:
   gridStepKickStrength: 1.3
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
-  holeSquishEase: 5
+  holeSquishPeakAmount: 0.45
+  holeSquishSqueezeEase: 6
 --- !u!114 &1296097194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9479,9 +9480,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 4
+  damping: 3
   maxJellyAmount: 0.4
-  maxSpringVelocity: 3
+  maxSpringVelocity: 4
 --- !u!1 &1303316624
 GameObject:
   m_ObjectHideFlags: 0
@@ -11841,7 +11842,8 @@ MonoBehaviour:
   gridStepKickStrength: 1.3
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
-  holeSquishEase: 5
+  holeSquishPeakAmount: 0.45
+  holeSquishSqueezeEase: 6
 --- !u!114 &1613842032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11856,9 +11858,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellySpringDriver
   reactivity: 0.006
   stiffness: 180
-  damping: 4
+  damping: 3
   maxJellyAmount: 0.4
-  maxSpringVelocity: 3
+  maxSpringVelocity: 4
 --- !u!1 &1616658223
 GameObject:
   m_ObjectHideFlags: 0
@@ -14253,7 +14255,8 @@ MonoBehaviour:
   gridStepKickStrength: 1.3
   releaseKickStrength: 2.6
   holeSquishDuration: 0.6
-  holeSquishEase: 5
+  holeSquishPeakAmount: 0.45
+  holeSquishSqueezeEase: 6
 --- !u!23 &1825520761
 MeshRenderer:
   m_ObjectHideFlags: 0
