@@ -31,6 +31,9 @@ namespace Core
             { "4_Buca", "Buca" },
             { "Case4_Buca", "Buca" },
             { "Buca", "Buca" },
+            { "BlockHoleJellyExtra", "BonusBlockHoleJelly" },
+            { "Bonus_BlockHoleJelly", "BonusBlockHoleJelly" },
+            { "BonusBlockHoleJelly", "BonusBlockHoleJelly" },
             { "MainMenu", "MainMenu" }
         };
 

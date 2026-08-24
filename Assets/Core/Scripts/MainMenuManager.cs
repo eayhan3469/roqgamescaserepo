@@ -35,6 +35,11 @@ namespace Core
             LoadScene("4_Buca");
         }
 
+        public void LoadBlockHoleJellyExtra()
+        {
+            LoadScene("BonusBlockHoleJelly");
+        }
+
         public void LoadCase(string caseName)
         {
             LoadScene(caseName);
