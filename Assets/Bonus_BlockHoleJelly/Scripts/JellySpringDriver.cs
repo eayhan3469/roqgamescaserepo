@@ -37,6 +37,8 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float damping = 4f;
         [Tooltip("Clamp on spring displacement so a big impulse can't invert or explode the mesh. Kept below ~0.5 — higher values showed a visible seam/crack near the mesh midline even with the analytic normal recompute (the secondary ripple isn't accounted for in the normal, so it still shows at extreme stretch).")]
         [SerializeField] private float maxJellyAmount = 0.4f;
+        [Tooltip("Clamp on springVelocity itself (separate from maxJellyAmount, which only clamps position). A fast diagonal drag fires several grid-step Kicks in quick succession (see JellyBlockReactor.OnGridStep), and Kick() strengths simply add — without this, that stacked velocity can massively overshoot maxJellyAmount's *position* clamp, which keeps the block pinned at max stretch for an extended time while the excess velocity bleeds off (looked like \"too much stretching\" to the user) instead of naturally peaking below the clamp and settling right away.")]
+        [SerializeField] private float maxSpringVelocity = 4f;
 
         private MeshRenderer meshRenderer;
         private MaterialPropertyBlock propBlock;
@@ -117,7 +119,7 @@ namespace Bonus.BlockHoleJelly
         {
             if (direction.sqrMagnitude < 0.0001f || strength == 0f) return;
             springDir = direction.normalized;
-            springVelocity += strength;
+            springVelocity = Mathf.Clamp(springVelocity + strength, -maxSpringVelocity, maxSpringVelocity);
         }
     }
 }
