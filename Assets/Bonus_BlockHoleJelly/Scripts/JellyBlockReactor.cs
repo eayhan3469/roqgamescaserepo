@@ -92,6 +92,31 @@ namespace Bonus.BlockHoleJelly
                 draggable.FractureEffect = null;
                 lastAnchor = draggable.CurrentAnchorGridPos;
             }
+
+            RemoveDragOutline();
+        }
+
+        /// <summary>
+        /// BlockDraggable's drag-highlight outline is a static duplicate of the block's
+        /// REST-pose mesh (built once in BlockDraggable.Awake() via SetupOutline, extruded
+        /// along normals by the BlockOutline shader) — it doesn't run through the jelly
+        /// vertex shader, so once a block is squashed/stretched the outline visibly stops
+        /// matching the block's actual silhouette, which looks broken. BlockDraggable
+        /// toggles it via a hardcoded SetOutlineActive(true/false) call inside
+        /// OnPointerDown/OnPointerUp/DropIntoHole — there's no event to hook to suppress
+        /// just that call — so the least invasive per-instance fix is to strip the
+        /// MeshRenderer off each "OutlineMesh" child right after BlockDraggable creates
+        /// them. SetOutlineActive still runs and SetActive()s the (now empty) objects
+        /// harmlessly every drag; there's just nothing left on them to render.
+        /// </summary>
+        private void RemoveDragOutline()
+        {
+            foreach (Transform child in GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name != "OutlineMesh") continue;
+                var outlineRenderer = child.GetComponent<MeshRenderer>();
+                if (outlineRenderer != null) Destroy(outlineRenderer);
+            }
         }
 
         /// <summary>Wire to BlockDraggable.onDragStarted.</summary>
