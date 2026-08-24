@@ -63,6 +63,14 @@ namespace Bonus.BlockHoleJelly
         [Tooltip("Second particle system (a child named 'HoleSplashMistVFX') layered on top of holeSplashVFX — many more, much smaller and shorter-lived flecks scattering more widely, the fine-spray counterpart to the bigger droplets. One particle system alone reads as a handful of discrete blobs, not a juicy squirt; this second finer layer is what actually sells 'juicy'. Played alongside holeSplashVFX, same trigger moment.")]
         private ParticleSystem holeSplashMistVFX;
 
+        [Header("Hole-Entry Camera Punch")]
+        [Tooltip("Camera.main.DOShakePosition duration on hole entry — same DOTween call BlockFractureEffect.cs uses for the real shatter shake (Case2_BlockHole/Scripts/BlockFractureEffect.cs), reused here directly rather than reinventing it, since jelly blocks removed that component and lost its shake entirely. Kept in the same ballpark as the real fracture shake (0.14s/0.12/16) but a touch punchier since a splash is the whole payoff moment now, not one of several fracture beats.")]
+        [SerializeField] private float cameraShakeDuration = 0.16f;
+        [Tooltip("Shake strength (world-unit position offset amplitude).")]
+        [SerializeField] private float cameraShakeStrength = 0.16f;
+        [Tooltip("Shake vibrato (number of shake cycles over the duration) — higher reads as a sharper rattle, lower as a softer wobble.")]
+        [SerializeField] private int cameraShakeVibrato = 18;
+
         private JellySpringDriver spring;
         private BlockDraggable draggable;
 
@@ -274,6 +282,18 @@ namespace Bonus.BlockHoleJelly
             if (holeSplashMistVFX != null)
             {
                 holeSplashMistVFX.Play();
+            }
+
+            // Camera punch — the same DOTween call BlockFractureEffect.cs uses for the real
+            // shatter shake, called directly here since jelly blocks have that component
+            // removed and would otherwise have zero camera feedback on hole entry at all.
+            // DOComplete() first for the same reason BlockFractureEffect does it: two blocks
+            // landing in quick succession would otherwise stack/queue shakes instead of the
+            // second one restarting cleanly.
+            if (Camera.main != null)
+            {
+                Camera.main.DOComplete();
+                Camera.main.DOShakePosition(cameraShakeDuration, cameraShakeStrength, cameraShakeVibrato);
             }
 
             if (spring == null) return;
