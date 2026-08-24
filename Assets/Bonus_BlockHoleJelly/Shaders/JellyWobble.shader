@@ -45,7 +45,7 @@ Shader "Bonus/JellyWobble"
         _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.15
 
         [Header(Toy Candy Toon Shading)]
-        _ShadowTone ("Shadow Band Brightness", Range(0,1)) = 0.5
+        _ShadowTone ("Shadow Band Brightness", Range(0,1)) = 0.8
         _MidTone ("Mid Band Brightness", Range(0.5,1.5)) = 0.95
         _HighTone ("Highlight Band Brightness", Range(1,2)) = 1.15
         _TopHighlightColor ("Top Highlight Color", Color) = (1, 1, 1, 1)
@@ -56,8 +56,8 @@ Shader "Bonus/JellyWobble"
         _TranslucencyStrength ("Backlight Translucency", Range(0,2)) = 0.25
         _TranslucencyColor ("Translucency Tint", Color) = (1, 0.95, 0.7, 1)
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
-        _RimPower ("Rim Power", Range(0.5, 8)) = 3.0
-        _RimStrength ("Rim Strength", Range(0,2)) = 0.25
+        _RimPower ("Rim Power", Range(0.5, 8)) = 1.6
+        _RimStrength ("Rim Strength", Range(0,2)) = 1.3
 
         [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)
@@ -91,6 +91,14 @@ Shader "Bonus/JellyWobble"
             #pragma fragment frag
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+            // This project's URP renderer uses Forward+ (PC_Renderer.asset m_RenderingMode: 2),
+            // which culls lights into a tiled/clustered structure. GetAdditionalLightsCount()/
+            // GetAdditionalLight() branch internally on this keyword to read that structure —
+            // without it they silently behave as if 0 additional lights exist, even with
+            // _ADDITIONAL_LIGHTS compiled. This was why the scene's second (brighter, unshadowed)
+            // directional light never reached this shader.
+            #pragma multi_compile _ _FORWARD_PLUS
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -194,6 +202,31 @@ Shader "Bonus/JellyWobble"
                 return OUT;
             }
 
+            // Toon-banded diffuse + two-lobe specular for ONE light, reused for both the
+            // main light and every additional light in the loop below (see frag()).
+            void ShadeOneLight(Light light, half3 albedo, float3 normalWS, float3 viewDir, float fresnel,
+                                out half3 diffuseOut, out half3 specularOut)
+            {
+                float3 lightDir = light.direction;
+                half3 atten = light.color * light.distanceAttenuation * light.shadowAttenuation;
+
+                float NdotL = dot(normalWS, lightDir);
+                float wrappedNdotL = saturate((NdotL + _WrapAmount) / (1.0 + _WrapAmount));
+                float shadowToMid = smoothstep(0.15, 0.45, wrappedNdotL);
+                float midToHigh = smoothstep(0.55, 0.85, wrappedNdotL);
+                float toonTone = lerp(_ShadowTone, _MidTone, shadowToMid);
+                toonTone = lerp(toonTone, _HighTone, midToHigh);
+                diffuseOut = albedo * atten * toonTone;
+
+                float3 halfDir = normalize(lightDir + viewDir);
+                float NdotH = saturate(dot(normalWS, halfDir));
+                half sharpPower = exp2(_Smoothness * 11.0 + 1.0);
+                half sharpSpec = pow(NdotH, sharpPower);
+                half broadSpec = pow(NdotH, 4.0) * _SheenStrength;
+                half specFresnelBoost = lerp(1.0, 1.8, fresnel);
+                specularOut = _SpecColor.rgb * atten * (sharpSpec + broadSpec) * _SpecularIntensity * specFresnelBoost;
+            }
+
             half4 frag(Varyings IN) : SV_Target
             {
                 half4 tex = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);
@@ -203,19 +236,37 @@ Shader "Bonus/JellyWobble"
                 Light mainLight = GetMainLight();
                 float3 lightDir = mainLight.direction;
                 float3 viewDir = normalize(GetWorldSpaceViewDir(IN.positionWS));
+                float NdotV = saturate(dot(normalWS, viewDir));
+                float fresnel = pow(1.0 - NdotV, _RimPower);
 
                 // Wrapped + BANDED diffuse: real-time smooth NdotL shading reads as plastic;
                 // reference toy/jelly-game shaders use a toon-style ramp instead (a dark
                 // band, a mid band, a bright band, soft-blended rather than hard-stepped) —
                 // this is the main thing that makes the material look like jelly at rest,
                 // not just "shiny plastic that jiggles".
-                float NdotL = dot(normalWS, lightDir);
-                float wrappedNdotL = saturate((NdotL + _WrapAmount) / (1.0 + _WrapAmount));
-                float shadowToMid = smoothstep(0.15, 0.45, wrappedNdotL);
-                float midToHigh = smoothstep(0.55, 0.85, wrappedNdotL);
-                float toonTone = lerp(_ShadowTone, _MidTone, shadowToMid);
-                toonTone = lerp(toonTone, _HighTone, midToHigh);
-                half3 diffuseBase = albedo * mainLight.color * toonTone;
+                half3 diffuseBase, mainSpecular;
+                ShadeOneLight(mainLight, albedo, normalWS, viewDir, fresnel, diffuseBase, mainSpecular);
+                half3 totalSpecular = mainSpecular;
+
+                // This shader only sampled the URP "main" light (GetMainLight, the dim
+                // Sun-tagged directional at intensity 0.35) — but the scene actually authors
+                // a SECOND, much brighter (0.85) directional light too, used by every stock
+                // URP-Lit object in the level as an edge/corner fill light. Stock Lit shaders
+                // pick up additional lights automatically; this custom shader did not, so any
+                // face angled toward that second light rendered dark here while every normal
+                // block looked fine — exactly the "edges/corners are not catching light"
+                // symptom. Loop over and add every additional light's contribution too.
+                #if defined(_ADDITIONAL_LIGHTS)
+                int additionalLightsCount = GetAdditionalLightsCount();
+                for (int i = 0; i < additionalLightsCount; i++)
+                {
+                    Light addLight = GetAdditionalLight(i, IN.positionWS);
+                    half3 addDiffuse, addSpecular;
+                    ShadeOneLight(addLight, albedo, normalWS, viewDir, fresnel, addDiffuse, addSpecular);
+                    diffuseBase += addDiffuse;
+                    totalSpecular += addSpecular;
+                }
+                #endif
 
                 // Big soft "always-on" top highlight — upward-facing surfaces blend toward
                 // a bright tone regardless of the actual light direction, the way reference
@@ -228,21 +279,7 @@ Shader "Bonus/JellyWobble"
                 float topFactor = saturate(topShape * _TopHighlightStrength);
                 half3 diffuse = lerp(diffuseBase, _TopHighlightColor.rgb * mainLight.color, topFactor);
 
-                float3 halfDir = normalize(lightDir + viewDir);
-                float NdotH = saturate(dot(normalWS, halfDir));
-                float NdotV = saturate(dot(normalWS, viewDir));
-                float fresnel = pow(1.0 - NdotV, _RimPower);
-
-                // Two-lobe "wet gummy" specular: a tight bright highlight (the glossy
-                // clear-coat glint) plus a broader, dimmer sheen underneath it (so the
-                // shine doesn't look like a single hard plastic dot), both boosted at
-                // grazing angles the way a real wet/glossy surface gets shinier when
-                // viewed edge-on (cheap Schlick-style fresnel boost, not a full BRDF).
-                half sharpPower = exp2(_Smoothness * 11.0 + 1.0);
-                half sharpSpec = pow(NdotH, sharpPower);
-                half broadSpec = pow(NdotH, 4.0) * _SheenStrength;
-                half specFresnelBoost = lerp(1.0, 1.8, fresnel);
-                half3 specular = _SpecColor.rgb * mainLight.color * (sharpSpec + broadSpec) * _SpecularIntensity * specFresnelBoost;
+                half3 specular = totalSpecular;
 
                 // Cheap fake-SSS: light "bleeding through" from behind the surface,
                 // strongest when the view is looking roughly along the light direction
@@ -257,7 +294,7 @@ Shader "Bonus/JellyWobble"
                 // the "washed out" look on top faces — full-strength SH on top of an already
                 // bright toon high-band and top highlight blew the saturated color out toward
                 // white. Dialed way down; it is just a faint fill now, not a driver of tone.
-                half3 ambient = albedo * SampleSH(normalWS) * 0.25;
+                half3 ambient = albedo * SampleSH(normalWS) * 0.4;
 
                 half3 color = diffuse + specular + translucency + rim + ambient;
 
