@@ -38,7 +38,7 @@ Shader "Bonus/JellyWobble"
         _BaseMap ("Base Map", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (0.08, 0.68, 0.60, 1)
         _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.82
-        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.16
+        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.08
         _Smoothness ("Smoothness", Range(0,1)) = 0.93
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
         _SpecularIntensity ("Specular Intensity", Range(0,6)) = 1.8
@@ -69,8 +69,8 @@ Shader "Bonus/JellyWobble"
         _TranslucencyStrength ("Backlight Translucency", Range(0,2)) = 0.25
         _TranslucencyColor ("Translucency Tint", Color) = (1, 0.95, 0.7, 1)
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
-        _RimPower ("Rim Power", Range(0.5, 8)) = 2.8
-        _RimStrength ("Rim Strength", Range(0,2)) = 0.5
+        _RimPower ("Rim Power", Range(0.5, 8)) = 4.0
+        _RimStrength ("Rim Strength", Range(0,2)) = 0.22
 
         [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)

@@ -150,13 +150,41 @@ namespace Bonus.BlockHoleJelly
                 result[i] = new Vector4(sentinel, 0f, sentinel, 0f);
             }
 
-            if (mesh == null || !mesh.isReadable)
+            if (mesh == null)
             {
                 return result;
             }
 
-            Vector3[] verts = mesh.vertices;
-            int[] tris = mesh.triangles;
+            // NOTE: mesh.isReadable is FALSE for these shared BlockHole meshes (their import
+            // settings have Read/Write Enabled off, since the real case never needs CPU-side
+            // vertex access) — but that flag only strips vertex data from an actual PLAYER
+            // BUILD; inside the Editor (where this whole bonus branch is exclusively tested,
+            // see roq-case-project memory) mesh.vertices/triangles read back the real data
+            // just fine regardless of the flag. An earlier version of this method treated
+            // isReadable as an authoritative "can I read this" check and early-returned empty
+            // whenever it was false — which is EVERY block here, so the corner sparkle was
+            // silently doing nothing at all despite compiling and running with no errors. Try
+            // the real read (works in-Editor); fall back to the mesh's bounding-box corners
+            // (still real geometry, just not concave-aware) only if it genuinely throws, which
+            // would only happen in an actual non-readable build — this branch is never shipped
+            // as-is, but a fallback costs nothing and avoids a hard crash if that ever changes.
+            Vector3[] verts;
+            int[] tris;
+            try
+            {
+                verts = mesh.vertices;
+                tris = mesh.triangles;
+            }
+            catch (System.Exception)
+            {
+                Bounds fallbackBounds = mesh.bounds;
+                result[0] = new Vector4(fallbackBounds.min.x, 0f, fallbackBounds.min.z, 0f);
+                result[1] = new Vector4(fallbackBounds.max.x, 0f, fallbackBounds.min.z, 0f);
+                result[2] = new Vector4(fallbackBounds.min.x, 0f, fallbackBounds.max.z, 0f);
+                result[3] = new Vector4(fallbackBounds.max.x, 0f, fallbackBounds.max.z, 0f);
+                return result;
+            }
+
             Vector3 originLocal = mesh.bounds.min;
 
             var occupiedCells = new HashSet<Vector2Int>();
@@ -199,10 +227,20 @@ namespace Bonus.BlockHoleJelly
                 if (occupiedCells.Contains(new Vector2Int(corner.x - 1, corner.y))) occupiedQuadrants++;
                 if (occupiedCells.Contains(new Vector2Int(corner.x, corner.y))) occupiedQuadrants++;
 
-                // A grid point surrounded by all 4 occupied cells is a flat interior seam
-                // (no real edge there); one surrounded by 0 is not touched by the shape at
-                // all. Only 1-3 occupied quadrants means a real exterior or concave corner.
-                if (occupiedQuadrants > 0 && occupiedQuadrants < 4)
+                // A grid point surrounded by all 4 occupied cells is a flat interior seam (no
+                // real edge there); one surrounded by 0 is not touched by the shape at all.
+                // 2 occupied quadrants is the case that actually needs care: for these
+                // edge-connected polyomino block shapes (never diagonal-only connections),
+                // 2 occupied always means the two occupied cells are ADJACENT (share an edge)
+                // — i.e. this grid point sits in the middle of one continuous straight edge
+                // that runs right through it, not at an actual bend in the silhouette. That
+                // is exactly the "sparkle in the middle of a flat run" bug the user flagged
+                // circled on the L piece: a point between two same-row/same-column cells still
+                // passed this test before. Only count == 1 (a real convex corner) or count == 3
+                // (a real concave/notch corner, where the silhouette genuinely bends) are true
+                // corners; a rectilinear polygon with C concave corners always has C+4 convex
+                // ones, so this reduces to exactly the right total for any of these shapes.
+                if (occupiedQuadrants == 1 || occupiedQuadrants == 3)
                 {
                     float worldLocalX = originLocal.x + corner.x;
                     float worldLocalZ = originLocal.z + corner.y;

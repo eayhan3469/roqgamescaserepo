@@ -35,9 +35,9 @@ Material:
     - _JellyRippleSpeed: 10
     - _JellyRippleStrength: 0.18
     - _Alpha: 0.82
-    - _EdgeOpacityBoost: 0.16
-    - _RimPower: 2.8
-    - _RimStrength: 0.5
+    - _EdgeOpacityBoost: 0.08
+    - _RimPower: 4.0
+    - _RimStrength: 0.22
     - _SheenStrength: 0.08
     - _Smoothness: 0.93
     - _SpecularIntensity: 1.8
