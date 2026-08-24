@@ -39,37 +39,32 @@ Shader "Bonus/JellyWobble"
         _BaseColor ("Base Color", Color) = (0.08, 0.68, 0.60, 1)
         _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.82
         _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.16
-        _Smoothness ("Smoothness", Range(0,1)) = 0.8
+        _Smoothness ("Smoothness", Range(0,1)) = 0.93
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
-        _SpecularIntensity ("Specular Intensity", Range(0,6)) = 0.7
-        _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.15
+        _SpecularIntensity ("Specular Intensity", Range(0,6)) = 1.8
+        _SheenStrength ("Broad Sheen Strength", Range(0,2)) = 0.08
 
         [Header(Toy Candy Toon Shading)]
         _ShadowTone ("Shadow Band Brightness", Range(0,1)) = 0.8
         _MidTone ("Mid Band Brightness", Range(0.5,1.5)) = 0.95
         _HighTone ("Highlight Band Brightness", Range(1,2)) = 1.15
         _TopHighlightColor ("Top Highlight Color", Color) = (1, 1, 1, 1)
-        _TopHighlightStrength ("Top Highlight Strength", Range(0,1)) = 0.45
+        _TopHighlightStrength ("Top Highlight Strength", Range(0,1)) = 0.15
 
-        [Header(Per Corner Candy Glint)]
-        _CornerGlintColor ("Corner Glint Color", Color) = (1, 1, 1, 1)
-        _CornerGlintStrength ("Corner Glint Strength", Range(0,2)) = 0.8
-        _CornerGlintSize ("Corner Glint Size", Range(0.05, 0.6)) = 0.22
-
-        [Header(Suspended Flecks)]
-        _FleckColor ("Fleck Color", Color) = (1, 1, 1, 1)
-        _FleckStrength ("Fleck Strength", Range(0,2)) = 0.5
-        _FleckDensity ("Flecks Per Unit", Range(2, 20)) = 8
-        _FleckSize ("Fleck Size", Range(0.05, 0.6)) = 0.22
-        _FleckCoverage ("Fleck Coverage (0=rare, 1=everywhere)", Range(0,1)) = 0.16
+        [Header(Suspended Chunks)]
+        _FleckColor ("Chunk Color", Color) = (1, 0.93, 0.82, 1)
+        _FleckStrength ("Chunk Blend Strength", Range(0,1)) = 0.35
+        _FleckDensity ("Chunks Per Unit", Range(1, 12)) = 3.5
+        _FleckSize ("Chunk Size", Range(0.05, 0.6)) = 0.32
+        _FleckCoverage ("Chunk Coverage (0=rare, 1=everywhere)", Range(0,1)) = 0.1
 
         [Header(Gummy Translucency)]
         _WrapAmount ("Diffuse Wrap (soft falloff)", Range(0,1)) = 0.4
         _TranslucencyStrength ("Backlight Translucency", Range(0,2)) = 0.25
         _TranslucencyColor ("Translucency Tint", Color) = (1, 0.95, 0.7, 1)
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
-        _RimPower ("Rim Power", Range(0.5, 8)) = 1.6
-        _RimStrength ("Rim Strength", Range(0,2)) = 1.3
+        _RimPower ("Rim Power", Range(0.5, 8)) = 2.8
+        _RimStrength ("Rim Strength", Range(0,2)) = 0.5
 
         [Header(Jelly Drive Runtime)]
         _JellyDir ("Jelly Direction", Vector) = (0, 1, 0, 0)
@@ -148,9 +143,6 @@ Shader "Bonus/JellyWobble"
                 float _HighTone;
                 float4 _TopHighlightColor;
                 float _TopHighlightStrength;
-                float4 _CornerGlintColor;
-                float _CornerGlintStrength;
-                float _CornerGlintSize;
                 float4 _FleckColor;
                 float _FleckStrength;
                 float _FleckDensity;
@@ -302,38 +294,28 @@ Shader "Bonus/JellyWobble"
                 }
                 #endif
 
-                // Big soft "always-on" top highlight — upward-facing surfaces blend toward
-                // a bright tone regardless of the actual light direction, the way reference
-                // jelly-cube toy shaders fake a consistent studio key light on top of every
-                // piece. Blended (lerp) rather than added on top, so it brightens the toon
-                // shading without washing the base color out to flat white — squared falloff
-                // for a softer, rounder patch than a raw dot product.
+                // Small, tight "always-on" top highlight — upward-facing surfaces get a
+                // compact bright patch regardless of the actual light direction, the way a
+                // glass/gel dome catches a consistent studio key light. Blended (lerp) rather
+                // than added, and kept LOW strength with a steep falloff (^8, not ^4) so it
+                // stays a small compact highlight instead of flattening the whole top face
+                // toward pale/matte — the real "glossy" read comes from the sharp specular
+                // lobe below, this is just a soft assist.
                 float topFacing = saturate(normalWS.y);
                 float topShape = topFacing * topFacing * topFacing * topFacing;
-                float topFactor = saturate(topShape * _TopHighlightStrength);
+                float topShapeTight = topShape * topShape;
+                float topFactor = saturate(topShapeTight * _TopHighlightStrength);
                 half3 diffuse = lerp(diffuseBase, _TopHighlightColor.rgb * mainLight.color, topFactor);
 
                 half3 specular = totalSpecular;
 
-                // Per-corner candy glint: reference toy/jelly shaders fake a single small
-                // fixed studio-light dot near one corner of every top face rather than a
-                // smooth streak that slides with the camera. Each unit cell of the (possibly
-                // multi-cell) mesh gets its own jittered corner point (random per cell via
-                // the hash, so a multi-cell L-piece doesn't look like it is stamped from one
-                // repeating tile) — additive, only on top-facing geometry, so it reads as a
-                // small bright dot sitting on the surface, not a lighting change.
-                float2 cellXZ = frac(IN.localPosOS.xz);
-                float2 cellId = floor(IN.localPosOS.xz);
-                float2 glintPoint = Hash3(float3(cellId, 3.7)).xy * 0.5 + 0.15;
-                float glintDist = distance(cellXZ, glintPoint);
-                float glintMask = smoothstep(_CornerGlintSize, _CornerGlintSize * 0.15, glintDist);
-                half3 cornerGlint = _CornerGlintColor.rgb * glintMask * topShape * _CornerGlintStrength;
-
-                // Suspended flecks: small round dots scattered through the material (fruit-jelly
-                // "bits" look), one candidate point per fine grid cell, most cells skipped via
-                // _FleckCoverage so they read as sparse specks rather than an all-over pattern.
-                // Uses full 3D local position (not just XZ) so flecks differ between the top
-                // face and side walls instead of repeating the same 2D pattern on every face.
+                // Suspended chunks (fruit-jelly "pieces visible through the gel" look): a
+                // sparse scatter of soft round blobs computed from a 3D hash grid over the
+                // un-deformed object-space position, most cells skipped via _FleckCoverage.
+                // Blended INTO the diffuse (lerp) rather than added on top like a sticker —
+                // reads as color variation embedded in the material, not glowing dots sitting
+                // on the surface. Tinted a warm cream by default, not stark white, and kept
+                // subtle (_FleckStrength) so it stays a hint of texture, not a pattern.
                 float3 fleckSpace = IN.localPosOS * _FleckDensity;
                 float3 fleckCellId = floor(fleckSpace);
                 float3 fleckCellFrac = frac(fleckSpace);
@@ -342,7 +324,7 @@ Shader "Bonus/JellyWobble"
                 float fleckPresence = step(1.0 - _FleckCoverage, fleckRand.z);
                 float fleckDist = distance(fleckCellFrac, fleckJitter);
                 float fleckMask = smoothstep(_FleckSize, _FleckSize * 0.2, fleckDist) * fleckPresence;
-                half3 flecks = _FleckColor.rgb * fleckMask * _FleckStrength;
+                diffuse = lerp(diffuse, _FleckColor.rgb * mainLight.color, fleckMask * _FleckStrength);
 
                 // Cheap fake-SSS: light "bleeding through" from behind the surface,
                 // strongest when the view is looking roughly along the light direction
@@ -359,7 +341,7 @@ Shader "Bonus/JellyWobble"
                 // white. Dialed way down; it is just a faint fill now, not a driver of tone.
                 half3 ambient = albedo * SampleSH(normalWS) * 0.4;
 
-                half3 color = diffuse + specular + translucency + rim + ambient + cornerGlint + flecks;
+                half3 color = diffuse + specular + translucency + rim + ambient;
 
                 // Real transparency: base opacity plus extra opacity at grazing angles
                 // (like looking through the curved edge of a gummy block vs. straight
