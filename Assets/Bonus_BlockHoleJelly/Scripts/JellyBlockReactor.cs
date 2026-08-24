@@ -53,15 +53,11 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float releaseKickStrength = 2.6f;
 
         [Header("Hole-Entry Squish (replaces fracture/shatter)")]
-        [Tooltip("Total duration of the hole-entry squish (squeeze phase + shrink phase combined). Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the block finishes vanishing right as BlockDraggable disables its renderers — tune both together.")]
+        [Tooltip("Duration of the jelly squeeze (stretching down / squashing sideways via the shader, like being pushed through a narrower opening) as the block falls into the hole. Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the squeeze runs for the whole visible fall.")]
         [SerializeField] private float holeSquishDuration = 0.6f;
-        [Tooltip("Fraction of holeSquishDuration spent on the initial squeeze (stretching down / squashing sideways via the jelly shader, like being pushed through a narrower opening) before the shrink-to-nothing phase takes over.")]
-        [Range(0.1f, 0.8f)]
-        [SerializeField] private float holeSquishSqueezePortion = 0.4f;
-        [Tooltip("Peak jelly amount reached during the squeeze phase — how pinched/stretched it looks right before vanishing.")]
+        [Tooltip("Peak jelly amount reached right as it disappears — how pinched/stretched it looks at the deepest point of the fall.")]
         [SerializeField] private float holeSquishPeakAmount = 0.45f;
-        [SerializeField] private Ease holeSquishSqueezeEase = Ease.OutQuad;
-        [SerializeField] private Ease holeSquishShrinkEase = Ease.InQuad;
+        [SerializeField] private Ease holeSquishSqueezeEase = Ease.InQuad;
 
         private JellySpringDriver spring;
         private BlockDraggable draggable;
@@ -182,49 +178,45 @@ namespace Bonus.BlockHoleJelly
         }
 
         /// <summary>
-        /// Two-phase jelly squish for a block being swallowed by a hole, instead of the real
+        /// Jelly squeeze for a block being swallowed by a hole, instead of the real
         /// BlockHole fracture/shatter (disabled on this instance in Start via
-        /// draggable.FractureEffect = null): first it visibly SQUEEZES — stretches downward
-        /// and squashes sideways via the jelly shader, like being pushed through a narrower
-        /// opening — then it shrinks away to nothing while still pinched. Runs on the same
-        /// transform BlockDraggable is already moving down into the hole shaft, so it reads
-        /// as jelly being pulled/sucked into the hole rather than just uniformly shrinking.
+        /// draggable.FractureEffect = null): stretches downward and squashes sideways via
+        /// the jelly shader, growing more pinched the whole way down, while BlockDraggable's
+        /// own DOMove sequence does the actual falling (already in progress by the time this
+        /// runs — DropIntoHole calls onDragEnded, which reaches here, after its own drop
+        /// tween is already playing). No scale animation here at all — an earlier version
+        /// added an artificial DOScale(zero) shrink on top, but the user found that
+        /// combination looked fake ("cok fazla kuculuyor ve yapay bir goruntu oluyor... scale
+        /// kuculmek yerine gercekten asagi dogru dusmeli"): shrinking in place while also
+        /// falling reads as "vanishing", not "falling in". What actually makes the block
+        /// disappear is BlockDraggable's own dropSeq.OnComplete disabling its renderers once
+        /// the fall finishes — real motion, not a faked shrink — so this only needs to drive
+        /// the squeeze, not try to hide the block itself.
         ///
-        /// BlockDraggable.DropIntoHole already queues its own brief DOScale(originalScale,
+        /// BlockDraggable.DropIntoHole also queues its own brief DOScale(originalScale,
         /// 0.06s) on this same transform (snapping the drag-pickup scale bump back to
-        /// normal) right before calling onDragEnded — starting our own scale tween
-        /// immediately would fight that for those 0.06s. Delay by the same amount instead of
-        /// killing it, so ours cleanly takes over right after rather than racing it.
+        /// normal) right before calling onDragEnded — waiting 0.06s before touching anything
+        /// here avoids fighting that for those first few frames.
         /// </summary>
         private void PlayHoleSquish()
         {
+            if (spring == null) return;
+
             // Take the shader over from the spring's own oscillator for this scripted
             // sequence — otherwise JellySpringDriver's LateUpdate would keep overwriting our
             // ForceJellyState calls with its own (by-now-irrelevant) decaying kick state.
-            if (spring != null) spring.enabled = false;
+            spring.enabled = false;
 
-            float squeezeDuration = holeSquishDuration * holeSquishSqueezePortion;
-            float shrinkDuration = holeSquishDuration - squeezeDuration;
-
-            Sequence seq = DOTween.Sequence().SetTarget(transform);
-            seq.AppendInterval(0.06f);
-
-            if (spring != null)
-            {
-                float amount = 0f;
-                seq.Append(DOTween.To(
+            float amount = 0f;
+            DOTween.Sequence()
+                .SetTarget(transform)
+                .AppendInterval(0.06f)
+                .Append(DOTween.To(
                     () => amount,
                     x => { amount = x; spring.ForceJellyState(Vector3.down, amount); },
                     holeSquishPeakAmount,
-                    squeezeDuration
+                    Mathf.Max(holeSquishDuration - 0.06f, 0.05f)
                 ).SetEase(holeSquishSqueezeEase));
-            }
-            else
-            {
-                seq.AppendInterval(squeezeDuration);
-            }
-
-            seq.Append(transform.DOScale(Vector3.zero, shrinkDuration).SetEase(holeSquishShrinkEase));
         }
     }
 }
