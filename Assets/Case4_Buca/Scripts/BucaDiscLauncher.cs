@@ -801,11 +801,19 @@ namespace Buca
             // Obstacle hit
             else if (collision.gameObject.TryGetComponent<BucaObstacle>(out var obstacle))
             {
+                float currentSpeed = discRb != null ? Mathf.Max(discRb.linearVelocity.magnitude, preCollisionVelocity.magnitude) : 12f;
+                float speedRatio = Mathf.Clamp(currentSpeed / 20.0f, 0.50f, 1.0f);
+
                 if (BucaAudioManager.Instance != null)
                 {
-                    float currentSpeed = discRb != null ? Mathf.Max(discRb.linearVelocity.magnitude, preCollisionVelocity.magnitude) : 12f;
-                    float speedRatio = Mathf.Clamp(currentSpeed / 20.0f, 0.50f, 1.0f);
                     BucaAudioManager.Instance.PlayObstacleDeflectSound(speedRatio);
+                }
+
+                // Small punchy screenshake on center obstacle impact (scaled down from the
+                // block-destruction shake so it reads as a light "tık" rather than a big hit).
+                if (BucaJuiceManager.Instance != null)
+                {
+                    BucaJuiceManager.Instance.TriggerCameraShake(speedRatio * 0.4f);
                 }
 
                 ProcessWallImpactSpin(collision, true);

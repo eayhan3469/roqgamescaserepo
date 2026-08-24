@@ -185,6 +185,11 @@ namespace BlockHole
                 }
             }
 
+            // Shader genuinely unavailable (e.g. stripped from the build) — bail out instead
+            // of leaving OutlineMesh renderers with a null sharedMaterial, which Unity renders
+            // as a bright magenta/pink placeholder.
+            if (outlineMaterialInstance == null) return;
+
             outlineObjects.Clear();
 
             MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>(true);
