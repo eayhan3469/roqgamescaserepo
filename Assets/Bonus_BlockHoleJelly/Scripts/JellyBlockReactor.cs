@@ -53,17 +53,18 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float releaseKickStrength = 2.6f;
 
         [Header("Hole-Entry Squish (replaces fracture/shatter)")]
-        [Tooltip("Duration of the jelly squeeze (stretching down / squashing sideways via the shader, like being pushed through a narrower opening) as the block falls into the hole. Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the squeeze runs for the whole visible fall.")]
-        [SerializeField] private float holeSquishDuration = 0.6f;
-        [Tooltip("Peak jelly amount reached right as it disappears — how pinched/stretched it looks at the deepest point of the fall.")]
-        [SerializeField] private float holeSquishPeakAmount = 0.45f;
-        [SerializeField] private Ease holeSquishSqueezeEase = Ease.InQuad;
+        [Tooltip("Kick strength for the hole-entry squeeze (same velocity-impulse mechanism as grab/release/grid-step — see JellySpringDriver.Kick). Deliberately the strongest of the four: it is the one moment squeeze-then-relax should read as the most pronounced. Reuses the normal damped oscillator instead of a scripted ramp, so it naturally squeezes in hard and eases back off on its own rather than holding at a flat peak.")]
+        [SerializeField] private float holeSquishKickStrength = 5.5f;
 
         private JellySpringDriver spring;
         private BlockDraggable draggable;
 
         private Vector2Int lastAnchor;
         private Vector3 lastStepDir = Vector3.forward;
+
+        // Cached at grab time — see PlayHoleSquish for why this must NOT be re-resolved via
+        // GridManager.GetMatchingHoleForBlock(draggable) later.
+        private BlockHole.HoleTarget cachedHole;
 
         private void Awake()
         {
@@ -127,6 +128,12 @@ namespace Bonus.BlockHoleJelly
             if (draggable != null)
             {
                 lastAnchor = draggable.CurrentAnchorGridPos;
+
+                // Cache the matching hole now, while the block is still draggable — see
+                // PlayHoleSquish for why re-resolving this later does not work.
+                cachedHole = BlockHole.GridManager.Instance != null
+                    ? BlockHole.GridManager.Instance.GetMatchingHoleForBlock(draggable)
+                    : null;
             }
 
             if (spring == null) return;
@@ -180,43 +187,56 @@ namespace Bonus.BlockHoleJelly
         /// <summary>
         /// Jelly squeeze for a block being swallowed by a hole, instead of the real
         /// BlockHole fracture/shatter (disabled on this instance in Start via
-        /// draggable.FractureEffect = null): stretches downward and squashes sideways via
-        /// the jelly shader, growing more pinched the whole way down, while BlockDraggable's
+        /// draggable.FractureEffect = null): a single strong Kick(down) through the normal
+        /// spring oscillator, so it squeezes in hard and then visibly relaxes/settles back
+        /// on its own — same "squeeze then relax" physics as every other Kick moment, just
+        /// the strongest one — instead of holding at a flat scripted peak. BlockDraggable's
         /// own DOMove sequence does the actual falling (already in progress by the time this
         /// runs — DropIntoHole calls onDragEnded, which reaches here, after its own drop
-        /// tween is already playing). No scale animation here at all — an earlier version
-        /// added an artificial DOScale(zero) shrink on top, but the user found that
-        /// combination looked fake ("cok fazla kuculuyor ve yapay bir goruntu oluyor... scale
-        /// kuculmek yerine gercekten asagi dogru dusmeli"): shrinking in place while also
-        /// falling reads as "vanishing", not "falling in". What actually makes the block
-        /// disappear is BlockDraggable's own dropSeq.OnComplete disabling its renderers once
-        /// the fall finishes — real motion, not a faked shrink — so this only needs to drive
-        /// the squeeze, not try to hide the block itself.
+        /// tween is already playing) and its own dropSeq.OnComplete disabling renderers is
+        /// still what makes the block actually disappear — this only drives the squeeze, see
+        /// commit e347f01 for why no scale animation happens here at all.
         ///
-        /// BlockDraggable.DropIntoHole also queues its own brief DOScale(originalScale,
-        /// 0.06s) on this same transform (snapping the drag-pickup scale bump back to
-        /// normal) right before calling onDragEnded — waiting 0.06s before touching anything
-        /// here avoids fighting that for those first few frames.
+        /// Also force-closes every effect around the hole immediately instead of leaving
+        /// BlockDraggable's own non-immediate SetHighlight(false) call to fade them out —
+        /// that fade was still visibly lingering during the jelly entry, which the user
+        /// wanted gone. Two steps, since one alone was not enough: HoleTarget.SetHighlight
+        /// (false, true) for the edge glow, PLUS a direct Stop(StopEmittingAndClear) on
+        /// every ParticleSystem under the hole — HoleTarget's own SetHighlight only stops
+        /// particle systems it cached in Awake AND excludes anything literally named
+        /// "EdgeGlowParticles"; live-testing found "RimOutlineParticles" and
+        /// "WaterfallParticles" still had 30-100+ live particles right after SetHighlight
+        /// (false, true) returned, so those clearly are not the ones it is managing. Purely
+        /// additive: only calls public HoleTarget/ParticleSystem API, does not modify
+        /// BlockDraggable.cs or HoleTarget.cs.
         /// </summary>
         private void PlayHoleSquish()
         {
+            // Deliberately uses cachedHole (captured in OnGrabbed), NOT a fresh
+            // GridManager.GetMatchingHoleForBlock(draggable) lookup here — found the hard
+            // way that a fresh lookup at this point returns null: BlockDraggable.DropIntoHole
+            // calls hole.SetFilled(true) BEFORE firing onDragEnded (which is what reaches
+            // this method), and GetMatchingHoleForBlock only matches unfilled holes, so by
+            // the time this runs the hole this exact block is falling into no longer counts
+            // as a match. Confirmed via Unity MCP: the jelly squeeze and the hole-highlight
+            // force-close both happened to look correct anyway (BlockDraggable's own
+            // un-immediate SetHighlight(false) call already turns the highlight off, just
+            // not instantly), which is what hid this — but the particle-clear silently never
+            // ran, since it was gated on that same now-null lookup, leaving up to a few
+            // hundred already-emitted RimOutlineParticles/WaterfallParticles frozen in place
+            // instead of clearing.
+            if (cachedHole != null)
+            {
+                cachedHole.SetHighlight(false, true);
+                var holeParticles = cachedHole.GetComponentsInChildren<ParticleSystem>(true);
+                foreach (var ps in holeParticles)
+                {
+                    if (ps != null) ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                }
+            }
+
             if (spring == null) return;
-
-            // Take the shader over from the spring's own oscillator for this scripted
-            // sequence — otherwise JellySpringDriver's LateUpdate would keep overwriting our
-            // ForceJellyState calls with its own (by-now-irrelevant) decaying kick state.
-            spring.enabled = false;
-
-            float amount = 0f;
-            DOTween.Sequence()
-                .SetTarget(transform)
-                .AppendInterval(0.06f)
-                .Append(DOTween.To(
-                    () => amount,
-                    x => { amount = x; spring.ForceJellyState(Vector3.down, amount); },
-                    holeSquishPeakAmount,
-                    Mathf.Max(holeSquishDuration - 0.06f, 0.05f)
-                ).SetEase(holeSquishSqueezeEase));
+            spring.Kick(Vector3.down, holeSquishKickStrength);
         }
     }
 }
