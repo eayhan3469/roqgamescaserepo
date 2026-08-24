@@ -37,8 +37,8 @@ Shader "Bonus/JellyWobble"
     {
         _BaseMap ("Base Map", 2D) = "white" {}
         _BaseColor ("Base Color", Color) = (0.08, 0.68, 0.60, 1)
-        _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.97
-        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.08
+        _Alpha ("Opacity (real transparency, not just tint)", Range(0,1)) = 0.82
+        _EdgeOpacityBoost ("Extra Opacity At Edges (fresnel)", Range(0,1)) = 0.16
         _Smoothness ("Smoothness", Range(0,1)) = 0.8
         _SpecColor ("Specular Color", Color) = (1,1,1,1)
         _SpecularIntensity ("Specular Intensity", Range(0,6)) = 0.7
@@ -50,6 +50,18 @@ Shader "Bonus/JellyWobble"
         _HighTone ("Highlight Band Brightness", Range(1,2)) = 1.15
         _TopHighlightColor ("Top Highlight Color", Color) = (1, 1, 1, 1)
         _TopHighlightStrength ("Top Highlight Strength", Range(0,1)) = 0.45
+
+        [Header(Per Corner Candy Glint)]
+        _CornerGlintColor ("Corner Glint Color", Color) = (1, 1, 1, 1)
+        _CornerGlintStrength ("Corner Glint Strength", Range(0,2)) = 0.8
+        _CornerGlintSize ("Corner Glint Size", Range(0.05, 0.6)) = 0.22
+
+        [Header(Suspended Flecks)]
+        _FleckColor ("Fleck Color", Color) = (1, 1, 1, 1)
+        _FleckStrength ("Fleck Strength", Range(0,2)) = 0.5
+        _FleckDensity ("Flecks Per Unit", Range(2, 20)) = 8
+        _FleckSize ("Fleck Size", Range(0.05, 0.6)) = 0.22
+        _FleckCoverage ("Fleck Coverage (0=rare, 1=everywhere)", Range(0,1)) = 0.16
 
         [Header(Gummy Translucency)]
         _WrapAmount ("Diffuse Wrap (soft falloff)", Range(0,1)) = 0.4
@@ -116,6 +128,7 @@ Shader "Bonus/JellyWobble"
                 float3 positionWS : TEXCOORD0;
                 float3 normalWS   : TEXCOORD1;
                 float2 uv         : TEXCOORD2;
+                float3 localPosOS : TEXCOORD3;
             };
 
             TEXTURE2D(_BaseMap);
@@ -135,6 +148,14 @@ Shader "Bonus/JellyWobble"
                 float _HighTone;
                 float4 _TopHighlightColor;
                 float _TopHighlightStrength;
+                float4 _CornerGlintColor;
+                float _CornerGlintStrength;
+                float _CornerGlintSize;
+                float4 _FleckColor;
+                float _FleckStrength;
+                float _FleckDensity;
+                float _FleckSize;
+                float _FleckCoverage;
                 float _WrapAmount;
                 float _TranslucencyStrength;
                 float4 _TranslucencyColor;
@@ -198,8 +219,21 @@ Shader "Bonus/JellyWobble"
                 float3 deformedNormalOS = ApplyJellyBasis(IN.normalOS, dir, 1.0 / max(stretch, 0.0001), 1.0 / max(squash, 0.0001));
                 OUT.normalWS = TransformObjectToWorldNormal(normalize(deformedNormalOS));
                 OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);
+                // Un-deformed object-space position, used in frag() for the corner glint and
+                // suspended flecks so those patterns stay fixed "inside" the material and don't
+                // swim around during jelly wobble the way a world-space pattern would.
+                OUT.localPosOS = posOS;
 
                 return OUT;
+            }
+
+            // Cheap deterministic hash (IQ-style), used for both the per-cell corner glint
+            // jitter and the scattered suspended flecks below — no texture lookup needed.
+            float3 Hash3(float3 p)
+            {
+                p = frac(p * float3(0.1031, 0.1030, 0.0973));
+                p += dot(p, p.yxz + 33.33);
+                return frac((p.xxy + p.yxx) * p.zyx);
             }
 
             // Toon-banded diffuse + two-lobe specular for ONE light, reused for both the
@@ -281,6 +315,35 @@ Shader "Bonus/JellyWobble"
 
                 half3 specular = totalSpecular;
 
+                // Per-corner candy glint: reference toy/jelly shaders fake a single small
+                // fixed studio-light dot near one corner of every top face rather than a
+                // smooth streak that slides with the camera. Each unit cell of the (possibly
+                // multi-cell) mesh gets its own jittered corner point (random per cell via
+                // the hash, so a multi-cell L-piece doesn't look like it is stamped from one
+                // repeating tile) — additive, only on top-facing geometry, so it reads as a
+                // small bright dot sitting on the surface, not a lighting change.
+                float2 cellXZ = frac(IN.localPosOS.xz);
+                float2 cellId = floor(IN.localPosOS.xz);
+                float2 glintPoint = Hash3(float3(cellId, 3.7)).xy * 0.5 + 0.15;
+                float glintDist = distance(cellXZ, glintPoint);
+                float glintMask = smoothstep(_CornerGlintSize, _CornerGlintSize * 0.15, glintDist);
+                half3 cornerGlint = _CornerGlintColor.rgb * glintMask * topShape * _CornerGlintStrength;
+
+                // Suspended flecks: small round dots scattered through the material (fruit-jelly
+                // "bits" look), one candidate point per fine grid cell, most cells skipped via
+                // _FleckCoverage so they read as sparse specks rather than an all-over pattern.
+                // Uses full 3D local position (not just XZ) so flecks differ between the top
+                // face and side walls instead of repeating the same 2D pattern on every face.
+                float3 fleckSpace = IN.localPosOS * _FleckDensity;
+                float3 fleckCellId = floor(fleckSpace);
+                float3 fleckCellFrac = frac(fleckSpace);
+                float3 fleckRand = Hash3(fleckCellId);
+                float3 fleckJitter = fleckRand * 0.6 + 0.2;
+                float fleckPresence = step(1.0 - _FleckCoverage, fleckRand.z);
+                float fleckDist = distance(fleckCellFrac, fleckJitter);
+                float fleckMask = smoothstep(_FleckSize, _FleckSize * 0.2, fleckDist) * fleckPresence;
+                half3 flecks = _FleckColor.rgb * fleckMask * _FleckStrength;
+
                 // Cheap fake-SSS: light "bleeding through" from behind the surface,
                 // strongest when the view is looking roughly along the light direction
                 // through the block — the classic backlit-gummy-bear look.
@@ -296,7 +359,7 @@ Shader "Bonus/JellyWobble"
                 // white. Dialed way down; it is just a faint fill now, not a driver of tone.
                 half3 ambient = albedo * SampleSH(normalWS) * 0.4;
 
-                half3 color = diffuse + specular + translucency + rim + ambient;
+                half3 color = diffuse + specular + translucency + rim + ambient + cornerGlint + flecks;
 
                 // Real transparency: base opacity plus extra opacity at grazing angles
                 // (like looking through the curved edge of a gummy block vs. straight
