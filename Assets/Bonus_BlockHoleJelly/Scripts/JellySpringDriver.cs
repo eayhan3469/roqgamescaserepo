@@ -18,16 +18,16 @@ namespace Bonus.BlockHoleJelly
     public class JellySpringDriver : MonoBehaviour
     {
         [Header("Passive Motion Reactivity")]
-        [Tooltip("How strongly the block's own velocity changes (acceleration) kick the spring. 0 = only explicit Kick() calls matter.")]
-        [SerializeField] private float reactivity = 0.02f;
+        [Tooltip("How strongly the block's own velocity changes (acceleration) kick the spring. Kept low on real gameplay blocks (which also get explicit Kick() calls from JellyBlockReactor on grab/release) so continuous drag-follow jitter doesn't wobble the block the whole time it's being dragged — this should read as a subtle undercurrent, not the main effect. 0 = only explicit Kick() calls matter.")]
+        [SerializeField] private float reactivity = 0.006f;
 
         [Header("Spring Tuning")]
         [Tooltip("Higher = snaps back to rest faster / feels stiffer.")]
         [SerializeField] private float stiffness = 180f;
         [Tooltip("Higher = settles with less oscillation / feels less bouncy.")]
         [SerializeField] private float damping = 12f;
-        [Tooltip("Clamp on spring displacement so a big impulse can't invert or explode the mesh.")]
-        [SerializeField] private float maxJellyAmount = 0.6f;
+        [Tooltip("Clamp on spring displacement so a big impulse can't invert or explode the mesh. Kept below ~0.5 — higher values showed a visible seam/crack near the mesh midline even with the analytic normal recompute (the secondary ripple isn't accounted for in the normal, so it still shows at extreme stretch).")]
+        [SerializeField] private float maxJellyAmount = 0.4f;
 
         private MeshRenderer meshRenderer;
         private MaterialPropertyBlock propBlock;

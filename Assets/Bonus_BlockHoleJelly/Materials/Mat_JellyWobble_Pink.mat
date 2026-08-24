@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_JellyWobble
+  m_Name: Mat_JellyWobble_Pink
   m_Shader: {fileID: 4800000, guid: 48147f8c1886b54f622e247e7a25bfb4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -20,7 +20,7 @@ Material:
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -40,7 +40,7 @@ Material:
     - _TranslucencyStrength: 0.6
     - _WrapAmount: 0.4
     m_Colors:
-    - _BaseColor: {r: 0.08, g: 0.68, b: 0.6, a: 1}
+    - _BaseColor: {r: 0.745, g: 0.369, b: 0.694, a: 1}
     - _JellyDir: {r: 0, g: 1, b: 0, a: 0}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
