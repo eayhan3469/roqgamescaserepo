@@ -7173,10 +7173,10 @@ MonoBehaviour:
   sparkleSource: {fileID: 0}
   wheelSpinSource: {fileID: 0}
   launchVolume: 0.3
-  impactVolume: 0.8
-  wobbleVolume: 0.1
-  sparkleVolume: 0.1
-  wheelSpinVolume: 0.8
+  impactVolume: 0.9
+  wobbleVolume: 0.2
+  sparkleVolume: 0.5
+  wheelSpinVolume: 0.5
   minPitch: 0.95
   maxPitch: 1.05
 --- !u!82 &1483402402

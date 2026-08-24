@@ -430,14 +430,19 @@ namespace FitTheShape
                         WheelReactor.Instance.TriggerReaction(lastAnchor, null);
                     }
 
+                    // 5. Delik direkt kapansın: parça hedefe oturduğu (ilk temas) anda hemen kapat,
+                    // aşağıdaki pürüzsüz süzülme animasyonunun bitmesini bekleme — kullanıcı isteği,
+                    // eskiden bu sinkDuration (0.2s) kadar gecikiyordu. Şekil zaten bu anda deliğin
+                    // tam üstünde durduğu için (embossedLandingPos), deliği hemen kapatmak görsel
+                    // olarak bozuk durmuyor — şekil kendisi deliğin üstünü zaten kapatıyor.
+                    HideHoleCutout(parentSeg);
+
                     // 🌟 2. AŞAMA: Segment'in içinde pürüzsüzce içeri süzülerek yüzeye kilitlenme
                     transform.DOLocalMove(localFlushPos, sinkDuration).SetEase(sinkEase).OnComplete(() =>
                     {
                         transform.localPosition = localFlushPos;
                         transform.localRotation = localRot;
 
-                        // Şekil deliği doldurup oturduktan sonra Hole objesini kapat ve yüzeyin DÜMDÜZ kalmasını sağla
-                        HideHoleCutout(parentSeg);
                         gameObject.SetActive(false);
                         isSeated = true;
 
