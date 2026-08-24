@@ -156,5 +156,25 @@ namespace Bonus.BlockHoleJelly
             springDir = direction.normalized;
             springVelocity = Mathf.Clamp(springVelocity + strength / kickSizeScale, -maxSpringVelocity, maxSpringVelocity);
         }
+
+        /// <summary>
+        /// Directly sets the jelly direction/amount and writes it to the shader right away,
+        /// bypassing the spring physics entirely — for a scripted deformation (e.g.
+        /// JellyBlockReactor's hole-entry squish) rather than an impulse that rings down on
+        /// its own. Caller is responsible for disabling this component first (`enabled =
+        /// false`) if the scripted sequence needs to persist across frames — otherwise
+        /// LateUpdate's own oscillator will keep overwriting springAmount right after.
+        /// </summary>
+        public void ForceJellyState(Vector3 direction, float amount)
+        {
+            if (direction.sqrMagnitude > 0.0001f)
+            {
+                springDir = direction.normalized;
+            }
+            springAmount = amount;
+            propBlock.SetVector(JellyDirId, springDir);
+            propBlock.SetFloat(JellyAmountId, Mathf.Abs(springAmount));
+            meshRenderer.SetPropertyBlock(propBlock);
+        }
     }
 }

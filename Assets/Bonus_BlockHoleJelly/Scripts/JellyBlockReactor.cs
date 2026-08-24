@@ -53,9 +53,15 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float releaseKickStrength = 2.6f;
 
         [Header("Hole-Entry Squish (replaces fracture/shatter)")]
-        [Tooltip("Duration of the shrink-to-nothing squish when the block is swallowed by a hole. Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the block finishes shrinking right as BlockDraggable disables its renderers — tune both together.")]
+        [Tooltip("Total duration of the hole-entry squish (squeeze phase + shrink phase combined). Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the block finishes vanishing right as BlockDraggable disables its renderers — tune both together.")]
         [SerializeField] private float holeSquishDuration = 0.6f;
-        [SerializeField] private Ease holeSquishEase = Ease.InQuad;
+        [Tooltip("Fraction of holeSquishDuration spent on the initial squeeze (stretching down / squashing sideways via the jelly shader, like being pushed through a narrower opening) before the shrink-to-nothing phase takes over.")]
+        [Range(0.1f, 0.8f)]
+        [SerializeField] private float holeSquishSqueezePortion = 0.4f;
+        [Tooltip("Peak jelly amount reached during the squeeze phase — how pinched/stretched it looks right before vanishing.")]
+        [SerializeField] private float holeSquishPeakAmount = 0.45f;
+        [SerializeField] private Ease holeSquishSqueezeEase = Ease.OutQuad;
+        [SerializeField] private Ease holeSquishShrinkEase = Ease.InQuad;
 
         private JellySpringDriver spring;
         private BlockDraggable draggable;
@@ -176,24 +182,49 @@ namespace Bonus.BlockHoleJelly
         }
 
         /// <summary>
-        /// Slow shrink-to-nothing squish for a jelly block being swallowed by a hole,
-        /// instead of the real BlockHole fracture/shatter (disabled on this instance in
-        /// Start via draggable.FractureEffect = null). Runs on the same transform
-        /// BlockDraggable is already moving down into the hole shaft, so it reads as
-        /// "melting into the hole" rather than falling then popping.
+        /// Two-phase jelly squish for a block being swallowed by a hole, instead of the real
+        /// BlockHole fracture/shatter (disabled on this instance in Start via
+        /// draggable.FractureEffect = null): first it visibly SQUEEZES — stretches downward
+        /// and squashes sideways via the jelly shader, like being pushed through a narrower
+        /// opening — then it shrinks away to nothing while still pinched. Runs on the same
+        /// transform BlockDraggable is already moving down into the hole shaft, so it reads
+        /// as jelly being pulled/sucked into the hole rather than just uniformly shrinking.
         ///
         /// BlockDraggable.DropIntoHole already queues its own brief DOScale(originalScale,
         /// 0.06s) on this same transform (snapping the drag-pickup scale bump back to
-        /// normal) right before calling onDragEnded — starting our shrink immediately would
-        /// fight that tween for those 0.06s. Delay by the same amount instead of killing
-        /// it, so ours cleanly takes over right after rather than racing it.
+        /// normal) right before calling onDragEnded — starting our own scale tween
+        /// immediately would fight that for those 0.06s. Delay by the same amount instead of
+        /// killing it, so ours cleanly takes over right after rather than racing it.
         /// </summary>
         private void PlayHoleSquish()
         {
-            DOTween.Sequence()
-                .SetTarget(transform)
-                .AppendInterval(0.06f)
-                .Append(transform.DOScale(Vector3.zero, holeSquishDuration).SetEase(holeSquishEase));
+            // Take the shader over from the spring's own oscillator for this scripted
+            // sequence — otherwise JellySpringDriver's LateUpdate would keep overwriting our
+            // ForceJellyState calls with its own (by-now-irrelevant) decaying kick state.
+            if (spring != null) spring.enabled = false;
+
+            float squeezeDuration = holeSquishDuration * holeSquishSqueezePortion;
+            float shrinkDuration = holeSquishDuration - squeezeDuration;
+
+            Sequence seq = DOTween.Sequence().SetTarget(transform);
+            seq.AppendInterval(0.06f);
+
+            if (spring != null)
+            {
+                float amount = 0f;
+                seq.Append(DOTween.To(
+                    () => amount,
+                    x => { amount = x; spring.ForceJellyState(Vector3.down, amount); },
+                    holeSquishPeakAmount,
+                    squeezeDuration
+                ).SetEase(holeSquishSqueezeEase));
+            }
+            else
+            {
+                seq.AppendInterval(squeezeDuration);
+            }
+
+            seq.Append(transform.DOScale(Vector3.zero, shrinkDuration).SetEase(holeSquishShrinkEase));
         }
     }
 }
