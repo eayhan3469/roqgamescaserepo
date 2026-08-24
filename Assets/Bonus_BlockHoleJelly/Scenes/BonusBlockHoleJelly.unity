@@ -9330,9 +9330,6 @@ PrefabInstance:
       addedObject: {fileID: 1296097190}
     - targetCorrespondingSourceObject: {fileID: 2943204707417077802, guid: 7d128090a81004d9c9914ac2cea5691a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1296097192}
-    - targetCorrespondingSourceObject: {fileID: 2943204707417077802, guid: 7d128090a81004d9c9914ac2cea5691a, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1296097194}
     - targetCorrespondingSourceObject: {fileID: 2943204707417077802, guid: 7d128090a81004d9c9914ac2cea5691a, type: 3}
       insertIndex: -1
@@ -9375,10 +9372,10 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineWidth: 0.045
   autoCaptureDistance: 0.45
-  holeDropDuration: 0.3
+  holeDropDuration: 0.6
   dropDepthY: -0.45
   holeDropEase: 5
-  fractureEffect: {fileID: 1296097192}
+  fractureEffect: {fileID: 0}
   dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
@@ -9438,34 +9435,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.96, y: 0.96, z: 0.96}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &1296097192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1296097189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96c8047021c9e32478ca1f12d9d14bda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
-  fracturedPrefab: {fileID: 6802182622958221233, guid: baa0817e4c3bc4fe195352b4a24922fb, type: 3}
-  largeChunkSize: 0.46
-  mediumChunkSize: 0.26
-  smallChipSize: 0.11
-  minPopHeight: 0.55
-  maxPopHeight: 1.1
-  popDuration: 0.18
-  fallDuration: 0.26
-  outsidePieceRatio: 0.2
-  outsideScatterDist: 0.55
-  floorStayDuration: 0.35
-  floorFadeDuration: 0.28
-  cameraShakeDuration: 0.2
-  cameraShakeStrength: 0.16
-  cameraShakeVibrato: 18
-  dustExplosionPrefab: {fileID: 0}
 --- !u!114 &1296097193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9480,7 +9449,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 0.12
   releaseKickStrength: 0.22
-  holeDropKickStrength: 0.45
+  holeSquishDuration: 0.6
+  holeSquishEase: 5
 --- !u!114 &1296097194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11722,9 +11692,6 @@ PrefabInstance:
       addedObject: {fileID: 1613842028}
     - targetCorrespondingSourceObject: {fileID: 5138500445381540524, guid: 7c40027f7d63c42c183791b92848834a, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1613842030}
-    - targetCorrespondingSourceObject: {fileID: 5138500445381540524, guid: 7c40027f7d63c42c183791b92848834a, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1613842032}
     - targetCorrespondingSourceObject: {fileID: 5138500445381540524, guid: 7c40027f7d63c42c183791b92848834a, type: 3}
       insertIndex: -1
@@ -11768,10 +11735,10 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineWidth: 0.045
   autoCaptureDistance: 0.45
-  holeDropDuration: 0.3
+  holeDropDuration: 0.6
   dropDepthY: -0.45
   holeDropEase: 5
-  fractureEffect: {fileID: 1613842030}
+  fractureEffect: {fileID: 0}
   dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
@@ -11831,34 +11798,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.96, y: 0.96, z: 0.96}
   m_Center: {x: 0, y: 0.5, z: 0}
---- !u!114 &1613842030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1613842027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96c8047021c9e32478ca1f12d9d14bda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
-  fracturedPrefab: {fileID: 8852618802286154136, guid: 6450c5b8876c84d43978727b161952ca, type: 3}
-  largeChunkSize: 0.46
-  mediumChunkSize: 0.26
-  smallChipSize: 0.11
-  minPopHeight: 0.55
-  maxPopHeight: 1.1
-  popDuration: 0.18
-  fallDuration: 0.26
-  outsidePieceRatio: 0.2
-  outsideScatterDist: 0.55
-  floorStayDuration: 0.35
-  floorFadeDuration: 0.28
-  cameraShakeDuration: 0.2
-  cameraShakeStrength: 0.16
-  cameraShakeVibrato: 18
-  dustExplosionPrefab: {fileID: 0}
 --- !u!114 &1613842031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11873,7 +11812,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 0.12
   releaseKickStrength: 0.22
-  holeDropKickStrength: 0.45
+  holeSquishDuration: 0.6
+  holeSquishEase: 5
 --- !u!114 &1613842032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14145,9 +14085,6 @@ PrefabInstance:
       addedObject: {fileID: 1825520756}
     - targetCorrespondingSourceObject: {fileID: 1693279212646787575, guid: 1f9a7fd359571437db2d08d6d83dbefa, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1825520758}
-    - targetCorrespondingSourceObject: {fileID: 1693279212646787575, guid: 1f9a7fd359571437db2d08d6d83dbefa, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1825520761}
     - targetCorrespondingSourceObject: {fileID: 1693279212646787575, guid: 1f9a7fd359571437db2d08d6d83dbefa, type: 3}
       insertIndex: -1
@@ -14196,10 +14133,10 @@ MonoBehaviour:
   outlineColor: {r: 1, g: 1, b: 1, a: 1}
   outlineWidth: 0.045
   autoCaptureDistance: 0.45
-  holeDropDuration: 0.3
+  holeDropDuration: 0.6
   dropDepthY: -0.45
   holeDropEase: 5
-  fractureEffect: {fileID: 1825520758}
+  fractureEffect: {fileID: 0}
   dragLiftHeight: 0.4
   touchScaleMultiplier: 1.03
   onDragStarted:
@@ -14259,34 +14196,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.96, y: 0.96, z: 1.96}
   m_Center: {x: -0.5, y: 0.5, z: 0}
---- !u!114 &1825520758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1825520755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96c8047021c9e32478ca1f12d9d14bda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BlockHole.BlockFractureEffect
-  fracturedPrefab: {fileID: 8858990628142384719, guid: 5fcd841e985139d46a748e9525d0a527, type: 3}
-  largeChunkSize: 0.46
-  mediumChunkSize: 0.26
-  smallChipSize: 0.11
-  minPopHeight: 0.55
-  maxPopHeight: 1.1
-  popDuration: 0.18
-  fallDuration: 0.26
-  outsidePieceRatio: 0.2
-  outsideScatterDist: 0.55
-  floorStayDuration: 0.35
-  floorFadeDuration: 0.28
-  cameraShakeDuration: 0.2
-  cameraShakeStrength: 0.16
-  cameraShakeVibrato: 18
-  dustExplosionPrefab: {fileID: 0}
 --- !u!114 &1825520759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14301,7 +14210,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bonus.BlockHoleJelly.JellyBlockReactor
   grabKickStrength: 0.12
   releaseKickStrength: 0.22
-  holeDropKickStrength: 0.45
+  holeSquishDuration: 0.6
+  holeSquishEase: 5
 --- !u!23 &1825520761
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -15866,7 +15776,7 @@ MonoBehaviour:
   dropClips:
   - {fileID: 8300000, guid: 752657be72fd74a439314a499662031f, type: 3}
   shatterClips:
-  - {fileID: 8300000, guid: e44a363afca90a64192466e1a065d8c4, type: 3}
+  - {fileID: 8300000, guid: 37a65589ac467f14aa1240abbd0310a9, type: 3}
   victoryClip: {fileID: 8300000, guid: 4d66431f5242cba4b8add713edde8be2, type: 3}
   sfxSource: {fileID: 1985472012}
   minPitch: 0.95
@@ -15875,7 +15785,7 @@ MonoBehaviour:
   pickupVolume: 0.85
   snapBackVolume: 0.9
   dropVolume: 0.95
-  shatterVolume: 1
+  shatterVolume: 0.65
   isMuted: 0
 --- !u!1 &1989290869
 GameObject:
