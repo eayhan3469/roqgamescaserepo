@@ -7,10 +7,10 @@ namespace Bonus.BlockHoleJelly
     /// <summary>
     /// Bridges the real BlockHole gameplay flow (BlockDraggable's public UnityEvents) to
     /// the jelly reactions, so they trigger on actual game moments — grabbing a block
-    /// (JellySpringDriver.Kick), releasing it normally (Kick), or it getting swallowed by a
-    /// hole (a slow shrink-to-nothing squish instead of the real BlockFractureEffect
-    /// shatter — see PlayHoleSquish) — instead of only the passive per-frame motion
-    /// tracking JellySpringDriver already does on its own.
+    /// (JellySpringDriver.Kick + switches it into drag-lag mode so it stretches
+    /// continuously while held), releasing it normally (Kick, back to idle spring mode),
+    /// or it getting swallowed by a hole (a slow shrink-to-nothing squish instead of the
+    /// real BlockFractureEffect shatter — see PlayHoleSquish).
     ///
     /// Wire this up in the Editor (or via UnityEditor.Events.UnityEventTools in an editor
     /// script) by pointing BlockDraggable's `onDragStarted` at OnGrabbed() and
@@ -41,6 +41,10 @@ namespace Bonus.BlockHoleJelly
         [SerializeField] private float grabKickStrength = 1.4f;
         [Tooltip("Kick on a normal release/grid-snap, opposite the direction it was just dragged. Same velocity-impulse caveat as grabKickStrength above.")]
         [SerializeField] private float releaseKickStrength = 2.6f;
+
+        [Header("Continuous Drag Feel")]
+        [Tooltip("Jelly amount at maximum elastic lead (i.e. the mouse pulling the block as far as BlockDraggable's own clamp allows within its current grid cell). Scales down to 0 as the block sits exactly on its anchor. This is what makes the jelly feel continuously present while being carried, not just at grab/release — see JellySpringDriver's class doc for why it's driven by lead-from-anchor distance rather than raw drag velocity.")]
+        [SerializeField] private float dragPullMaxAmount = 0.3f;
 
         [Header("Hole-Entry Squish (replaces fracture/shatter)")]
         [Tooltip("Duration of the shrink-to-nothing squish when the block is swallowed by a hole. Kept roughly in sync with BlockDraggable's own holeDropDuration on this instance so the block finishes shrinking right as BlockDraggable disables its renderers — tune both together.")]
@@ -88,21 +92,41 @@ namespace Bonus.BlockHoleJelly
         {
             bool isDragging = draggable != null && draggable.IsDragging;
 
-            // Mute JellySpringDriver's passive per-frame reactivity while actively being
-            // dragged — the drag-follow tween changes direction every frame (mouse jitter,
-            // Lerp catch-up), and letting that keep re-kicking the spring made the block
-            // wobble chaotically the whole time it was held instead of a clean jelly feel.
-            // Only the deliberate grab/release Kicks below should read as "jelly" while
-            // dragging; BlockDraggable's own tilt/sway already sells the drag-carry feel.
+            // Keep JellySpringDriver's mode in sync every frame as a safety net (OnGrabbed/
+            // OnReleased below already set it immediately on the actual transition, so this
+            // is mostly a fallback in case IsDragging ever changes some other way).
             if (spring != null)
             {
+                spring.DragLagEnabled = isDragging;
                 spring.PassiveReactivityEnabled = !isDragging;
             }
 
-            // Track the most recent drag movement direction while actively dragging, so
-            // OnReleased() knows which way to squash back into on a normal release.
             if (isDragging)
             {
+                // Feed the continuous drag-lag target from how far the block currently
+                // sits from its snapped grid anchor (BlockDraggable clamps this "lead" to
+                // ~0.45 tile itself) rather than raw velocity — see JellySpringDriver's
+                // class doc for why: the grid-snapped elastic-lead movement holds the
+                // block nearly stationary within a tile between discrete cell jumps, so
+                // velocity reads as ~0 most of the time even while a mouse is actively
+                // holding it off-center.
+                if (spring != null && draggable != null && BlockHole.GridManager.Instance != null)
+                {
+                    Vector3 anchorWorldPos = draggable.GetWorldPosForAnchor(draggable.CurrentAnchorGridPos);
+                    Vector3 lead = transform.position - anchorWorldPos;
+                    lead.y = 0f;
+                    float leadMag = lead.magnitude;
+
+                    float clampRange = BlockHole.GridManager.Instance.TileSize * 0.45f;
+                    float normalizedPull = clampRange > 0.0001f ? Mathf.Clamp01(leadMag / clampRange) : 0f;
+
+                    Vector3 leadDir = leadMag > 0.001f ? lead / leadMag : lastDragMoveDir;
+                    spring.SetDragLagTarget(leadDir, normalizedPull * dragPullMaxAmount);
+                }
+
+                // Track the most recent drag movement direction too, for OnReleased()'s
+                // normal-release Kick (which wants a direction even the instant the lead
+                // happens to be back near zero).
                 Vector3 delta = transform.position - lastDragPos;
                 if (delta.sqrMagnitude > 0.0001f)
                 {
@@ -116,6 +140,7 @@ namespace Bonus.BlockHoleJelly
         public void OnGrabbed()
         {
             if (spring == null) return;
+            spring.DragLagEnabled = true;
             spring.Kick(Vector3.up, grabKickStrength);
         }
 
@@ -126,6 +151,14 @@ namespace Bonus.BlockHoleJelly
         /// </summary>
         public void OnReleased()
         {
+            if (spring != null)
+            {
+                // Switch back to idle spring mode *before* the Kick below, so the impulse
+                // actually drives the oscillator instead of being immediately overwritten
+                // by drag-lag's SmoothDamp on the same frame.
+                spring.DragLagEnabled = false;
+            }
+
             if (draggable != null && draggable.IsDroppedInHole)
             {
                 PlayHoleSquish();
