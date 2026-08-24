@@ -30,6 +30,9 @@ namespace BlockHole
         [Tooltip("Played when all blocks are cleared / victory.")]
         [SerializeField] private AudioClip victoryClip;
 
+        [Tooltip("Optional: a longer sustained sound for a block being absorbed/pulled into a hole (e.g. the jelly bonus scene's suction effect), running through the whole fall rather than a single impact instant. Left unassigned by default — not auto-loaded, no default clip shipped for it — assign one per-scene to opt in.")]
+        [SerializeField] private AudioClip absorbClip;
+
         [Header("Audio Source & Pitch Settings")]
         [SerializeField] private AudioSource sfxSource;
         [SerializeField] private float minPitch = 0.95f;
@@ -41,6 +44,7 @@ namespace BlockHole
         [Range(0f, 1f)] [SerializeField] private float snapBackVolume = 0.90f;
         [Range(0f, 1f)] [SerializeField] private float dropVolume = 0.95f;
         [Range(0f, 1f)] [SerializeField] private float shatterVolume = 1.0f;
+        [Range(0f, 1f)] [SerializeField] private float absorbVolume = 0.8f;
         [SerializeField] private bool isMuted = false;
 
         public AudioClip[] PickupClips { get => pickupClips; set => pickupClips = value; }
@@ -49,6 +53,7 @@ namespace BlockHole
         public AudioClip[] DropClips { get => dropClips; set => dropClips = value; }
         public AudioClip[] ShatterClips { get => shatterClips; set => shatterClips = value; }
         public AudioClip VictoryClip { get => victoryClip; set => victoryClip = value; }
+        public AudioClip AbsorbClip { get => absorbClip; set => absorbClip = value; }
         public AudioSource SfxSource { get => sfxSource; set => sfxSource = value; }
 
         public float MasterVolume
@@ -79,6 +84,7 @@ namespace BlockHole
         public float SnapBackVolume { get => snapBackVolume; set => snapBackVolume = Mathf.Clamp01(value); }
         public float DropVolume { get => dropVolume; set => dropVolume = Mathf.Clamp01(value); }
         public float ShatterVolume { get => shatterVolume; set => shatterVolume = Mathf.Clamp01(value); }
+        public float AbsorbVolume { get => absorbVolume; set => absorbVolume = Mathf.Clamp01(value); }
 
         private void Awake()
         {
@@ -227,6 +233,19 @@ namespace BlockHole
         {
             if (victoryClip == null) return;
             PlayClipWithPitch(victoryClip, 1.0f, false);
+        }
+
+        /// <summary>
+        /// Longer sustained "being absorbed/pulled into a hole" sound (see absorbClip's
+        /// tooltip) — no-ops if unassigned, so leaving it empty is always safe. Uses the same
+        /// shared sfxSource as every other cue here; AudioSource.PlayOneShot layers additively
+        /// rather than interrupting, so this can safely overlap with a shorter impact one-shot
+        /// (e.g. PlayShatterSound) firing during the same fall.
+        /// </summary>
+        public void PlayAbsorbSound()
+        {
+            if (absorbClip == null) return;
+            PlayClipWithPitch(absorbClip, absorbVolume, true);
         }
 
         public void PlayTilePopSound(float pitch = 1.0f)

@@ -29108,8 +29108,6 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
-  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
-  holeAbsorbVolume: 0.8
 --- !u!114 &1296097194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31513,8 +31511,6 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
-  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
-  holeAbsorbVolume: 0.8
 --- !u!114 &1613842032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38856,8 +38852,6 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
-  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
-  holeAbsorbVolume: 0.8
 --- !u!23 &1825520761
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -40424,6 +40418,7 @@ MonoBehaviour:
   shatterClips:
   - {fileID: 8300000, guid: 37a65589ac467f14aa1240abbd0310a9, type: 3}
   victoryClip: {fileID: 8300000, guid: 4d66431f5242cba4b8add713edde8be2, type: 3}
+  absorbClip: {fileID: 0}
   sfxSource: {fileID: 1985472012}
   minPitch: 0.95
   maxPitch: 1.05
@@ -40432,6 +40427,7 @@ MonoBehaviour:
   snapBackVolume: 0.9
   dropVolume: 0.95
   shatterVolume: 0.65
+  absorbVolume: 0.8
   isMuted: 0
 --- !u!1 &1989290869
 GameObject:
