@@ -56,6 +56,10 @@ namespace Bonus.BlockHoleJelly
         [Tooltip("Kick strength for the hole-entry squeeze (same velocity-impulse mechanism as grab/release/grid-step — see JellySpringDriver.Kick). Deliberately the strongest of the four: it is the one moment squeeze-then-relax should read as the most pronounced. Reuses the normal damped oscillator instead of a scripted ramp, so it naturally squeezes in hard and eases back off on its own rather than holding at a flat peak.")]
         [SerializeField] private float holeSquishKickStrength = 5.5f;
 
+        [Header("Hole-Entry Splash VFX")]
+        [Tooltip("Burst particle system (a child named 'HoleSplashVFX', set up per block instance) that fires when the block is squeezed into a hole — small colored droplets flung outward from the block's edges, gravity-pulled down, mimicking juice/liquid squirting out under the squeeze. Found automatically in Awake via child name; safe to leave null if a given instance does not have one.")]
+        private ParticleSystem holeSplashVFX;
+
         private JellySpringDriver spring;
         private BlockDraggable draggable;
 
@@ -74,6 +78,15 @@ namespace Bonus.BlockHoleJelly
             if (spring == null)
             {
                 Debug.LogWarning($"JellyBlockReactor on '{name}' found no JellySpringDriver in itself or its children — add one to whichever object holds the real MeshRenderer.", this);
+            }
+
+            foreach (var t in GetComponentsInChildren<Transform>(true))
+            {
+                if (t.name == "HoleSplashVFX")
+                {
+                    holeSplashVFX = t.GetComponent<ParticleSystem>();
+                    break;
+                }
             }
         }
 
@@ -241,6 +254,16 @@ namespace Bonus.BlockHoleJelly
                 {
                     if (ps != null) ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 }
+            }
+
+            // Juicy squirt: a burst of small colored droplets flung outward from the block's
+            // edges right as the squeeze begins, gravity-pulled down over their short
+            // lifetime — reads as liquid being squeezed out from under pressure, timed with
+            // the squeeze kick below rather than the moment it actually vanishes (by then it
+            // is below the floor and the splash would not be visible against the board).
+            if (holeSplashVFX != null)
+            {
+                holeSplashVFX.Play();
             }
 
             if (spring == null) return;
