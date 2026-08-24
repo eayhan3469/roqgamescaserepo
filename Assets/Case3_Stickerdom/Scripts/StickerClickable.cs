@@ -77,6 +77,7 @@ namespace Stickerdom
         public GhostSlot TargetGhostSlot { get => targetGhostSlot; set => targetGhostSlot = value; }
         public bool IsFlying => isFlying;
         public bool IsPlaced => isPlaced;
+        public float StickDuration => stickDuration;
 
         private void Awake()
         {
@@ -285,9 +286,13 @@ namespace Stickerdom
                 {
                     peelMesh3D.SetShadowOpacity(1f); // Slota inişte temas gölgesi geri açılır
                 }
+                // targetDurationSeconds = stickDuration: syncs the stamp sound's analyzed peak
+                // to land exactly when the reverse-unroll animation below finishes (the moment
+                // the sticker visually finishes sticking down), instead of the sound playing at
+                // its own natural pace and drifting out of sync with that animation's length.
                 if (StickerAudioManager.Instance != null)
                 {
-                    StickerAudioManager.Instance.PlayStampSound();
+                    StickerAudioManager.Instance.PlayStampSound(stickDuration);
                 }
             });
 

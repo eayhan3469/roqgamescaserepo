@@ -1305,6 +1305,10 @@ PrefabInstance:
       propertyPath: m_text
       value: 12
       objectReference: {fileID: 0}
+    - target: {fileID: 3986343575143631394, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4289648260387461777, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1313,9 +1317,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4936767967114207886, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: -1183493901
+      objectReference: {fileID: 0}
     - target: {fileID: 5361532869021021041, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5376796022261770609, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6245712801438254920, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8325552295971550619, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
       propertyPath: m_Name
@@ -1376,7 +1392,19 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3365113720616380651, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 858453486275106281, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 4289648260387461777, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
+    - targetCorrespondingSourceObject: {fileID: 985817174874382530, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: 7afe95c4ecea84c6481a90d75e970f0f, type: 3}
 --- !u!1 &1500000001
 GameObject:
@@ -2024,8 +2052,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a82050a41761e4b85c18e11a3c7488, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerVFXManager
-  peelPuffPrefab: {fileID: 209152616040141038, guid: d1e82050a41761e4b85c18e11a3c7489, type: 3}
   stampSparklePrefab: {fileID: 2703089448029283905, guid: d2e82050a41761e4b85c18e11a3c7490, type: 3}
+  peelSparkleScale: 1
+  sparkleLifetime: 0.22
+  stampCascadeCount: 18
+  stampCascadeInterval: 0.016
+  stampCascadeScale: 1
   vfxSortingOrder: 150
   zOffset: -1
   autoDestroyDelay: 1.5
@@ -2100,7 +2132,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Stickerdom.StickerAudioManager
   peelClip: {fileID: 8300000, guid: 088f7b19a35f5fe49a386f5669336255, type: 3}
   flyClip: {fileID: 8300000, guid: bf33aab6f29f90048b9c156c44cfb2fb, type: 3}
-  stampClip: {fileID: 8300000, guid: a4fa49661f89feb459344b4e8b9d72cc, type: 3}
+  stampClip: {fileID: 8300000, guid: 81abda5070bff7049979fd6aecf856f9, type: 3}
   victoryClip: {fileID: 8300000, guid: c3b30000a41761e4b85c18e11a3c7499, type: 3}
   sfxSource: {fileID: 1800000004}
   minPitch: 0.95

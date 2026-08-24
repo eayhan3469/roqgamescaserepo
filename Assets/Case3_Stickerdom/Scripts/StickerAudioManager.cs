@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Stickerdom
@@ -193,10 +194,90 @@ namespace Stickerdom
 
         /// <summary>
         /// Yapışma ve mühürleme sesi (Stamp sound with slight pitch variation).
+        ///
+        /// <paramref name="targetDurationSeconds"/>: when greater than 0, syncs the clip's
+        /// analyzed loudest moment (see FindPeakTime — a windowed RMS scan, not just the raw
+        /// clip length) to land exactly this many seconds after playback starts, by computing
+        /// a pitch multiplier = peakTime / targetDurationSeconds. Same technique as
+        /// BlockHoleAudioManager.PlayAbsorbSound in the bonus jelly branch — a clip's audible
+        /// climax rarely sits at its very last sample, so matching total length alone can still
+        /// land the climax noticeably before/after the visual moment it is meant to punctuate
+        /// (StickerClickable's reverse-unroll finishing). Left at the default (0) to fall back
+        /// to the normal random pitch variance.
         /// </summary>
-        public void PlayStampSound()
+        public void PlayStampSound(float targetDurationSeconds = 0f)
         {
+            if (targetDurationSeconds > 0.01f && stampClip != null)
+            {
+                float peakTime = Mathf.Max(FindPeakTime(stampClip), 0.05f);
+                float pitch = Mathf.Clamp(peakTime / targetDurationSeconds, 0.35f, 2.5f);
+                PlayClipWithPitch(stampClip, stampVolume, pitch, pitch);
+                return;
+            }
+
             PlayClipWithPitch(stampClip, stampVolume, minPitch, maxPitch);
+        }
+
+        private static readonly Dictionary<AudioClip, float> peakTimeCache = new Dictionary<AudioClip, float>();
+
+        /// <summary>
+        /// Analyzes an AudioClip's decoded PCM data (via AudioClip.GetData) to find the
+        /// timestamp, in seconds from the start, of its loudest moment — the center of the
+        /// highest-RMS ~50ms window, not a single instantaneous sample peak (too jittery, not
+        /// what a listener perceives as "the peak"). Cached per-clip since the result never
+        /// changes for a given asset. Falls back to the clip's midpoint if analysis fails for
+        /// any reason rather than throwing. Same implementation as
+        /// BlockHoleAudioManager.FindPeakTime in the bonus jelly branch — duplicated here
+        /// rather than shared, since these two audio managers have no common base type and
+        /// this case's own script should stay self-contained.
+        /// </summary>
+        private static float FindPeakTime(AudioClip clip)
+        {
+            if (clip == null) return 0f;
+            if (peakTimeCache.TryGetValue(clip, out float cached)) return cached;
+
+            float peakTime = clip.length * 0.5f;
+            try
+            {
+                int channels = Mathf.Max(clip.channels, 1);
+                int totalSamples = clip.samples * channels;
+                if (totalSamples > 0 && clip.frequency > 0)
+                {
+                    float[] data = new float[totalSamples];
+                    if (clip.GetData(data, 0))
+                    {
+                        int windowSize = Mathf.Max(1, Mathf.RoundToInt(clip.frequency * 0.05f)) * channels;
+                        float bestRms = -1f;
+                        int bestWindowStart = 0;
+                        for (int i = 0; i + windowSize <= totalSamples; i += windowSize)
+                        {
+                            double sumSq = 0;
+                            for (int j = 0; j < windowSize; j++)
+                            {
+                                float s = data[i + j];
+                                sumSq += (double)s * s;
+                            }
+                            float rms = (float)Math.Sqrt(sumSq / windowSize);
+                            if (rms > bestRms)
+                            {
+                                bestRms = rms;
+                                bestWindowStart = i;
+                            }
+                        }
+                        int centerSampleIndex = bestWindowStart + windowSize / 2;
+                        int frameIndex = centerSampleIndex / channels;
+                        peakTime = (float)frameIndex / clip.frequency;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"StickerAudioManager: peak-time analysis failed for '{clip.name}', falling back to clip midpoint. {e.Message}");
+                peakTime = clip.length * 0.5f;
+            }
+
+            peakTimeCache[clip] = peakTime;
+            return peakTime;
         }
 
         /// <summary>
