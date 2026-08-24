@@ -40418,7 +40418,7 @@ MonoBehaviour:
   shatterClips:
   - {fileID: 8300000, guid: 37a65589ac467f14aa1240abbd0310a9, type: 3}
   victoryClip: {fileID: 8300000, guid: 4d66431f5242cba4b8add713edde8be2, type: 3}
-  absorbClip: {fileID: 0}
+  absorbClip: {fileID: 8300000, guid: 49ddb7dcf3af9124e9a2b90889933fce, type: 3}
   sfxSource: {fileID: 1985472012}
   minPitch: 0.95
   maxPitch: 1.05

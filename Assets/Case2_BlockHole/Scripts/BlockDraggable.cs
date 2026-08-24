@@ -107,6 +107,7 @@ namespace BlockHole
         public bool IsDragging => isDragging;
         public bool IsDroppedInHole => isDroppedInHole;
         public BlockFractureEffect FractureEffect { get => fractureEffect; set => fractureEffect = value; }
+        public float HoleDropDuration => holeDropDuration;
 
         public Color OutlineColor
         {

@@ -291,9 +291,15 @@ namespace Bonus.BlockHoleJelly
             // method, no existing behavior touched, no-ops if absorbClip is left unassigned)
             // so this scene's clip can live in the same place/pattern as every other jelly SFX
             // cue and be swapped/tested from its Inspector like the rest.
+            //
+            // Passes draggable.HoleDropDuration (the real, possibly per-instance-overridden
+            // fall time) as the sync target, so PlayAbsorbSound stretches/compresses whichever
+            // clip is currently assigned to finish exactly when the block visually vanishes,
+            // instead of the clip's own fixed natural length running short or lingering after.
             if (BlockHoleAudioManager.Instance != null)
             {
-                BlockHoleAudioManager.Instance.PlayAbsorbSound();
+                float fallDuration = draggable != null ? draggable.HoleDropDuration : 0f;
+                BlockHoleAudioManager.Instance.PlayAbsorbSound(fallDuration);
             }
 
             // Camera punch — the same DOTween call BlockFractureEffect.cs uses for the real

@@ -241,11 +241,37 @@ namespace BlockHole
         /// shared sfxSource as every other cue here; AudioSource.PlayOneShot layers additively
         /// rather than interrupting, so this can safely overlap with a shorter impact one-shot
         /// (e.g. PlayShatterSound) firing during the same fall.
+        ///
+        /// <paramref name="targetDurationSeconds"/>: when greater than 0, the clip's playback
+        /// pitch is computed so its natural length is stretched/compressed to finish in exactly
+        /// this many seconds — lets a caller sync a fixed-length clip to a variable-length
+        /// visual event (e.g. BlockDraggable.HoleDropDuration) instead of it running short or
+        /// lingering after the visual finishes. Left at the default (0) to fall back to the
+        /// normal random pitch variance every other cue in this class uses.
         /// </summary>
-        public void PlayAbsorbSound()
+        public void PlayAbsorbSound(float targetDurationSeconds = 0f)
         {
-            if (absorbClip == null) return;
-            PlayClipWithPitch(absorbClip, absorbVolume, true);
+            if (absorbClip == null || isMuted || masterVolume <= 0.001f) return;
+
+            if (sfxSource == null)
+            {
+                sfxSource = GetComponent<AudioSource>();
+                if (sfxSource == null)
+                {
+                    sfxSource = gameObject.AddComponent<AudioSource>();
+                }
+            }
+
+            if (targetDurationSeconds > 0.01f && absorbClip.length > 0.01f)
+            {
+                sfxSource.pitch = absorbClip.length / targetDurationSeconds;
+            }
+            else
+            {
+                sfxSource.pitch = UnityEngine.Random.Range(minPitch, maxPitch);
+            }
+
+            sfxSource.PlayOneShot(absorbClip, absorbVolume * masterVolume);
         }
 
         public void PlayTilePopSound(float pitch = 1.0f)
