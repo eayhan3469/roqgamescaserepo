@@ -29108,6 +29108,8 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
+  holeAbsorbVolume: 0.8
 --- !u!114 &1296097194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31511,6 +31513,8 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
+  holeAbsorbVolume: 0.8
 --- !u!114 &1613842032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38852,6 +38856,8 @@ MonoBehaviour:
   cameraShakeDuration: 0.16
   cameraShakeStrength: 0.16
   cameraShakeVibrato: 18
+  holeAbsorbClip: {fileID: 8300000, guid: 0578069ed804b614597222e0f39e5a55, type: 3}
+  holeAbsorbVolume: 0.8
 --- !u!23 &1825520761
 MeshRenderer:
   m_ObjectHideFlags: 0
