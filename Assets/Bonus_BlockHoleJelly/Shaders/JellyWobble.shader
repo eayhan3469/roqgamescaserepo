@@ -51,6 +51,12 @@ Shader "Bonus/JellyWobble"
         _TopHighlightColor ("Top Highlight Color", Color) = (1, 1, 1, 1)
         _TopHighlightStrength ("Top Highlight Strength", Range(0,1)) = 0.15
 
+        [Header(Beveled Corner Sparkle)]
+        _CornerBevelColor ("Corner Bevel Highlight Color", Color) = (1, 1, 1, 1)
+        _CornerBevelStrength ("Corner Bevel Strength", Range(0,4)) = 1.6
+        _CornerBevelSize ("Corner Bevel Radius", Range(0.05, 0.5)) = 0.22
+        _CornerBevelSharpness ("Corner Bevel Sharpness", Range(1, 64)) = 12
+
         [Header(Suspended Chunks)]
         _FleckColor ("Chunk Color", Color) = (1, 0.93, 0.82, 1)
         _FleckStrength ("Chunk Blend Strength", Range(0,1)) = 0.35
@@ -143,6 +149,10 @@ Shader "Bonus/JellyWobble"
                 float _HighTone;
                 float4 _TopHighlightColor;
                 float _TopHighlightStrength;
+                float4 _CornerBevelColor;
+                float _CornerBevelStrength;
+                float _CornerBevelSize;
+                float _CornerBevelSharpness;
                 float4 _FleckColor;
                 float _FleckStrength;
                 float _FleckDensity;
@@ -228,10 +238,19 @@ Shader "Bonus/JellyWobble"
                 return frac((p.xxy + p.yxx) * p.zyx);
             }
 
-            // Toon-banded diffuse + two-lobe specular for ONE light, reused for both the
-            // main light and every additional light in the loop below (see frag()).
+            // Toon-banded diffuse + two-lobe specular + beveled-corner sparkle for ONE light,
+            // reused for both the main light and every additional light in the loop below
+            // (see frag()). `bevelNormal` is a FAKE normal that leans outward/upward near a
+            // top-face corner (see frag() for how it is built) — under this project's
+            // orthographic camera + directional lights, the real `normalWS` is perfectly
+            // uniform across an entire flat cube face, so real specular can only ever light
+            // (or not light) the WHOLE face at once, never just its corners. `bevelNormal`
+            // fakes the rounded-edge normal a real beveled/curved corner would have, so the
+            // corner sparkle responds to light direction like a real highlight (brighter on
+            // whichever corner actually faces the light) instead of glowing uniformly.
             void ShadeOneLight(Light light, half3 albedo, float3 normalWS, float3 viewDir, float fresnel,
-                                out half3 diffuseOut, out half3 specularOut)
+                                float3 bevelNormal, float bevelSharpness,
+                                out half3 diffuseOut, out half3 specularOut, out half cornerOut)
             {
                 float3 lightDir = light.direction;
                 half3 atten = light.color * light.distanceAttenuation * light.shadowAttenuation;
@@ -251,6 +270,10 @@ Shader "Bonus/JellyWobble"
                 half broadSpec = pow(NdotH, 4.0) * _SheenStrength;
                 half specFresnelBoost = lerp(1.0, 1.8, fresnel);
                 specularOut = _SpecColor.rgb * atten * (sharpSpec + broadSpec) * _SpecularIntensity * specFresnelBoost;
+
+                float bevelNdotL = saturate(dot(bevelNormal, lightDir));
+                half lightBrightness = dot(atten, half3(0.333, 0.334, 0.333));
+                cornerOut = pow(bevelNdotL, bevelSharpness) * lightBrightness;
             }
 
             half4 frag(Varyings IN) : SV_Target
@@ -265,14 +288,33 @@ Shader "Bonus/JellyWobble"
                 float NdotV = saturate(dot(normalWS, viewDir));
                 float fresnel = pow(1.0 - NdotV, _RimPower);
 
+                // Beveled-corner fake normal: find the nearest of the top face's 4 corners
+                // within this cell (cells tile every 1 local unit, matching the block mesh's
+                // per-cube layout), then lean the normal outward from that corner and upward
+                // — approximating what a real small rounded bevel there would look like. Only
+                // meaningful near an actual corner (bevelAmount fades to 0 elsewhere) and only
+                // on top-facing geometry (topShape, computed further below reused here via its
+                // own local copy since it is needed before the diffuse falls out of the loop).
+                float topFacingForBevel = saturate(normalWS.y);
+                float topShapeForBevel = topFacingForBevel * topFacingForBevel * topFacingForBevel * topFacingForBevel;
+                float2 cellFracXZ = frac(IN.localPosOS.xz);
+                float2 nearestCornerXZ = round(cellFracXZ);
+                float2 offsetFromCornerXZ = cellFracXZ - nearestCornerXZ;
+                float cornerDistXZ = length(offsetFromCornerXZ);
+                float bevelAmount = smoothstep(_CornerBevelSize, 0.0, cornerDistXZ) * topShapeForBevel;
+                float2 outwardDirXZ = offsetFromCornerXZ / max(cornerDistXZ, 1e-4);
+                float3 bevelNormal = normalize(float3(outwardDirXZ.x, 1.4, outwardDirXZ.y));
+
                 // Wrapped + BANDED diffuse: real-time smooth NdotL shading reads as plastic;
                 // reference toy/jelly-game shaders use a toon-style ramp instead (a dark
                 // band, a mid band, a bright band, soft-blended rather than hard-stepped) —
                 // this is the main thing that makes the material look like jelly at rest,
                 // not just "shiny plastic that jiggles".
                 half3 diffuseBase, mainSpecular;
-                ShadeOneLight(mainLight, albedo, normalWS, viewDir, fresnel, diffuseBase, mainSpecular);
+                half mainCorner;
+                ShadeOneLight(mainLight, albedo, normalWS, viewDir, fresnel, bevelNormal, _CornerBevelSharpness, diffuseBase, mainSpecular, mainCorner);
                 half3 totalSpecular = mainSpecular;
+                half totalCorner = mainCorner;
 
                 // This shader only sampled the URP "main" light (GetMainLight, the dim
                 // Sun-tagged directional at intensity 0.35) — but the scene actually authors
@@ -288,9 +330,11 @@ Shader "Bonus/JellyWobble"
                 {
                     Light addLight = GetAdditionalLight(i, IN.positionWS);
                     half3 addDiffuse, addSpecular;
-                    ShadeOneLight(addLight, albedo, normalWS, viewDir, fresnel, addDiffuse, addSpecular);
+                    half addCorner;
+                    ShadeOneLight(addLight, albedo, normalWS, viewDir, fresnel, bevelNormal, _CornerBevelSharpness, addDiffuse, addSpecular, addCorner);
                     diffuseBase += addDiffuse;
                     totalSpecular += addSpecular;
+                    totalCorner += addCorner;
                 }
                 #endif
 
@@ -308,6 +352,13 @@ Shader "Bonus/JellyWobble"
                 half3 diffuse = lerp(diffuseBase, _TopHighlightColor.rgb * mainLight.color, topFactor);
 
                 half3 specular = totalSpecular;
+
+                // Beveled-corner sparkle: additive, masked to the bevelAmount computed above
+                // (near an actual top-face corner) and scaled by how directly a light hits the
+                // fake bevel normal there — this is what makes specific corners catch a bright
+                // point while others stay dim, matching how a real glossy object's corners
+                // catch light unevenly depending on their angle to the light source.
+                half3 cornerHighlight = _CornerBevelColor.rgb * totalCorner * bevelAmount * _CornerBevelStrength;
 
                 // Suspended chunks (fruit-jelly "pieces visible through the gel" look): a
                 // sparse scatter of soft round blobs computed from a 3D hash grid over the
@@ -341,7 +392,7 @@ Shader "Bonus/JellyWobble"
                 // white. Dialed way down; it is just a faint fill now, not a driver of tone.
                 half3 ambient = albedo * SampleSH(normalWS) * 0.4;
 
-                half3 color = diffuse + specular + translucency + rim + ambient;
+                half3 color = diffuse + specular + translucency + rim + ambient + cornerHighlight;
 
                 // Real transparency: base opacity plus extra opacity at grazing angles
                 // (like looking through the curved edge of a gummy block vs. straight
